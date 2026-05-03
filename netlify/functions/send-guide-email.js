@@ -16,9 +16,10 @@ exports.handler = async (event) => {
     return { statusCode: 400, body: 'Invalid JSON' };
   }
 
-  if (!email || !name || !guideUrl) {
+  if (!email || !guideUrl) {
     return { statusCode: 400, body: 'Missing required fields' };
   }
+  name = name || 'Golfer';
 
   const html = `
     <div style="font-family:'Helvetica Neue',sans-serif;max-width:480px;margin:0 auto;background:#0a1a0e;padding:32px 24px;border-radius:16px;">
