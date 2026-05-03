@@ -451,6 +451,34 @@
       .wiz-body { padding: 40px 24px 80px; }
       .step-q { font-size: 2.2rem; }
     }
+
+    /* ── THEME PICKER ── */
+    .theme-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px;}
+    .theme-opt{cursor:pointer;}
+    .theme-opt input{display:none;}
+    .theme-card{border-radius:16px;padding:22px 16px 18px;border:2px solid transparent;transition:border-color .18s,transform .15s;user-select:none;position:relative;}
+    .theme-opt input:checked + .theme-card{border-color:#c9a84c;transform:scale(1.02);}
+    .theme-opt input:checked + .theme-card::after{content:'✓';position:absolute;top:10px;right:12px;font-size:0.9rem;color:#c9a84c;}
+    .theme-name{font-family:'Bebas Neue',sans-serif;font-size:1.25rem;letter-spacing:1px;margin-bottom:4px;}
+    .theme-desc{font-size:0.68rem;letter-spacing:0.5px;opacity:0.7;}
+    .theme-dots{display:flex;gap:5px;margin-bottom:10px;}
+    .theme-dot{width:12px;height:12px;border-radius:50%;}
+    .tp-forest{background:#0a1a0e;}
+    .tp-forest .theme-name{color:#c9a84c;}
+    .tp-forest .theme-desc{color:#6a8a6e;}
+    .tp-forest .d1{background:#2d6a3f;} .tp-forest .d2{background:#c9a84c;} .tp-forest .d3{background:#1a2f1e;}
+    .tp-classic{background:#f4efe3;border:1px solid #ddd6c2;}
+    .tp-classic .theme-name{color:#8a6010;}
+    .tp-classic .theme-desc{color:#6a7a68;}
+    .tp-classic .d1{background:#2d6a3f;} .tp-classic .d2{background:#8a6010;} .tp-classic .d3{background:#ebe5d4;}
+    .tp-ocean{background:#071520;}
+    .tp-ocean .theme-name{color:#4db8d4;}
+    .tp-ocean .theme-desc{color:#5a8aa0;}
+    .tp-ocean .d1{background:#1a6a8a;} .tp-ocean .d2{background:#4db8d4;} .tp-ocean .d3{background:#122840;}
+    .tp-midnight{background:#000;}
+    .tp-midnight .theme-name{color:#fff;}
+    .tp-midnight .theme-desc{color:#666;}
+    .tp-midnight .d1{background:#333;} .tp-midnight .d2{background:#fff;} .tp-midnight .d3{background:#1a1a1a;}
   </style>
 </head>
 <body>
@@ -829,6 +857,42 @@
     </div>
   </div>
 
+  <!-- ══ STEP 15: THEME ══ -->
+  <div class="step" id="step-15">
+    <div class="step-q">Pick your guide's look.</div>
+    <div class="step-sub">Choose a color theme — this is how your guide will appear every time you open it.</div>
+    <div class="theme-grid">
+      <label class="theme-opt"><input type="radio" name="theme" value="forest" onchange="validateStep()" checked>
+        <div class="theme-card tp-forest">
+          <div class="theme-dots"><div class="theme-dot d1"></div><div class="theme-dot d2"></div><div class="theme-dot d3"></div></div>
+          <div class="theme-name">🌿 Forest</div>
+          <div class="theme-desc">Dark green · Gold</div>
+        </div></label>
+      <label class="theme-opt"><input type="radio" name="theme" value="classic" onchange="validateStep()">
+        <div class="theme-card tp-classic">
+          <div class="theme-dots"><div class="theme-dot d1"></div><div class="theme-dot d2"></div><div class="theme-dot d3"></div></div>
+          <div class="theme-name">☀️ Classic</div>
+          <div class="theme-desc">Cream · Warm green</div>
+        </div></label>
+      <label class="theme-opt"><input type="radio" name="theme" value="ocean" onchange="validateStep()">
+        <div class="theme-card tp-ocean">
+          <div class="theme-dots"><div class="theme-dot d1"></div><div class="theme-dot d2"></div><div class="theme-dot d3"></div></div>
+          <div class="theme-name">🌊 Ocean</div>
+          <div class="theme-desc">Navy · Cyan</div>
+        </div></label>
+      <label class="theme-opt"><input type="radio" name="theme" value="midnight" onchange="validateStep()">
+        <div class="theme-card tp-midnight">
+          <div class="theme-dots"><div class="theme-dot d1"></div><div class="theme-dot d2"></div><div class="theme-dot d3"></div></div>
+          <div class="theme-name">🖤 Midnight</div>
+          <div class="theme-desc">Pure black · White</div>
+        </div></label>
+    </div>
+    <div class="wiz-nav">
+      <button class="btn-back" onclick="goBack()">← Back</button>
+      <button class="btn-next" id="btn-next-15" onclick="goNext()">Continue →</button>
+    </div>
+  </div>
+
   <!-- ══ STEP 12: FAMILY? ══ -->
   <div class="step" id="step-12">
     <div class="step-q">Building this for the whole family?</div>
@@ -902,8 +966,8 @@
 // Display order: 1→3→5→6→7→9→11→12→14
 // ════════════════════════════════════════
 let currentStep = 0;
-const TOTAL_STEPS = 12;
-const STEP_SEQ = [1,2,3,4,5,6,7,8,9,10,11,12,14]; // actual step IDs in order
+const TOTAL_STEPS = 13;
+const STEP_SEQ = [1,2,3,4,5,6,7,8,9,10,11,15,12,14]; // actual step IDs in order
 let familyCount = 0;
 
 function startWizard() {
@@ -974,6 +1038,8 @@ function validateStep() {
     valid = !!document.querySelector('input[name="lessons"]:checked');
   } else if (currentStep === 10) {
     valid = true; // all distance fields are optional
+  } else if (currentStep === 15) {
+    valid = !!document.querySelector('input[name="theme"]:checked');
   } else if (currentStep === 12) {
     valid = !!document.querySelector('input[name="family"]:checked');
   } else if (currentStep === 14) {
@@ -1087,6 +1153,7 @@ function getAnswers() {
     bag:        (document.getElementById('q-bag').value || '').trim(),
     lessons:    get('lessons'),
     physical:   get('physical'),
+    theme:      get('theme') || 'forest',
     hasFamily:  get('family') === 'yes',
     members
   };
@@ -1519,6 +1586,7 @@ function generateGuide() {
     b: a.bag,
     les: a.lessons || '',
     p: a.physical,
+    t: a.theme || 'forest',
     ...(fm ? { fm } : {}),
     ...(dist.replace(/,/g,'') ? { dist } : {})
   });
