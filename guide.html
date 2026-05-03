@@ -10,6 +10,11 @@
   <style>
     :root{--bg:#f4efe3;--surface:#fff;--surface2:#ebe5d4;--surface3:#ddd6c2;--green:#2d6a3f;--green-b:#3d8a52;--gold:#8a6010;--gold-l:#6b4a0c;--cream:#1c2018;--muted:#6a7a68;--border:rgba(0,0,0,0.1);--nav-h:64px;--safe-b:env(safe-area-inset-bottom,0px);}
     body.dark{--bg:#0a1a0e;--surface:#111f15;--surface2:#1a2f1e;--surface3:#223828;--gold:#c9a84c;--gold-l:#e8cc7a;--cream:#f0ead8;--muted:#6a8a6e;--border:rgba(255,255,255,0.08);}
+    /* ── THEMES ── */
+    body.theme-forest{--bg:#0a1a0e;--surface:#111f15;--surface2:#1a2f1e;--surface3:#223828;--green:#2d6a3f;--green-b:#3d8a52;--gold:#c9a84c;--gold-l:#e8cc7a;--cream:#f0ead8;--muted:#6a8a6e;--border:rgba(255,255,255,0.08);}
+    body.theme-classic{--bg:#f4efe3;--surface:#fff;--surface2:#ebe5d4;--surface3:#ddd6c2;--green:#2d6a3f;--green-b:#3d8a52;--gold:#8a6010;--gold-l:#6b4a0c;--cream:#1c2018;--muted:#6a7a68;--border:rgba(0,0,0,0.1);}
+    body.theme-ocean{--bg:#071520;--surface:#0d2035;--surface2:#122840;--surface3:#183350;--green:#1a6a8a;--green-b:#2a8aaa;--gold:#4db8d4;--gold-l:#7dd4e8;--cream:#e8f4f8;--muted:#5a8aa0;--border:rgba(255,255,255,0.08);}
+    body.theme-midnight{--bg:#000;--surface:#111;--surface2:#1a1a1a;--surface3:#222;--green:#2a2a2a;--green-b:#3a3a3a;--gold:#fff;--gold-l:#bbb;--cream:#fff;--muted:#666;--border:rgba(255,255,255,0.1);}
     *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
     html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--cream);font-family:'Outfit',sans-serif;transition:background .2s,color .2s;}
     /* ── SHELL ── */
@@ -129,6 +134,22 @@
     .example-q:hover,.example-q:active{border-color:var(--gold);color:var(--cream);}
     .caddie-dists{font-size:0.75rem;color:var(--muted);line-height:2;}
     .caddie-dists span{color:var(--cream);margin-right:10px;}
+    /* ── DISTANCE EDITOR SHEET ── */
+    .dist-sheet-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:900;opacity:0;pointer-events:none;transition:opacity .25s;}
+    .dist-sheet-overlay.open{opacity:1;pointer-events:all;}
+    .dist-sheet{position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-radius:22px 22px 0 0;padding:20px 18px 32px;z-index:901;transform:translateY(100%);transition:transform .3s cubic-bezier(.32,.72,0,1);max-height:85vh;overflow-y:auto;padding-bottom:calc(32px + env(safe-area-inset-bottom,0px));}
+    .dist-sheet.open{transform:translateY(0);}
+    .dist-sheet-handle{width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 18px;}
+    .dist-sheet-title{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:1.5px;color:var(--gold);margin-bottom:4px;}
+    .dist-sheet-sub{font-size:0.72rem;color:var(--muted);margin-bottom:18px;}
+    .dist-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);}
+    .dist-row-label{display:flex;align-items:center;gap:8px;font-size:0.88rem;color:var(--cream);}
+    .dist-input{width:76px;background:var(--surface2);border:1.5px solid var(--border);border-radius:9px;padding:7px 10px;color:var(--cream);font-family:'Outfit',sans-serif;font-size:0.9rem;font-weight:600;text-align:center;outline:none;transition:border-color .15s;}
+    .dist-input:focus{border-color:var(--gold);}
+    .dist-input::placeholder{color:var(--muted);font-weight:400;}
+    .dist-save-btn{width:100%;margin-top:20px;background:linear-gradient(135deg,var(--green),#1e4d2b);border:1px solid var(--green-b);border-radius:12px;padding:14px;color:#e8cc7a;font-family:'Outfit',sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer;letter-spacing:.3px;}
+    .dist-edit-btn{background:none;border:none;color:var(--muted);font-size:0.75rem;cursor:pointer;padding:2px 6px;border-radius:6px;transition:color .15s;}
+    .dist-edit-btn:hover{color:var(--gold);}
   </style>
 </head>
 <body class="dark">
@@ -181,6 +202,16 @@
   </nav>
 </div>
 
+<!-- ── DISTANCE EDITOR SHEET ── -->
+<div class="dist-sheet-overlay" id="distOverlay" onclick="closeDistSheet()"></div>
+<div class="dist-sheet" id="distSheet">
+  <div class="dist-sheet-handle"></div>
+  <div class="dist-sheet-title">✏️ My Distances</div>
+  <div class="dist-sheet-sub">Enter your average carry in yards. Leave blank to use estimated ranges.</div>
+  <div id="distSheetRows"></div>
+  <button class="dist-save-btn" onclick="saveDistSheet()">Save My Distances</button>
+</div>
+
 <script>
 // ── PARSE URL PARAMS ──
 const P = new URLSearchParams(location.search);
@@ -211,12 +242,28 @@ function parseFM(s) {
   }).filter(m => m.name);
 }
 
+// ── APPLY THEME ──
+(function(){
+  const t = P.get('t') || 'forest';
+  document.body.classList.remove('dark');
+  document.body.classList.add('theme-' + t);
+  // hide dark toggle if a named theme is set
+  const btn = document.getElementById('darkBtn');
+  if (btn) btn.style.display = 'none';
+})();
+
 // ── PARSE DISTANCES ──
 const distKeys = ['driver','3w','hybrid','7i','9i','pw','sw'];
 const distNames = {driver:'Driver','3w':'3-Wood',hybrid:'Hybrid / 5-Iron','7i':'7-Iron','9i':'9-Iron',pw:'Pitching Wedge',sw:'Sand Wedge'};
 const distEmoji = {driver:'🚀','3w':'🌲',hybrid:'🔄','7i':'🎯','9i':'⛳',pw:'🏌️',sw:'🏖️'};
+const DIST_EDIT_KEY = 'dist_edits_' + (P.get('n') || 'golfer') + '_' + (P.get('s') || 'mid');
 const distances = {};
 (P.get('dist')||'').split(',').forEach((v,i) => { if (v && distKeys[i]) distances[distKeys[i]] = parseInt(v); });
+// Merge in any locally-saved edits (these take priority over URL)
+try {
+  const edits = JSON.parse(localStorage.getItem(DIST_EDIT_KEY) || '{}');
+  Object.assign(distances, edits);
+} catch(e) {}
 
 function clubFor(yards) {
   const entries = Object.entries(distances);
@@ -349,7 +396,7 @@ function renderYardageChart() {
   const gen = distTable[a.skill] || distTable.mid;
   const label = isGeneric ? `Estimated Yardages — ${sLabel[a.skill]||'Your Level'}` : 'My Yardage Chart';
   const genderLabel = a.gender === 'f' ? 'women' : 'men';
-  const note  = isGeneric ? `<div style="font-size:0.7rem;color:var(--muted);padding-top:8px;">📌 Typical ranges for ${genderLabel} at your skill level. Add your actual distances in the wizard to personalize this.</div>` : '';
+  const note  = isGeneric ? `<div style="font-size:0.7rem;color:var(--muted);padding-top:8px;">📌 Typical ranges for ${genderLabel} at your skill level. <span style="color:var(--gold);cursor:pointer;" onclick="openDistSheet()">Tap ✏️ Edit to add yours.</span></div>` : '';
   const rows = distKeys.map(k => {
     const val  = distances[k] ? `${distances[k]} <span style="font-size:0.62rem;color:var(--muted);font-family:'Outfit',sans-serif;font-weight:400;">yds</span>` : `<span style="font-size:0.82rem;color:var(--muted);">${gen[k]} yds</span>`;
     return `<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);">
@@ -364,7 +411,10 @@ function renderYardageChart() {
     return `<span style="margin-right:8px;">📍 ${y}y → ${distNames[c]}</span>`;
   }).filter(Boolean) : [];
   return `
-    <div class="sect-title" style="margin-top:4px;">${label}</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-top:4px;margin-bottom:10px;">
+      <div class="sect-title" style="margin:0;">${label}</div>
+      <button class="dist-edit-btn" onclick="openDistSheet()">✏️ Edit</button>
+    </div>
     <div class="card">
       ${rows}
       ${callouts.length ? `<div style="font-size:0.75rem;color:var(--gold);padding-top:10px;line-height:1.9;">${callouts.join('')}</div>` : ''}
@@ -1036,6 +1086,38 @@ function go(id) {
 function toggleDark() {
   const dark = document.body.classList.toggle('dark');
   document.getElementById('darkBtn').textContent = dark ? '☀️' : '🌙';
+}
+
+// ── DISTANCE EDITOR ──
+function openDistSheet() {
+  const rows = distKeys.map(k => `
+    <div class="dist-row">
+      <div class="dist-row-label">${distEmoji[k]} ${distNames[k]}</div>
+      <input class="dist-input" id="de-${k}" type="number" min="10" max="400"
+        placeholder="yds" value="${distances[k] || ''}">
+    </div>`).join('');
+  document.getElementById('distSheetRows').innerHTML = rows;
+  document.getElementById('distOverlay').classList.add('open');
+  document.getElementById('distSheet').classList.add('open');
+}
+function closeDistSheet() {
+  document.getElementById('distOverlay').classList.remove('open');
+  document.getElementById('distSheet').classList.remove('open');
+}
+function saveDistSheet() {
+  const edits = {};
+  distKeys.forEach(k => {
+    const v = parseInt(document.getElementById('de-' + k).value);
+    if (v > 0) edits[k] = v;
+    else delete distances[k]; // clear if blank
+  });
+  // Merge into live distances object
+  distKeys.forEach(k => { if (edits[k]) distances[k] = edits[k]; });
+  // Persist to localStorage
+  try { localStorage.setItem(DIST_EDIT_KEY, JSON.stringify(edits)); } catch(e) {}
+  closeDistSheet();
+  // Re-render home so yardage chart updates immediately
+  renderHome_page(currentProfile);
 }
 
 // ── PROFILES ──
