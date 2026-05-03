@@ -949,6 +949,9 @@
         <div class="done-step"><div class="done-step-num">🔗</div><div class="done-step-text"><strong>Share with friends:</strong> copy the URL from your address bar and text it — they get their own guide</div></div>
         <div class="done-step"><div class="done-step-num">✅</div><div class="done-step-text">Your progress saves automatically — just come back to the same URL anytime</div></div>
       </div>
+      <div class="section-label" style="margin-top:20px;">📧 Email me my guide link <span style="font-weight:400;opacity:0.5;font-size:0.8em;">(optional)</span></div>
+      <input class="text-field" type="email" id="guide-email" placeholder="your@email.com" autocomplete="email" style="margin-bottom:6px;">
+      <div style="font-size:0.72rem;color:var(--muted);margin-bottom:20px;">So you can always find your way back — no spam, ever.</div>
       <div class="wiz-nav">
         <button class="btn-back" onclick="goBack()">← Back</button>
         <button class="btn-generate" onclick="generateGuide()">⛳ Generate My Guide</button>
@@ -1592,7 +1595,9 @@ function generateGuide() {
   });
   const guideUrl = 'guide.html?' + params.toString();
 
-  // ── NETLIFY FORM SUBMISSION (silent background log) ──
+  const fullGuideUrl = location.origin + '/' + guideUrl;
+
+  // ── NETLIFY FORM SUBMISSION via sendBeacon (survives page navigation) ──
   const formData = new FormData();
   formData.append('form-name', 'guide-log');
   formData.append('name',       a.name);
@@ -1607,10 +1612,17 @@ function generateGuide() {
   formData.append('duration',   a.duration);
   formData.append('physical',   a.physical || 'none');
   formData.append('bag',        a.bag || '');
-  formData.append('guide_url',  location.origin + '/' + guideUrl);
+  formData.append('guide_url',  fullGuideUrl);
+  navigator.sendBeacon('/', formData);
 
-  fetch('/', { method: 'POST', body: formData }).catch(() => {});
-  // always navigate regardless of fetch result
+  // ── EMAIL GUIDE LINK (optional) ──
+  const email = (document.getElementById('guide-email')?.value || '').trim();
+  if (email) {
+    const payload = JSON.stringify({ email, name: a.name, guideUrl: fullGuideUrl });
+    navigator.sendBeacon('/.netlify/functions/send-guide-email', new Blob([payload], { type: 'application/json' }));
+  }
+
+  // Navigate to the guide
   window.location.href = guideUrl;
 }
 
