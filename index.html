@@ -1,0 +1,1570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Build Your Golf Guide</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:      #f4efe3;
+      --surface: #ffffff;
+      --surface2:#ebe5d4;
+      --surface3:#ddd6c2;
+      --green:   #2d6a3f;
+      --green-b: #3d8a52;
+      --gold:    #8a6010;
+      --gold-l:  #6b4a0c;
+      --cream:   #1c2018;
+      --muted:   #6a7a68;
+      --border:  rgba(0,0,0,0.1);
+      --red:     #d64f3a;
+    }
+    body.dark-mode {
+      --bg:      #0a1a0e;
+      --surface: #111f15;
+      --surface2:#1a2f1e;
+      --surface3:#223828;
+      --gold:    #c9a84c;
+      --gold-l:  #e8cc7a;
+      --cream:   #f0ead8;
+      --muted:   #6a8a6e;
+      --border:  rgba(255,255,255,0.08);
+    }
+    * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+    html,body { min-height:100vh; background:var(--bg); color:var(--cream); font-family:'Outfit',sans-serif; transition: background 0.2s, color 0.2s; }
+
+    /* ── HEADER ── */
+    .wiz-header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 24px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 1px 8px rgba(0,0,0,0.06);
+    }
+    .wiz-header-center { text-align: center; flex: 1; }
+    .wiz-logo {
+      font-family:'Bebas Neue',sans-serif;
+      font-size: 1.6rem;
+      letter-spacing: 3px;
+      color: var(--gold);
+    }
+    .wiz-logo span { color: var(--cream); }
+    .wiz-tagline {
+      font-size: 0.62rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 1px;
+    }
+    .mode-toggle {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 6px 10px;
+      font-size: 1rem;
+      cursor: pointer;
+      color: var(--cream);
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+    .mode-toggle:hover { background: var(--surface3); }
+
+    /* ── PROGRESS BAR ── */
+    .progress-wrap {
+      background: var(--surface2);
+      padding: 14px 24px 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .progress-bar-track {
+      background: var(--surface3);
+      border-radius: 100px;
+      height: 5px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--green), var(--gold));
+      border-radius: 100px;
+      transition: width 0.4s ease;
+    }
+    .progress-label {
+      font-size: 0.68rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .progress-label span { color: var(--gold); font-weight: 600; }
+
+    /* ── WIZARD BODY ── */
+    .wiz-body {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 32px 20px 60px;
+    }
+    .section-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 10px;
+      margin-top: 4px;
+    }
+    @media (min-width: 640px) {
+      .wiz-body { padding: 40px 32px 80px; }
+      .opt-grid.two-col { grid-template-columns: repeat(4, 1fr); }
+      .opt-grid.four-col { grid-template-columns: repeat(4, 1fr); }
+      .opt-grid:not(.two-col):not(.four-col) { grid-template-columns: repeat(2, 1fr); display: grid; }
+      .step-q { font-size: 2.2rem; }
+    }
+    @media (min-width: 900px) {
+      .wiz-body { max-width: 720px; padding: 48px 48px 80px; }
+    }
+
+    /* ── STEP ── */
+    .step { display: none; }
+    .step.active { display: block; animation: fadeUp 0.28s ease; }
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(14px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+
+    .step-q {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.8rem;
+      letter-spacing: 2px;
+      color: var(--cream);
+      line-height: 1.15;
+      margin-bottom: 6px;
+    }
+    .step-sub {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 22px;
+      line-height: 1.5;
+    }
+
+    /* ── OPTIONS (radio/checkbox cards) ── */
+    .opt-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+    .opt-grid.two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .opt {
+      position: relative;
+      cursor: pointer;
+    }
+    .opt input { position: absolute; opacity: 0; width: 0; height: 0; }
+    .opt-card {
+      border: 2px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 18px;
+      background: var(--surface);
+      transition: border-color 0.18s, background 0.18s, transform 0.12s;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .opt-card:active { transform: scale(0.98); }
+    .opt input:checked ~ .opt-card {
+      border-color: var(--gold);
+      background: rgba(201,168,76,0.1);
+    }
+    .opt-card .opt-icon { font-size: 1.4rem; flex-shrink: 0; }
+    .opt-card .opt-text { flex: 1; }
+    .opt-card .opt-label {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--cream);
+    }
+    .opt-card .opt-desc {
+      font-size: 0.73rem;
+      color: var(--muted);
+      margin-top: 2px;
+      line-height: 1.4;
+    }
+    .opt-check {
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.2);
+      flex-shrink: 0;
+      transition: all 0.18s;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .opt input:checked ~ .opt-card .opt-check {
+      background: var(--gold);
+      border-color: var(--gold);
+    }
+    .opt input:checked ~ .opt-card .opt-check::after {
+      content: '';
+      width: 6px; height: 6px;
+      background: var(--bg);
+      border-radius: 50%;
+    }
+    /* Checkbox variant */
+    .opt-sq .opt-check { border-radius: 6px; }
+    .opt-sq input:checked ~ .opt-card .opt-check::after {
+      content: '✓';
+      color: var(--bg);
+      font-size: 0.75rem;
+      font-weight: 700;
+      width: auto; height: auto;
+      background: none;
+      border-radius: 0;
+    }
+
+    /* ── TEXT INPUT ── */
+    .text-field {
+      width: 100%;
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: 14px;
+      padding: 16px 18px;
+      color: var(--cream);
+      font-family: 'Outfit', sans-serif;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.18s;
+      margin-bottom: 28px;
+    }
+    .text-field:focus { border-color: var(--gold); }
+    .text-field::placeholder { color: var(--muted); }
+
+    /* ── FAMILY MEMBER BLOCK ── */
+    .family-block {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px;
+      margin-bottom: 14px;
+    }
+    .family-block-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.1rem;
+      letter-spacing: 1.5px;
+      color: var(--gold);
+      margin-bottom: 12px;
+    }
+    .family-row {
+      display: grid;
+      grid-template-columns: 1fr 80px;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .family-select {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      color: var(--cream);
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.88rem;
+      outline: none;
+      cursor: pointer;
+      transition: border-color 0.18s;
+      width: 100%;
+    }
+    .family-select:focus { border-color: var(--gold); }
+    .family-select option { background: var(--surface2); }
+
+    .add-member-btn {
+      width: 100%;
+      background: rgba(201,168,76,0.08);
+      border: 2px dashed rgba(201,168,76,0.35);
+      border-radius: 14px;
+      padding: 14px;
+      color: var(--gold);
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.18s;
+      margin-bottom: 20px;
+      letter-spacing: 0.5px;
+    }
+    .add-member-btn:hover { background: rgba(201,168,76,0.15); }
+
+    /* ── NAVIGATION BUTTONS ── */
+    .wiz-nav {
+      display: flex;
+      gap: 12px;
+      margin-top: 8px;
+    }
+    .btn-back {
+      background: var(--surface2);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      padding: 14px 22px;
+      color: var(--muted);
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.18s;
+      flex-shrink: 0;
+    }
+    .btn-back:hover { color: var(--cream); border-color: rgba(255,255,255,0.2); }
+    .btn-next {
+      flex: 1;
+      background: linear-gradient(135deg, var(--green), #1e4d2b);
+      border: 1px solid var(--green-b);
+      border-radius: 14px;
+      padding: 14px 22px;
+      color: #e8cc7a;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.18s;
+      letter-spacing: 0.5px;
+    }
+    .btn-next:hover { background: linear-gradient(135deg, #3d8a52, #2a6040); }
+    .btn-next:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn-generate {
+      flex: 1;
+      background: linear-gradient(135deg, #8a6a1e, #c9a84c);
+      border: 1px solid var(--gold-l);
+      border-radius: 14px;
+      padding: 16px 22px;
+      color: #0a1a0e;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.2rem;
+      letter-spacing: 2px;
+      cursor: pointer;
+      transition: all 0.18s;
+    }
+    .btn-generate:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(201,168,76,0.3); }
+
+    /* ── STEP: INTRO / DONE ── */
+    .intro-hero {
+      text-align: center;
+      padding: 20px 0 36px;
+    }
+    .intro-emoji { font-size: 4rem; margin-bottom: 16px; }
+    .intro-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.6rem;
+      letter-spacing: 3px;
+      color: var(--cream);
+      line-height: 1;
+      margin-bottom: 10px;
+    }
+    .intro-title span { color: var(--gold); }
+    .intro-sub {
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.6;
+      max-width: 380px;
+      margin: 0 auto 28px;
+    }
+    .intro-bullets {
+      background: var(--surface2);
+      border-radius: 16px;
+      padding: 18px 20px;
+      text-align: left;
+      margin-bottom: 28px;
+    }
+    .intro-bullet {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 7px 0;
+      font-size: 0.85rem;
+      color: var(--cream);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .intro-bullet:last-child { border-bottom: none; }
+    .intro-bullet-icon { color: var(--gold); font-size: 1.1rem; flex-shrink: 0; }
+
+    .done-wrap {
+      text-align: center;
+      padding: 20px 0;
+    }
+    .done-emoji { font-size: 4rem; margin-bottom: 16px; }
+    .done-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.2rem;
+      letter-spacing: 3px;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+    .done-sub {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+    .done-steps {
+      background: var(--surface2);
+      border-radius: 16px;
+      padding: 18px 20px;
+      text-align: left;
+      margin-bottom: 24px;
+    }
+    .done-step {
+      display: flex;
+      gap: 14px;
+      padding: 9px 0;
+      font-size: 0.85rem;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      align-items: flex-start;
+    }
+    .done-step:last-child { border-bottom: none; }
+    .done-step-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.1rem;
+      color: var(--gold);
+      flex-shrink: 0;
+      width: 22px;
+      line-height: 1.3;
+    }
+    .done-step-text { color: var(--cream); line-height: 1.5; }
+    .done-step-text strong { color: var(--gold-l); }
+
+    .footer-note {
+      text-align: center;
+      font-size: 0.68rem;
+      color: var(--muted);
+      opacity: 0.5;
+      margin-top: 24px;
+      letter-spacing: 0.5px;
+    }
+
+    @media (min-width: 600px) {
+      .wiz-body { padding: 40px 24px 80px; }
+      .step-q { font-size: 2.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="wiz-header">
+  <div style="width:44px;"></div>
+  <div class="wiz-header-center">
+    <div class="wiz-logo">⛳ Golf<span>Guide</span> Builder</div>
+    <div class="wiz-tagline">Personalized pocket caddie · 3 minutes</div>
+  </div>
+  <button class="mode-toggle" onclick="toggleMode()" id="modeBtn" title="Toggle light/dark">🌙</button>
+</div>
+
+<div class="progress-wrap" id="progressWrap" style="display:none;">
+  <div class="progress-label">
+    <span id="stepLabel">Step 1 of 13</span>
+    <span id="stepPct">7%</span>
+  </div>
+  <div class="progress-bar-track">
+    <div class="progress-bar-fill" id="progressFill" style="width:7%"></div>
+  </div>
+</div>
+
+<div class="wiz-body">
+
+  <!-- ══ STEP 0: INTRO ══ -->
+  <div class="step active" id="step-0">
+    <div class="intro-hero">
+      <div class="intro-emoji">🏌️</div>
+      <div class="intro-title">Build Your<br><span>Golf Guide</span></div>
+      <div class="intro-sub">Answer 8 quick questions and we'll generate a fully personalized golf app — tailored to your game, your goals, and your family. Opens instantly on iPhone, works offline forever.</div>
+    </div>
+    <div class="intro-bullets">
+      <div class="intro-bullet"><span class="intro-bullet-icon">🎯</span> Personalized range sessions built around your skill &amp; goals</div>
+      <div class="intro-bullet"><span class="intro-bullet-icon">📋</span> Drills that target YOUR biggest weaknesses</div>
+      <div class="intro-bullet"><span class="intro-bullet-icon">👨‍👧‍👦</span> Separate profiles for every family member</div>
+      <div class="intro-bullet"><span class="intro-bullet-icon">📱</span> Works offline · Save to home screen like an app</div>
+      <div class="intro-bullet"><span class="intro-bullet-icon">🔒</span> Stays on your device · No accounts · No data collected</div>
+    </div>
+    <button class="btn-next" style="width:100%;font-size:1.1rem;padding:18px;" onclick="startWizard()">Let's Build My Guide →</button>
+    <div class="footer-note">Generated file is yours. No crossover with anyone else's guide.</div>
+  </div>
+
+  <!-- ══ STEP 1: NAME + HAND + GENDER (combined) ══ -->
+  <div class="step" id="step-1">
+    <div class="step-q">Let's start with you.</div>
+    <div class="step-sub">Your name, dominant hand, and gender — shapes distances, diagrams, and every recommendation.</div>
+    <input class="text-field" type="text" id="q-name" placeholder="First name  (e.g. Mike)" maxlength="30" oninput="validateStep()">
+    <div class="section-label">Dominant hand</div>
+    <div class="opt-grid two-col">
+      <label class="opt">
+        <input type="radio" name="hand" value="left" onchange="validateStep()">
+        <div class="opt-card" style="flex-direction:column;align-items:center;text-align:center;padding:20px 12px;gap:8px;">
+          <div class="opt-icon">🤚</div><div class="opt-label">Left-Handed</div><div class="opt-check"></div>
+        </div>
+      </label>
+      <label class="opt">
+        <input type="radio" name="hand" value="right" onchange="validateStep()">
+        <div class="opt-card" style="flex-direction:column;align-items:center;text-align:center;padding:20px 12px;gap:8px;">
+          <div class="opt-icon">✋</div><div class="opt-label">Right-Handed</div><div class="opt-check"></div>
+        </div>
+      </label>
+    </div>
+    <div class="section-label" style="margin-top:18px;">Your gender</div>
+    <div style="display:flex;gap:10px;margin-bottom:4px;">
+      <label class="opt" style="flex:1;">
+        <input type="radio" name="gender" value="m" onchange="validateStep()">
+        <div class="opt-card" style="flex-direction:column;align-items:center;text-align:center;padding:16px 8px;gap:6px;">
+          <div class="opt-icon">♂️</div><div class="opt-label">Man</div><div class="opt-check"></div>
+        </div>
+      </label>
+      <label class="opt" style="flex:1;">
+        <input type="radio" name="gender" value="f" onchange="validateStep()">
+        <div class="opt-card" style="flex-direction:column;align-items:center;text-align:center;padding:16px 8px;gap:6px;">
+          <div class="opt-icon">♀️</div><div class="opt-label">Woman</div><div class="opt-check"></div>
+        </div>
+      </label>
+      <label class="opt" style="flex:1;">
+        <input type="radio" name="gender" value="x" onchange="validateStep()">
+        <div class="opt-card" style="flex-direction:column;align-items:center;text-align:center;padding:16px 8px;gap:6px;">
+          <div style="font-size:1.1rem;color:var(--muted);">—</div><div class="opt-label" style="font-size:0.78rem;color:var(--muted);">Prefer not to say</div><div class="opt-check"></div>
+        </div>
+      </label>
+    </div>
+    <div class="wiz-nav">
+      <button class="btn-back" onclick="goBack()">← Back</button>
+      <button class="btn-next" id="btn-next-1" onclick="goNext()" disabled>Continue →</button>
+    </div>
+  </div>
+
+  <!-- ══ STEP 2: EXPERIENCE ══ -->
+  <div class="step" id="step-2">
+    <div class="step-q">How long have you been playing?</div>
+    <div class="step-sub">This changes how technical we get — building fundamentals vs. refining what you already have are completely different plans.</div>
+    <div class="opt-grid">
+      <label class="opt"><input type="radio" name="experience" value="new" onchange="validateStep()">
+        <div class="opt-card"><div class="opt-icon">🌱</div><div class="opt-text"><div class="opt-label">Just starting out</div><div class="opt-desc">Under 1 year — still learning the basics</div></div><div class="opt-check"></div></div></label>
+      <label class="opt"><input type="radio" name="experience" value="1yr" onchange="validateStep()">
+        <div class="opt-card"><div class="opt-icon">📅</div><div class="opt-text"><div class="opt-label">1–3 years</div><div class="opt-desc">Getting consistent — building patterns</div></div><div class="opt-check"></div></div></label>
+      <label class="opt"><input type="radio" name="experience" value="3yr" onchange="validateStep()">
+        <div class="opt-card"><div class="opt-icon">🏌️</div><div class="opt-text"><div class="opt-label">3–10 years</div><div class="opt-desc">Established player — may have some ingrained habits</div></div><div class="opt-check"></div></div></label>
+      <label class="opt"><input type="radio" name="experience" value="10yr" onchange="validateStep()">
+        <div class="opt-card"><div class="opt-icon">🏆</div><div class="opt-text"><div class="opt-label">10+ years</div><div class="opt-desc">Long-time player — focused on refinement</div></div><div class="opt-check"></div></div></label>
+    </div>
+    <div class="wiz-nav">
+      <button class="btn-back" onclick="goBack()">← Back</button>
+      <button class="btn-next" id="btn-next-2" onclick="goNext()" disabled>Continue →</button>
+    </div>
+  </div>
+
+  <!-- ══ STEP 3: AGE + SKILL (combined) ══ -->
+  <div class="step" id="step-3">
+    <div class="step-q">About your game.</div>
+    <div class="step-sub">Age group and current scoring average — calibrates session length, warmup intensity, and drill complexity.</div>
+
+    <div class="section-label">Your age group</div>
+    <div class="opt-grid two-col" style="margin-bottom:20px;">
+      <label class="opt"><input type="radio" name="age" value="junior" onchange="validateStep()">
+        <div class="opt-card" style="flex-direction:column;align-items:center;text-align:center;padding:14px 8px;gap:4px;">
+          <div class="opt-icon">🧒</div><div class="opt-label" style="font-size:0.82rem;">Under 18</div><div class="opt-check"></div>
+        </div></label>
+      <label class="opt"><input type="radio" name="age" value="young-adult" onchange="validateStep()">
+        <div class="opt-card" style="flex-direction:column;align-items:center;text-align:center;padding:14px 8px;gap:4px;">
+          <div class="opt-icon">🧑</div><div class="opt-label" style="font-size:0.82rem;">18 – 35</div><div class="opt-check"></div>
+        </div></label>
+      <label class="opt"><input type="radio" name="age" value="adult" onchange="validateStep()">
+        <div class="opt-card" style="flex-direction:column;align-items:center;text-align:center;padding:14px 8px;gap:4px;">
+          <div class="opt-icon">👨</div><div class="opt-label" style="font-size:0.82rem;">36 – 55</div><div class="opt-check"></div>
+        </div></label>
+      <label class="opt"><input type="radio" name="age" value="senior" onchange="validateStep()">
+        <div class="opt-card" style="flex-direction:column;align-items:center;text-align:center;padding:14px 8px;gap:4px;">
+          <div class="opt-icon">🧓</div><div class="opt-label" style="font-size:0.82rem;">56 +</div><div class="opt-check"></div>
+        </div></label>
+    </div>
+
+    <div class="section-label">Current scoring average</div>
+    <div class="opt-grid">
+      <label class="opt"><input type="radio" name="skill" value="beginner" onchange="validateStep()">
+        <div class="opt-card"><div class="opt-icon">🌱</div><div class="opt-text"><div class="opt-label">Total Beginner</div><div class="opt-desc">Never played or just starting out</div></div><div class="opt-check"></div></div></label>
+      <label class="opt"><input type="radio" name="skill" value="high" onchange="validateStep()">
+        <div class="opt-card"><div class="opt-icon">🏌️</div><div class="opt-text"><div class="opt-label">110 +</div><div class="opt-desc">Casual player, still building basics</div></div><div class="opt-check"></div></div></label>
+      <label class="opt"><input type="radio" name="skill" value="mid-high" onchange="validateStep()">
+        <div class="opt-card"><div class="opt-icon">⛳</div><div class="opt-text"><div class="opt-label">100 – 110</div><div class="opt-desc">Getting more consistent round to round</div></div><div class="opt-check"></div></div></label>
+      <label class="opt"><input type="radio" name="skill" value="mid" onchange="validateStep()">
+        <div class="opt-card"><div class="opt-icon">🎯</div><div class="opt-text"><div class="opt-label">90 – 100</div><div class="opt-desc">Developing player, working toward sub-90</div></div><div class="opt-check"></div></div></label>
+      <label class="opt"><input type="radio" name="skill" value="low-mid" onchange="validateStep()">
+        <div class="opt-card"><div class="opt-icon">🔥</div><div class="opt-text"><div class="opt-label">80 – 90</div><div class="opt-desc">Solid player chasing single digits</div></div><div class="opt-check"></div></div></label>
+      <label class="opt"><input type="radio" name="skill" value="low" onchange="validateStep()">
+        <div class="opt-card"><div class="opt-icon">🏆</div><div class="opt-text"><div class="opt-label">Under 80</div><div class="opt-desc">Low handicap, refining your game</div></div><div class="opt-check"></div></div></label>
+    </div>
+    <div class="wiz-nav">
+      <button class="btn-back" onclick="goBack()">← Back</button>
+      <button class="btn-next" id="btn-next-3" onclick="goNext()" disabled>Continue →</button>
+    </div>
+  </div>
+
+  <!-- ══ STEP 4: PRACTICE LOCATION ══ -->
+  <div class="step" id="step-4">
+    <div class="step-q">Where do you usually practice?</div>
+    <div class="step-sub">Your drills and session plans are built around where you actually practice — not just the range. Every location gets a complete, different plan.</div>
+    <div class="opt-grid">
+      <label class="opt"><input type="radio" name="location" value="range" onchange="validateStep()">
+        <div class="opt-card"><div class="opt-icon">⛳</div><div class="opt-text"><div class="opt-label">Driving range</div><div class="opt-desc">Access to a full range with all clubs</div></div><div class="opt-check"></div></div></label>
+      <label class="opt"><input type="radio" name="location" value="sim" onchange="validateStep()">
+        <div class="opt-card"><div class="opt-icon">📺</div><div class="opt-text"><div class="opt-label">Golf simulator</div><div class="opt-desc">Trackman, Foresight, GC Quad, SkyTrak, etc.</div></div><div class="opt-check"></div></div></label>
+      <label class="opt"><input type="radio" name="location" value="yard" onchange="validateStep()">
+        <div class="opt-card"><div class="opt-icon">🏡</div><div class="opt-text"><div class="opt-label">Backyard / at home</div><div class="opt-desc">Chipping net, putting mat, living room — wherever you've got space</div></div><div class="opt-check"></div></div></label>
+      <label class="opt"><input type="radio" name="location" value="mix" onchange="validateStep()">
+        <div class="opt-card"><div class="opt-icon">🔄</div><div class="opt-text"><div class="opt-label">Mix of places</div><div class="opt-desc">Range sometimes, home or sim other times</div></div><div class="opt-check"></div></div></label>
+    </div>
+    <div class="wiz-nav">
+      <button class="btn-back" onclick="goBack()">← Back</button>
+      <button class="btn-next" id="btn-next-4" onclick="goNext()" disabled>Continue →</button>
+    </div>
+  </div>
+
+  <!-- ══ STEP 5: GOAL ══ -->
+  <div class="step" id="step-5">
+    <div class="step-q">What's your #1 goal?</div>
+    <div class="step-sub">This becomes the headline of your guide and shapes every recommendation.</div>
+    <div class="opt-grid">
+      <label class="opt"><input type="radio" name="goal" value="fun" onchange="validateStep()">
+        <div class="opt-card"><div class="opt-icon">😄</div><div class="opt-text"><div class="opt-label">Just have fun &amp; enjoy the game</div><div class="opt-desc">No score pressure — pure enjoyment</div></div><div class="opt-check"></div></div></label>
+      <label class="opt"><input type="radio" name="goal" value="break120" onchange="validateStep()">
+        <div class="opt-card"><div class="opt-icon">🌱</div><div class="opt-text"><div class="opt-label">Break 120</div><div class="opt-desc">Building a foundation, one shot at a time</div></div><div class="opt-check"></div></div></label>
+      <label class="opt"><input type="radio" name="goal" value="break100" onchange="validateStep()">
+        <div class="opt-card"><div class="opt-icon">⛳</div><div class="opt-text"><div class="opt-label">Break 100</div><div class="opt-desc">The first big milestone for any golfer</div></div><div class="opt-check"></div></div></label>
+      <label class="opt"><input type="radio" name="goal" value="break90" onchange="validateStep()">
+        <div class="opt-card"><div class="opt-icon">🎯</div><div class="opt-text"><div class="opt-label">Break 90</div><div class="opt-desc">Consistency and course management</div></div><div class="opt-check"></div></div></label>
+      <label class="opt"><input type="radio" name="goal" value="break80" onchange="validateStep()">
+        <div class="opt-card"><div class="opt-icon">🔥</div><div class="opt-text"><div class="opt-label">Break 80</div><div class="opt-desc">Scoring focus, shot shaping, finesse</div></div><div class="opt-check"></div></div></label>
+    </div>
+    <div class="wiz-nav">
+      <button class="btn-back" onclick="goBack()">← Back</button>
+      <button class="btn-next" id="btn-next-5" onclick="goNext()" disabled>Continue →</button>
+    </div>
+  </div>
+
+  <!-- ══ STEP 6: WEAKNESSES ══ -->
+  <div class="step" id="step-6">
+    <div class="step-q">Where do you lose the most strokes?</div>
+    <div class="step-sub">Pick your top 2 weaknesses — your guide drills will be built around these.</div>
+    <div class="opt-grid" id="weakness-grid">
+      <label class="opt opt-sq"><input type="checkbox" name="weakness" value="driving" onchange="validateWeakness()">
+        <div class="opt-card"><div class="opt-icon">💨</div><div class="opt-text"><div class="opt-label">Driving / Off the tee</div><div class="opt-desc">Accuracy, direction, not getting in trouble</div></div><div class="opt-check"></div></div></label>
+      <label class="opt opt-sq"><input type="checkbox" name="weakness" value="irons" onchange="validateWeakness()">
+        <div class="opt-card"><div class="opt-icon">🏌️</div><div class="opt-text"><div class="opt-label">Iron play</div><div class="opt-desc">Solid contact, consistent distance, direction</div></div><div class="opt-check"></div></div></label>
+      <label class="opt opt-sq"><input type="checkbox" name="weakness" value="shortgame" onchange="validateWeakness()">
+        <div class="opt-card"><div class="opt-icon">🎯</div><div class="opt-text"><div class="opt-label">Chipping &amp; pitching</div><div class="opt-desc">Getting up and down around the green</div></div><div class="opt-check"></div></div></label>
+      <label class="opt opt-sq"><input type="checkbox" name="weakness" value="putting" onchange="validateWeakness()">
+        <div class="opt-card"><div class="opt-icon">⛳</div><div class="opt-text"><div class="opt-label">Putting</div><div class="opt-desc">Too many 3-putts, reading greens, distance control</div></div><div class="opt-check"></div></div></label>
+      <label class="opt opt-sq"><input type="checkbox" name="weakness" value="course" onchange="validateWeakness()">
+        <div class="opt-card"><div class="opt-icon">🗺️</div><div class="opt-text"><div class="opt-label">Course management</div><div class="opt-desc">Club selection, risk vs. reward decisions</div></div><div class="opt-check"></div></div></label>
+      <label class="opt opt-sq"><input type="checkbox" name="weakness" value="mental" onchange="validateWeakness()">
+        <div class="opt-card"><div class="opt-icon">🧠</div><div class="opt-text"><div class="opt-label">Mental game</div><div class="opt-desc">Staying calm, bouncing back from bad shots</div></div><div class="opt-check"></div></div></label>
+    </div>
+    <div class="wiz-nav">
+      <button class="btn-back" onclick="goBack()">← Back</button>
+      <button class="btn-next" id="btn-next-6" onclick="goNext()" disabled>Continue →</button>
+    </div>
+  </div>
+
+  <!-- ══ STEP 7: PRACTICE PROFILE (freq + duration combined) ══ -->
+  <div class="step" id="step-7">
+    <div class="step-q">Your practice window.</div>
+    <div class="step-sub">How often and how long — your range plan, ball count, and phases are sized around this.</div>
+
+    <div class="section-label">How often can you practice?</div>
+    <div class="opt-grid" style="margin-bottom:20px;">
+      <label class="opt"><input type="radio" name="freq" value="rare" onchange="validateStep()">
+        <div class="opt-card"><div class="opt-icon">📅</div><div class="opt-text"><div class="opt-label">A few times a month</div><div class="opt-desc">Life is busy — making it count when I can</div></div><div class="opt-check"></div></div></label>
+      <label class="opt"><input type="radio" name="freq" value="weekly" onchange="validateStep()">
+        <div class="opt-card"><div class="opt-icon">🔄</div><div class="opt-text"><div class="opt-label">Once a week</div><div class="opt-desc">Weekend warrior with a regular range session</div></div><div class="opt-check"></div></div></label>
+      <label class="opt"><input type="radio" name="freq" value="multi" onchange="validateStep()">
+        <div class="opt-card"><div class="opt-icon">💪</div><div class="opt-text"><div class="opt-label">2 – 3× per week</div><div class="opt-desc">Committed to improving fast</div></div><div class="opt-check"></div></div></label>
+      <label class="opt"><input type="radio" name="freq" value="daily" onchange="validateStep()">
+        <div class="opt-card"><div class="opt-icon">🔥</div><div class="opt-text"><div class="opt-label">Almost daily</div><div class="opt-desc">All in — golf is a priority right now</div></div><div class="opt-check"></div></div></label>
+    </div>
+
+    <div class="section-label">How long is a typical session?</div>
+    <div class="opt-grid two-col">
+      <label class="opt"><input type="radio" name="duration" value="short" onchange="validateStep()">
+        <div class="opt-card" style="flex-direction:column;align-items:center;text-align:center;padding:16px 8px;gap:5px;">
+          <div class="opt-icon">⚡</div><div class="opt-label">15 – 30 min</div><div class="opt-desc" style="font-size:0.7rem;">Quick &amp; focused</div><div class="opt-check"></div>
+        </div></label>
+      <label class="opt"><input type="radio" name="duration" value="medium" onchange="validateStep()">
+        <div class="opt-card" style="flex-direction:column;align-items:center;text-align:center;padding:16px 8px;gap:5px;">
+          <div class="opt-icon">🕐</div><div class="opt-label">30 – 45 min</div><div class="opt-desc" style="font-size:0.7rem;">Good solid block</div><div class="opt-check"></div>
+        </div></label>
+      <label class="opt"><input type="radio" name="duration" value="long" onchange="validateStep()">
+        <div class="opt-card" style="flex-direction:column;align-items:center;text-align:center;padding:16px 8px;gap:5px;">
+          <div class="opt-icon">🕑</div><div class="opt-label">45 – 60 min</div><div class="opt-desc" style="font-size:0.7rem;">Full session</div><div class="opt-check"></div>
+        </div></label>
+      <label class="opt"><input type="radio" name="duration" value="full" onchange="validateStep()">
+        <div class="opt-card" style="flex-direction:column;align-items:center;text-align:center;padding:16px 8px;gap:5px;">
+          <div class="opt-icon">🏆</div><div class="opt-label">60 – 90 min</div><div class="opt-desc" style="font-size:0.7rem;">Range + short game</div><div class="opt-check"></div>
+        </div></label>
+    </div>
+    <div class="wiz-nav">
+      <button class="btn-back" onclick="goBack()">← Back</button>
+      <button class="btn-next" id="btn-next-7" onclick="goNext()" disabled>Continue →</button>
+    </div>
+  </div>
+
+  <!-- ══ STEP 8: LESSON HISTORY ══ -->
+  <div class="step" id="step-8">
+    <div class="step-q">Golf lesson history?</div>
+    <div class="step-sub">Shapes how technical your coaching notes get — and whether we recommend getting eyes on your swing.</div>
+    <div class="opt-grid">
+      <label class="opt"><input type="radio" name="lessons" value="none" onchange="validateStep()">
+        <div class="opt-card"><div class="opt-icon">🆕</div><div class="opt-text"><div class="opt-label">Never had a lesson</div><div class="opt-desc">Self-taught or just figuring it out on my own</div></div><div class="opt-check"></div></div></label>
+      <label class="opt"><input type="radio" name="lessons" value="few" onchange="validateStep()">
+        <div class="opt-card"><div class="opt-icon">📖</div><div class="opt-text"><div class="opt-label">A few lessons</div><div class="opt-desc">Had some coaching — built a basic foundation</div></div><div class="opt-check"></div></div></label>
+      <label class="opt"><input type="radio" name="lessons" value="regular" onchange="validateStep()">
+        <div class="opt-card"><div class="opt-icon">🎓</div><div class="opt-text"><div class="opt-label">Regular lessons</div><div class="opt-desc">Working with an instructor consistently right now</div></div><div class="opt-check"></div></div></label>
+      <label class="opt"><input type="radio" name="lessons" value="video" onchange="validateStep()">
+        <div class="opt-card"><div class="opt-icon">📱</div><div class="opt-text"><div class="opt-label">Self-taught from videos / apps</div><div class="opt-desc">YouTube, apps, and trial &amp; error</div></div><div class="opt-check"></div></div></label>
+    </div>
+    <div class="wiz-nav">
+      <button class="btn-back" onclick="goBack()">← Back</button>
+      <button class="btn-next" id="btn-next-8" onclick="goNext()" disabled>Continue →</button>
+    </div>
+  </div>
+
+  <!-- ══ STEP 9: EQUIPMENT + BAG (combined) ══ -->
+  <div class="step" id="step-9">
+    <div class="step-q">What's in your bag?</div>
+    <div class="step-sub">Shapes your bag section, club-specific tips, and upgrade recommendations.</div>
+
+    <div class="section-label">Equipment status</div>
+    <div class="opt-grid" style="margin-bottom:20px;">
+      <label class="opt"><input type="radio" name="equip" value="none" onchange="validateStep()">
+        <div class="opt-card"><div class="opt-icon">🛒</div><div class="opt-text"><div class="opt-label">Just getting started</div><div class="opt-desc">No clubs yet — or borrowing for now</div></div><div class="opt-check"></div></div></label>
+      <label class="opt"><input type="radio" name="equip" value="starter" onchange="validateStep()">
+        <div class="opt-card"><div class="opt-icon">🎒</div><div class="opt-text"><div class="opt-label">Starter / beginner set</div><div class="opt-desc">Have a basic set, getting comfortable with it</div></div><div class="opt-check"></div></div></label>
+      <label class="opt"><input type="radio" name="equip" value="full" onchange="validateStep()">
+        <div class="opt-card"><div class="opt-icon">🏌️</div><div class="opt-text"><div class="opt-label">Full set</div><div class="opt-desc">Driver through putter, all clubs covered</div></div><div class="opt-check"></div></div></label>
+      <label class="opt"><input type="radio" name="equip" value="custom" onchange="validateStep()">
+        <div class="opt-card"><div class="opt-icon">⭐</div><div class="opt-text"><div class="opt-label">Custom-fitted clubs</div><div class="opt-desc">Fitted to my swing — dialed in</div></div><div class="opt-check"></div></div></label>
+    </div>
+
+    <div class="section-label">Bag / club brand <span style="font-weight:400;opacity:0.6;">(optional)</span></div>
+    <input class="text-field" style="margin-bottom:28px;" type="text" id="q-bag" placeholder="e.g. Callaway Strata, TaylorMade RBZ, Ping G430…" maxlength="60">
+
+    <div class="wiz-nav">
+      <button class="btn-back" onclick="goBack()">← Back</button>
+      <button class="btn-next" id="btn-next-9" onclick="goNext()" disabled>Continue →</button>
+    </div>
+  </div>
+
+  <!-- ══ STEP 10: DISTANCES ══ -->
+  <div class="step" id="step-10">
+    <div class="step-q">What are your stock distances?</div>
+    <div class="step-sub">Enter your average carry for each club. Skip anything you're not sure about — we'll still build a great guide. Your guide will include a personal yardage chart and smart club callouts.</div>
+
+    <div class="family-block">
+      <div class="family-block-title">📏 My Carry Distances (yards)</div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div style="display:grid;grid-template-columns:1fr 80px;gap:10px;align-items:center;">
+          <div style="font-size:0.88rem;color:var(--cream);font-weight:600;">🚀 Driver</div>
+          <input class="family-select" type="number" id="dist-driver" placeholder="yds" min="50" max="400" style="text-align:center;font-size:0.95rem;">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 80px;gap:10px;align-items:center;">
+          <div style="font-size:0.88rem;color:var(--cream);font-weight:600;">🌲 3-Wood</div>
+          <input class="family-select" type="number" id="dist-3w" placeholder="yds" min="50" max="350" style="text-align:center;font-size:0.95rem;">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 80px;gap:10px;align-items:center;">
+          <div style="font-size:0.88rem;color:var(--cream);font-weight:600;">🔄 Hybrid / 5-Iron</div>
+          <input class="family-select" type="number" id="dist-hybrid" placeholder="yds" min="50" max="300" style="text-align:center;font-size:0.95rem;">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 80px;gap:10px;align-items:center;">
+          <div style="font-size:0.88rem;color:var(--cream);font-weight:600;">🎯 7-Iron</div>
+          <input class="family-select" type="number" id="dist-7i" placeholder="yds" min="50" max="250" style="text-align:center;font-size:0.95rem;">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 80px;gap:10px;align-items:center;">
+          <div style="font-size:0.88rem;color:var(--cream);font-weight:600;">⛳ 9-Iron</div>
+          <input class="family-select" type="number" id="dist-9i" placeholder="yds" min="50" max="200" style="text-align:center;font-size:0.95rem;">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 80px;gap:10px;align-items:center;">
+          <div style="font-size:0.88rem;color:var(--cream);font-weight:600;">🏌️ Pitching Wedge</div>
+          <input class="family-select" type="number" id="dist-pw" placeholder="yds" min="30" max="180" style="text-align:center;font-size:0.95rem;">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 80px;gap:10px;align-items:center;">
+          <div style="font-size:0.88rem;color:var(--cream);font-weight:600;">🏖️ Sand Wedge</div>
+          <input class="family-select" type="number" id="dist-sw" placeholder="yds" min="20" max="150" style="text-align:center;font-size:0.95rem;">
+        </div>
+      </div>
+    </div>
+    <div style="font-size:0.72rem;color:var(--muted);text-align:center;margin:12px 0 20px;">All fields optional — fill in what you know. You can rebuild anytime.</div>
+
+    <div class="wiz-nav">
+      <button class="btn-back" onclick="goBack()">← Back</button>
+      <button class="btn-next" id="btn-next-10" onclick="goNext()">Continue →</button>
+    </div>
+  </div>
+
+  <!-- ══ STEP 11: PHYSICAL ══ -->
+  <div class="step" id="step-11">
+    <div class="step-q">Any physical considerations?</div>
+    <div class="step-sub">Shapes your warmup routine and swing notes. Completely optional.</div>
+    <div class="opt-grid">
+      <label class="opt"><input type="radio" name="physical" value="none" onchange="validateStep()">
+        <div class="opt-card"><div class="opt-icon">💪</div><div class="opt-text"><div class="opt-label">None — feeling good</div></div><div class="opt-check"></div></div></label>
+      <label class="opt"><input type="radio" name="physical" value="back" onchange="validateStep()">
+        <div class="opt-card"><div class="opt-icon">🔄</div><div class="opt-text"><div class="opt-label">Back or spine</div><div class="opt-desc">Need to protect the lower back</div></div><div class="opt-check"></div></div></label>
+      <label class="opt"><input type="radio" name="physical" value="shoulder" onchange="validateStep()">
+        <div class="opt-card"><div class="opt-icon">🤷</div><div class="opt-text"><div class="opt-label">Shoulder / limited turn</div><div class="opt-desc">Restricted rotation or shoulder issue</div></div><div class="opt-check"></div></div></label>
+      <label class="opt"><input type="radio" name="physical" value="knee" onchange="validateStep()">
+        <div class="opt-card"><div class="opt-icon">🦵</div><div class="opt-text"><div class="opt-label">Knee or hip</div><div class="opt-desc">Weight shift and stance adjustments needed</div></div><div class="opt-check"></div></div></label>
+      <label class="opt"><input type="radio" name="physical" value="returning" onchange="validateStep()">
+        <div class="opt-card"><div class="opt-icon">🌱</div><div class="opt-text"><div class="opt-label">Returning after a break</div><div class="opt-desc">Haven't played in a while — easing back in</div></div><div class="opt-check"></div></div></label>
+    </div>
+    <div class="wiz-nav">
+      <button class="btn-back" onclick="goBack()">← Back</button>
+      <button class="btn-next" id="btn-next-11" onclick="goNext()" disabled>Continue →</button>
+    </div>
+  </div>
+
+  <!-- ══ STEP 12: FAMILY? ══ -->
+  <div class="step" id="step-12">
+    <div class="step-q">Building this for the whole family?</div>
+    <div class="step-sub">Add up to 3 family members and they each get their own personalized profile inside your guide.</div>
+    <div class="opt-grid two-col">
+      <label class="opt"><input type="radio" name="family" value="no" onchange="validateStep(); toggleFamilySection(false)">
+        <div class="opt-card" style="flex-direction:column;align-items:center;text-align:center;padding:20px 12px;gap:8px;">
+          <div class="opt-icon">👤</div><div class="opt-label">Just me</div><div class="opt-check"></div>
+        </div></label>
+      <label class="opt"><input type="radio" name="family" value="yes" onchange="validateStep(); toggleFamilySection(true)">
+        <div class="opt-card" style="flex-direction:column;align-items:center;text-align:center;padding:20px 12px;gap:8px;">
+          <div class="opt-icon">👨‍👧‍👦</div><div class="opt-label">Yes, add family</div><div class="opt-check"></div>
+        </div></label>
+    </div>
+    <div id="family-section" style="display:none;">
+      <div id="family-members"></div>
+      <button class="add-member-btn" id="add-member-btn" onclick="addFamilyMember()">+ Add Another Family Member</button>
+    </div>
+    <div class="wiz-nav">
+      <button class="btn-back" onclick="goBack()">← Back</button>
+      <button class="btn-next" id="btn-next-12" onclick="goNext()" disabled>Continue →</button>
+    </div>
+  </div>
+
+  <!-- ══ STEP 13: LESSON HISTORY ══ -->
+  <div class="step" id="step-13">
+    <div class="step-q">Golf lesson history?</div>
+    <div class="step-sub">Helps calibrate how technical the coaching notes in your guide should be.</div>
+    <div class="opt-grid">
+      <label class="opt"><input type="radio" name="lessons" value="none" onchange="validateStep()">
+        <div class="opt-card"><div class="opt-icon">🆕</div><div class="opt-text"><div class="opt-label">Never had a lesson</div><div class="opt-desc">Self-taught or just figuring it out</div></div><div class="opt-check"></div></div></label>
+      <label class="opt"><input type="radio" name="lessons" value="few" onchange="validateStep()">
+        <div class="opt-card"><div class="opt-icon">📖</div><div class="opt-text"><div class="opt-label">One or two lessons</div><div class="opt-desc">Dipped my toes in with a pro</div></div><div class="opt-check"></div></div></label>
+      <label class="opt"><input type="radio" name="lessons" value="regular" onchange="validateStep()">
+        <div class="opt-card"><div class="opt-icon">🎓</div><div class="opt-text"><div class="opt-label">Regular lessons</div><div class="opt-desc">Working with an instructor consistently</div></div><div class="opt-check"></div></div></label>
+      <label class="opt"><input type="radio" name="lessons" value="video" onchange="validateStep()">
+        <div class="opt-card"><div class="opt-icon">📱</div><div class="opt-text"><div class="opt-label">Self-taught from videos</div><div class="opt-desc">YouTube, apps, and trial &amp; error</div></div><div class="opt-check"></div></div></label>
+    </div>
+    <div class="wiz-nav">
+      <button class="btn-back" onclick="goBack()">← Back</button>
+      <button class="btn-next" id="btn-next-13" onclick="goNext()" disabled>Continue →</button>
+    </div>
+  </div>
+
+  <!-- ══ STEP 14: GENERATE ══ -->
+  <div class="step" id="step-14">
+    <div class="done-wrap">
+      <div class="done-emoji">✅</div>
+      <div class="done-title" id="done-name-title">You're all set!</div>
+      <div class="done-sub">Your personalized golf guide opens instantly — no download needed. The URL <em>is</em> your guide. Bookmark it, share it, or add it to your home screen.</div>
+      <div class="done-steps">
+        <div class="done-step"><div class="done-step-num">1</div><div class="done-step-text">Tap <strong>Generate My Guide</strong> — your guide opens right in this tab</div></div>
+        <div class="done-step"><div class="done-step-num">📱</div><div class="done-step-text"><strong>Add to Home Screen:</strong> tap the <strong>Share button</strong> → <strong>Add to Home Screen</strong> → it lives on your phone like an app</div></div>
+        <div class="done-step"><div class="done-step-num">🔗</div><div class="done-step-text"><strong>Share with friends:</strong> copy the URL from your address bar and text it — they get their own guide</div></div>
+        <div class="done-step"><div class="done-step-num">✅</div><div class="done-step-text">Your progress saves automatically — just come back to the same URL anytime</div></div>
+      </div>
+      <div class="wiz-nav">
+        <button class="btn-back" onclick="goBack()">← Back</button>
+        <button class="btn-generate" onclick="generateGuide()">⛳ Generate My Guide</button>
+      </div>
+    </div>
+    <div class="footer-note">Your guide is 100% standalone. It has no connection to any other user's guide.</div>
+  </div>
+
+</div><!-- /wiz-body -->
+
+<script>
+// ════════════════════════════════════════
+// WIZARD STATE
+// Steps used: 1,3,5,6,7,9,11,12,14 (2,4,8,10,13 are merged/skipped)
+// Display order: 1→3→5→6→7→9→11→12→14
+// ════════════════════════════════════════
+let currentStep = 0;
+const TOTAL_STEPS = 12;
+const STEP_SEQ = [1,2,3,4,5,6,7,8,9,10,11,12,14]; // actual step IDs in order
+let familyCount = 0;
+
+function startWizard() {
+  document.getElementById('progressWrap').style.display = 'block';
+  goTo(1);
+}
+
+function goTo(n) {
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById('step-' + n);
+  if (el) el.classList.add('active');
+  currentStep = n;
+  updateProgress();
+  validateStep();
+  window.scrollTo(0,0);
+}
+
+function goNext() {
+  const idx = STEP_SEQ.indexOf(currentStep);
+  if (idx >= 0 && idx < STEP_SEQ.length - 1) goTo(STEP_SEQ[idx + 1]);
+}
+function goBack() {
+  const idx = STEP_SEQ.indexOf(currentStep);
+  if (idx > 1) goTo(STEP_SEQ[idx - 1]);
+  else goTo(0);
+}
+
+function updateProgress() {
+  if (currentStep === 0) return;
+  const idx = STEP_SEQ.indexOf(currentStep);
+  const displayStep = idx; // 0-based within STEP_SEQ (step 1 = idx 0)
+  const pct = Math.round((displayStep / TOTAL_STEPS) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('stepLabel').textContent = 'Step ' + (displayStep + 1) + ' of ' + TOTAL_STEPS;
+  document.getElementById('stepPct').textContent = pct + '%';
+}
+
+function validateStep() {
+  const btn = document.getElementById('btn-next-' + currentStep);
+  if (!btn) return;
+  let valid = false;
+
+  if (currentStep === 1) {
+    // name + hand both required
+    const name = document.getElementById('q-name').value.trim();
+    const hand = document.querySelector('input[name="hand"]:checked');
+    valid = name.length >= 1 && !!hand;
+  } else if (currentStep === 3) {
+    // age + skill both required
+    const age   = document.querySelector('input[name="age"]:checked');
+    const skill = document.querySelector('input[name="skill"]:checked');
+    valid = !!age && !!skill;
+  } else if (currentStep === 6) {
+    valid = document.querySelectorAll('input[name="weakness"]:checked').length >= 1;
+  } else if (currentStep === 7) {
+    // freq + duration both required
+    const freq = document.querySelector('input[name="freq"]:checked');
+    const dur  = document.querySelector('input[name="duration"]:checked');
+    valid = !!freq && !!dur;
+  } else if (currentStep === 9) {
+    // equip required, bag optional
+    valid = !!document.querySelector('input[name="equip"]:checked');
+  } else if (currentStep === 2) {
+    valid = !!document.querySelector('input[name="experience"]:checked');
+  } else if (currentStep === 4) {
+    valid = !!document.querySelector('input[name="location"]:checked');
+  } else if (currentStep === 8) {
+    valid = !!document.querySelector('input[name="lessons"]:checked');
+  } else if (currentStep === 10) {
+    valid = true; // all distance fields are optional
+  } else if (currentStep === 12) {
+    valid = !!document.querySelector('input[name="family"]:checked');
+  } else if (currentStep === 14) {
+    valid = true;
+  } else {
+    const radios = document.querySelectorAll(`input[name="${getFieldName(currentStep)}"]:checked`);
+    valid = radios.length > 0;
+  }
+  btn.disabled = !valid;
+
+  // update done screen name
+  if (currentStep === 14) {
+    const n = document.getElementById('q-name').value.trim();
+    if (n) document.getElementById('done-name-title').textContent = n + ', you\'re all set!';
+  }
+}
+
+function getFieldName(step) {
+  const map = {2:'experience', 4:'location', 5:'goal', 8:'lessons', 11:'physical'};
+  return map[step] || '';
+}
+
+function validateWeakness() {
+  const checked = document.querySelectorAll('input[name="weakness"]:checked');
+  if (checked.length > 2) {
+    checked[checked.length - 1].checked = false;
+    return;
+  }
+  const btn = document.getElementById('btn-next-6');
+  if (btn) btn.disabled = checked.length < 1;
+}
+
+function toggleMode() {
+  const dark = document.body.classList.toggle('dark-mode');
+  document.getElementById('modeBtn').textContent = dark ? '☀️' : '🌙';
+}
+
+// ── FAMILY MEMBERS ──
+function toggleFamilySection(show) {
+  document.getElementById('family-section').style.display = show ? 'block' : 'none';
+  if (show && familyCount === 0) addFamilyMember();
+}
+
+function addFamilyMember() {
+  if (familyCount >= 3) return;
+  familyCount++;
+  const container = document.getElementById('family-members');
+  const div = document.createElement('div');
+  div.className = 'family-block';
+  div.id = 'family-' + familyCount;
+  div.innerHTML = `
+    <div class="family-block-title">Family Member ${familyCount}</div>
+    <div class="family-row">
+      <input class="text-field" style="margin:0;" type="text" id="fm-name-${familyCount}" placeholder="Name" maxlength="20">
+      <input class="text-field" style="margin:0;" type="number" id="fm-age-${familyCount}" placeholder="Age" min="3" max="99" style="width:80px;">
+    </div>
+    <div class="family-row">
+      <select class="family-select" id="fm-hand-${familyCount}">
+        <option value="right">Right-handed</option>
+        <option value="left">Left-handed</option>
+      </select>
+      <select class="family-select" id="fm-goal-${familyCount}">
+        <option value="fun">Fun first</option>
+        <option value="learn">Learning basics</option>
+        <option value="compete">Wants to compete</option>
+        <option value="return">Returning player</option>
+      </select>
+    </div>`;
+  container.appendChild(div);
+  if (familyCount >= 3) document.getElementById('add-member-btn').style.display = 'none';
+}
+
+// ════════════════════════════════════════
+// DISTANCES
+// ════════════════════════════════════════
+function getDistances() {
+  const keys = ['driver','3w','hybrid','7i','9i','pw','sw'];
+  return keys.map(k => {
+    const el = document.getElementById('dist-' + k);
+    return el && el.value ? parseInt(el.value) : '';
+  }).join(',');
+}
+
+// ════════════════════════════════════════
+// COLLECT ANSWERS
+// ════════════════════════════════════════
+function getAnswers() {
+  const get = (name) => { const el = document.querySelector(`input[name="${name}"]:checked`); return el ? el.value : ''; };
+  const weaknesses = Array.from(document.querySelectorAll('input[name="weakness"]:checked')).map(e => e.value);
+  const members = [];
+  for (let i = 1; i <= familyCount; i++) {
+    const name = (document.getElementById('fm-name-' + i) || {}).value || '';
+    const age  = parseInt((document.getElementById('fm-age-' + i) || {}).value) || 0;
+    const hand = (document.getElementById('fm-hand-' + i) || {}).value || 'right';
+    const goal = (document.getElementById('fm-goal-' + i) || {}).value || 'fun';
+    if (name) members.push({ name, age, hand, goal });
+  }
+  return {
+    name:       document.getElementById('q-name').value.trim(),
+    hand:       get('hand'),
+    gender:     get('gender'),
+    age:        get('age'),
+    experience: get('experience'),
+    skill:      get('skill'),
+    goal:       get('goal'),
+    location:   get('location'),
+    weaknesses,
+    freq:       get('freq'),
+    duration:   get('duration'),
+    equip:      get('equip'),
+    bag:        (document.getElementById('q-bag').value || '').trim(),
+    lessons:    get('lessons'),
+    physical:   get('physical'),
+    hasFamily:  get('family') === 'yes',
+    members
+  };
+}
+
+// ════════════════════════════════════════
+// CONTENT GENERATORS
+// ════════════════════════════════════════
+
+function goalLabel(g) {
+  return {fun:'Enjoy the Game',break120:'Break 120',break100:'Break 100',break90:'Break 90',break80:'Break 80'}[g] || 'Enjoy the Game';
+}
+function goalNum(g) {
+  return {fun:'😄',break120:'120',break100:'100',break90:'90',break80:'80'}[g] || '😄';
+}
+function handLabel(h) { return h === 'left' ? 'Lefty' : 'Righty'; }
+function handEmoji(h) { return h === 'left' ? '🤚' : '✋'; }
+
+function sessionBalls(duration, skill) {
+  if (duration === 'short')  return 30;
+  if (duration === 'medium') return 45;
+  if (duration === 'long')   return 65;
+  if (duration === 'full')   return 80;
+  return 50;
+}
+function sessionPhases(duration) {
+  if (duration === 'short')  return 2;
+  if (duration === 'medium') return 3;
+  return 4;
+}
+
+function skillTierLabel(skill) {
+  return {beginner:'Beginner',high:'110+',  'mid-high':'100–110',mid:'90–100','low-mid':'80–90',low:'Under 80'}[skill] || 'Beginner';
+}
+
+function weaknessLabel(w) {
+  return {driving:'Driving',irons:'Iron Play',shortgame:'Short Game',putting:'Putting',course:'Course Management',mental:'Mental Game'}[w] || w;
+}
+
+function physicalNote(p, hand) {
+  if (p === 'back')      return '⚠️ <strong>Back note:</strong> Keep your base wide, limit over-rotation at the top. Swing to 75% — distance comes from contact, not effort.';
+  if (p === 'shoulder')  return '⚠️ <strong>Shoulder note:</strong> Shorten your backswing if needed. A 3/4 swing with great contact beats a full swing that hurts.';
+  if (p === 'knee')      return '⚠️ <strong>Knee/hip note:</strong> Feel free to let your ' + (hand === 'left' ? 'right' : 'left') + ' heel rise on the backswing — takes pressure off the joint.';
+  if (p === 'returning') return '🌱 <strong>Returning player:</strong> Your body needs 2–3 sessions to remember. Go easy the first week — muscle memory comes back fast.';
+  return '';
+}
+
+function freqNote(freq) {
+  if (freq === 'rare')   return 'Make every session count — quality over quantity. One focused session beats three unfocused ones.';
+  if (freq === 'weekly') return 'One session a week is enough to build real momentum. Stay consistent and you\'ll see progress in 4–6 weeks.';
+  if (freq === 'multi')  return '2–3× a week is the sweet spot for rapid improvement. Mix range work with short game and you\'ll level up fast.';
+  if (freq === 'daily')  return 'Daily practice is powerful — just make sure you vary what you work on. Rotate: full swing, short game, putting.';
+  return '';
+}
+
+function lessonRec(lessons) {
+  if (lessons === 'none' || lessons === 'video')
+    return '📌 <strong>Pro tip:</strong> Even one lesson with a local pro can unlock a breakthrough. Book one when you\'re ready — it\'s worth it.';
+  if (lessons === 'few')
+    return '📌 <strong>Pro tip:</strong> Your lesson foundation is a great start. Return every 4–6 weeks to check your swing is staying on track.';
+  return '📌 <strong>Pro tip:</strong> Keep working with your instructor. Use this guide between lessons to reinforce what you\'re learning.';
+}
+
+function bagSection(equip, bag, hand) {
+  const bagName = bag || (equip === 'none' ? 'Getting Started' : equip === 'starter' ? 'Starter Set' : equip === 'full' ? 'Full Set' : 'Custom Set');
+  if (equip === 'none') {
+    return `<div class="card">
+      <div class="card-title">Equipment Recommendations</div>
+      <div class="card-body">
+        <strong>Great starter sets (${handLabel(hand)}):</strong><br><br>
+        🏌️ <strong>Callaway Strata</strong> — Best all-round beginner set<br>
+        🏌️ <strong>Wilson Profile SGI</strong> — Ultra forgiving, great value<br>
+        🏌️ <strong>Cleveland Launcher HB</strong> — Step up with more tech<br><br>
+        Search "${handLabel(hand).toLowerCase()} golf set" + any of these brands. Budget $150–350 for a solid starter.
+      </div></div>`;
+  }
+  return `<div class="card">
+    <div class="card-title">My Bag — ${bagName} (${handLabel(hand)})</div>
+    <div class="card-body">
+      ${equip === 'starter' ? '🎒 Starter set — focus on <strong>contact quality</strong> over distance. The clubs will do their job when you hit them flush.' : ''}
+      ${equip === 'full'    ? '🏌️ Full set — you have everything you need. Focus on learning which club to use <strong>when</strong>, not just how far each one goes.' : ''}
+      ${equip === 'custom'  ? '⭐ Custom-fitted clubs — you\'re set up for success. Trust your fitting, swing within yourself, and let the clubs work.' : ''}
+    </div></div>`;
+}
+
+function rangePhaseHTML(phase, title, clubs, balls, focus, cue, isWeakness) {
+  const highlight = isWeakness ? ' style="border-color:rgba(201,168,76,0.5);"' : '';
+  return `<div class="card"${highlight}>
+    <span class="tag tag-${['purple','gold','orange','blue','green'][phase] || 'gold'}">Phase ${phase}</span>
+    <div class="card-title">${title}</div>
+    <div class="pill-row">${clubs.map(c => `<span class="pill">${c}</span>`).join('')}<span class="pill">${balls} balls</span></div>
+    <div class="card-body">${focus}</div>
+    <div class="cue-box">💬 ${cue}</div>
+  </div>`;
+}
+
+function buildRangeSection(a) {
+  const balls = sessionBalls(a.duration, a.skill);
+  const phases = sessionPhases(a.duration);
+  const isLefty = a.hand === 'left';
+  const hasDriverWeakness = a.weaknesses.includes('driving');
+  const hasIronWeakness   = a.weaknesses.includes('irons');
+  const hasSGWeakness     = a.weaknesses.includes('shortgame');
+
+  // Ball splits
+  const b0 = 5;
+  const remaining = balls - b0;
+  const b1 = Math.round(remaining * 0.40);
+  const b2 = Math.round(remaining * 0.35);
+  const b3 = Math.round(remaining * 0.25);
+  const b4 = balls - b0 - b1 - b2;
+
+  let html = `<div class="stat-row">
+    <div class="stat"><div class="stat-num">${balls}</div><div class="stat-lbl">Balls</div></div>
+    <div class="stat"><div class="stat-num">${phases}</div><div class="stat-lbl">Phases</div></div>
+    <div class="stat"><div class="stat-num">${a.duration === 'short' ? '15–30' : a.duration === 'medium' ? '30–45' : a.duration === 'long' ? '45–60' : '60–90'}</div><div class="stat-lbl">Minutes</div></div>
+    <div class="stat"><div class="stat-num">${goalNum(a.goal)}</div><div class="stat-lbl">Goal</div></div>
+  </div>`;
+
+  // Warmup
+  html += `<div class="card">
+    <span class="tag tag-purple">Phase 0</span>
+    <div class="card-title">Warmup — No ball yet</div>
+    <div class="pill-row"><span class="pill">${isLefty ? 'Pitching Wedge' : 'Pitching Wedge'}</span><span class="pill">3 min</span><span class="pill">Always first</span></div>
+    <div class="card-body" style="display:flex;flex-direction:column;gap:12px;margin-top:8px;">
+      <div><strong>Pump Swings</strong> <span style="color:var(--muted);font-size:0.82rem;">· 10 swings · no ball</span><br><span style="color:var(--muted);font-size:0.85rem;">Feel the club like a pendulum. No thoughts. Just rhythm.</span></div>
+      <div style="border-top:1px solid rgba(255,255,255,0.07);padding-top:12px;"><strong>Feet Together</strong> <span style="color:var(--muted);font-size:0.82rem;">· 5 shots · feet touching</span><br><span style="color:var(--muted);font-size:0.85rem;">Forces balance automatically. If you fall over, you swung too hard.</span></div>
+      <div style="border-top:1px solid rgba(255,255,255,0.07);padding-top:12px;"><strong>Half Swings</strong> <span style="color:var(--muted);font-size:0.82rem;">· 5 shots · halfway back &amp; through</span><br><span style="color:var(--muted);font-size:0.85rem;">Clean contact before full speed.</span></div>
+    </div></div>`;
+
+  // Phase 1 – short irons
+  const shortIronFocus = hasIronWeakness
+    ? '<strong>⭐ YOUR FOCUS AREA:</strong> This is where you recoup strokes. Every ball here is worth two on the course. Flush contact, divot after the ball, consistent finish.'
+    : 'Ball center of stance. Flush contact, divot right of ball (toward target), consistent finish. Don\'t chase distance.';
+  html += rangePhaseHTML(1, 'Short Irons — Contact Quality',
+    ['9-iron','PW','GW'], b1, shortIronFocus,
+    'Ball first, then ground', hasIronWeakness);
+
+  if (phases >= 3) {
+    // Phase 2 – mid irons / hybrid
+    const midFocus = 'Same hip sequence — hips open before arms every time. Let the longer shaft do the work.';
+    html += rangePhaseHTML(2, 'Mid Irons + Hybrid',
+      ['7-iron','6-iron','Hybrid'], b2, midFocus,
+      'Wider arc, same sequence', false);
+  }
+
+  if (phases >= 4 || (phases >= 3 && hasDriverWeakness)) {
+    // Phase 3 – driver
+    const driverFocus = hasDriverWeakness
+      ? '<strong>⭐ YOUR FOCUS AREA:</strong> Pick a target and commit. Swing at 80% — control beats distance every time. Tee high, ball off ' + (isLefty ? 'right' : 'left') + ' instep.'
+      : 'Ball off ' + (isLefty ? 'right' : 'left') + ' instep. Slight upswing at impact. Swing smoother, not harder.';
+    html += rangePhaseHTML(3, 'Driver',
+      ['Driver'], b3, driverFocus,
+      'Sweeping up through the ball', hasDriverWeakness);
+  }
+
+  if (phases >= 4) {
+    // Phase 4 – game simulation or short game
+    const sgFocus = hasSGWeakness
+      ? '<strong>⭐ YOUR FOCUS AREA:</strong> Pick targets. Play shots you\'d face on the course. One swing thought: land it on a spot, let it release to the hole.'
+      : 'Mix it up — pick targets, simulate real shots. Work from different distances.';
+    html += rangePhaseHTML(4, 'Game Simulation / Finishing',
+      ['Any club'], b4, sgFocus,
+      'Pick a target, commit, execute', hasSGWeakness);
+  }
+
+  return html;
+}
+
+function buildStretchSection(a) {
+  const isSenior = a.age === 'senior';
+  const isBack   = a.physical === 'back';
+  const isReturn = a.physical === 'returning';
+
+  const stretches = [
+    {icon:'🔄', name:'Hip Rotations', desc:'Hands on hips, rotate in slow circles. 10× each direction.', time:'1 min'},
+    {icon:'🙆', name:'Arm Circles', desc:'Big slow circles forward and back. Loosens the shoulder girdle.', time:'45 sec'},
+    {icon:'🤸', name:'Trunk Twists', desc: isBack ? 'Gentle only — hold a club across your chest, rotate slowly left and right. Stop at any discomfort.' : 'Club across shoulders, rotate left and right. Hold 2 seconds at each end.', time:'1 min'},
+    {icon:'🦵', name:'Quad Stretch', desc:'Hold one foot behind you, hold a club for balance if needed. 20 sec each leg.', time:'45 sec'},
+    {icon:'👐', name:'Wrist Circles', desc:'Extend arms, circle wrists both ways. Keeps those wrists loose through impact.', time:'30 sec'},
+    {icon:'🏌️', name:'Practice Swings', desc: isSenior || isReturn ? 'Slow half-swings only. 10 swings. Feel the club — don\'t try to hit anything.' : 'Slow full swings without a ball. Feel the whole arc. 10 swings.', time:'2 min'},
+  ];
+
+  return stretches.map(s => `<div class="card">
+    <div style="display:flex;align-items:center;gap:14px;">
+      <div style="font-size:2rem;">${s.icon}</div>
+      <div style="flex:1;">
+        <div class="card-title">${s.name} <span style="color:var(--muted);font-size:0.75rem;font-weight:400;">· ${s.time}</span></div>
+        <div class="card-body" style="margin-top:4px;">${s.desc}</div>
+      </div>
+    </div></div>`).join('');
+}
+
+function buildShortGameSection(a) {
+  const isPuttingFocus = a.weaknesses.includes('putting');
+  const isSGFocus      = a.weaknesses.includes('shortgame');
+  const isLefty        = a.hand === 'left';
+
+  let html = '';
+
+  // Chipping
+  html += `<div class="card" ${isSGFocus ? 'style="border-color:rgba(201,168,76,0.5);"' : ''}>
+    ${isSGFocus ? '<span class="tag tag-gold">⭐ YOUR FOCUS</span>' : ''}
+    <div class="card-title">Chipping — The 7-Iron Method</div>
+    <div class="pill-row"><span class="pill">7-Iron</span><span class="pill">PW</span><span class="pill">SW</span></div>
+    <div class="card-body">
+      <strong>Setup:</strong> Ball back in stance, weight forward (${isLefty ? 'right' : 'left'} side), hands ahead of ball.<br><br>
+      <strong>The move:</strong> Shoulders rock like a putting stroke. No wrist flip. Let the loft do the work.<br><br>
+      <strong>Drill:</strong> Land 10 chips on a towel 3 feet onto the green. Count your hits.
+    </div>
+    <div class="cue-box">💬 Think "putt with a lofted club"</div>
+  </div>`;
+
+  // Putting
+  html += `<div class="card" ${isPuttingFocus ? 'style="border-color:rgba(201,168,76,0.5);"' : ''}>
+    ${isPuttingFocus ? '<span class="tag tag-gold">⭐ YOUR FOCUS</span>' : ''}
+    <div class="card-title">Putting — Distance Control First</div>
+    <div class="pill-row"><span class="pill">Putter</span><span class="pill">Every session</span></div>
+    <div class="card-body">
+      <strong>Gate drill:</strong> Place two tees 1 inch wider than your putter head. Roll 20 putts through the gate from 6 feet.<br><br>
+      <strong>Distance drill:</strong> From 30 feet, try to stop 3 balls within 3 feet of the hole. Repeat until you nail 3 in a row.<br><br>
+      <strong>Rule:</strong> Never 3-putt from inside 6 feet. Lag everything from outside 20.
+    </div>
+    <div class="cue-box">💬 Eyes over ball, rock the shoulders, quiet hands</div>
+  </div>`;
+
+  // Sand (if full equip)
+  if (a.equip !== 'none') {
+    html += `<div class="card">
+      <div class="card-title">Sand / Bunker Basics</div>
+      <div class="pill-row"><span class="pill">Sand Wedge</span></div>
+      <div class="card-body">
+        Open your stance, open the clubface. Hit 2 inches <em>behind</em> the ball — you're splashing sand, not the ball.<br><br>
+        <strong>Drill:</strong> Draw a line in the sand. Practice hitting the line consistently before worrying about the ball.
+      </div>
+      <div class="cue-box">💬 Splash the sand — the ball goes along for the ride</div>
+    </div>`;
+  }
+
+  return html;
+}
+
+function buildFamilyMemberSection(member) {
+  const isKid   = member.age < 13;
+  const isJunior= member.age >= 13 && member.age < 18;
+  const isSenior= member.age >= 65;
+  const handStr = member.hand === 'left' ? 'Lefty' : 'Righty';
+
+  let theme, emoji, tagline, goalLine, tips;
+
+  if (isKid) {
+    theme = 'rgba(236,72,153,0.15)'; emoji = '⭐';
+    tagline = `${handStr} · Age ${member.age} · Fun First`;
+    goalLine = 'Make contact. Laugh out loud. Come back next time. 🌈';
+    tips = [
+      '⏱ <strong>10–15 minutes max</strong> — attention spans are short, that\'s totally fine',
+      '🎯 <strong>One thing at a time</strong> — one thought, one club, one goal per trip',
+      '🌈 <strong>Follow their lead</strong> — if they want to putt all day, putt all day',
+      '🏆 <strong>Celebrate everything</strong> — any contact = amazing, any attempt = brave',
+      '🚫 <strong>No swing fixes mid-swing</strong> — keep it positive only',
+    ];
+  } else if (isJunior) {
+    theme = 'rgba(59,130,246,0.15)'; emoji = '🏆';
+    tagline = `${handStr} · Age ${member.age} · Junior`;
+    goalLine = member.goal === 'compete' ? 'Train smart. Play hard. Compete.' : 'Have Fun. Learn Right. Get Good.';
+    tips = [
+      '💥 <strong>Swing your hardest on the range</strong> — no holding back',
+      '😂 <strong>Miss one? Shake it off</strong> — even pros hit bad shots',
+      '🎯 <strong>One swing thought max</strong> per session — pick it and commit',
+      '🧠 <strong>Start with 7-iron</strong> before trying driver every session',
+      '🏆 <strong>Track personal bests</strong> — longest drive, closest to pin',
+    ];
+  } else if (isSenior || member.goal === 'return') {
+    theme = 'rgba(212,175,112,0.15)'; emoji = '💜';
+    tagline = `${handStr} · Welcome Back`;
+    goalLine = 'Move gently. Enjoy every swing. Welcome golf back into your life.';
+    tips = [
+      '⏱ <strong>15–20 minutes is plenty</strong> — quality over quantity',
+      '🌿 <strong>Start with your most forgiving club</strong> — hybrid or 7-iron',
+      '🎵 <strong>Tempo is everything</strong> — nice and easy, no need to rush',
+      '🤲 <strong>Light grip pressure</strong> — hold the club like you\'re holding a flower',
+      '🏆 <strong>Celebrate every solid hit</strong> — that\'s what this is all about',
+    ];
+  } else {
+    theme = 'rgba(45,106,63,0.2)'; emoji = '⛳';
+    tagline = `${handStr} · ${member.goal === 'fun' ? 'Playing for fun' : member.goal === 'learn' ? 'Learning the game' : 'Building their game'}`;
+    goalLine = member.goal === 'compete' ? 'Train with purpose. Track scores. Improve each round.' : 'Build consistency. Have fun. Keep improving.';
+    tips = [
+      '🎯 <strong>One swing thought per session</strong> — never change mid-session',
+      '📈 <strong>Track one stat per round</strong> — fairways, GIR, or putts',
+      '🏌️ <strong>Warmup before every session</strong> — 5 minutes saves your score',
+      '🧠 <strong>Play the shot in front of you</strong> — not the last one',
+      '🎉 <strong>End every session on a good shot</strong> — finish positive',
+    ];
+  }
+
+  return `<div class="member-sect" id="member-${member.name.toLowerCase().replace(/\s+/g,'-')}">
+    <div class="home-hero" style="background:linear-gradient(160deg, ${theme} 0%, transparent 100%);">
+      <div class="home-greeting">${tagline}</div>
+      <div class="home-title">${member.name}'s<br><span>Pocket Guide</span></div>
+      <div class="home-goal" style="border-color:rgba(201,168,76,0.3);background:rgba(201,168,76,0.07);">
+        <div class="home-goal-num">${emoji}</div>
+        <div>
+          <div style="font-weight:700;color:var(--cream);font-size:0.85rem;">The Goal</div>
+          <div style="font-size:0.75rem;">${goalLine}</div>
+        </div>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-title">Session Tips for ${member.name}</div>
+      <div class="card">
+        ${tips.map(t => `<div class="check-row"><span>${t}</span></div>`).join('')}
+      </div>
+    </div>
+  </div>`;
+}
+
+// ════════════════════════════════════════
+// FULL HTML GENERATOR
+function buildStrikeSequence(a) {
+  const isLefty = a.hand === 'left';
+  const trail = isLefty ? 'left' : 'right';
+  const lead  = isLefty ? 'right' : 'left';
+  const steps = [
+    { n:'1', color:'tag-purple', title:'Setup & Stance',
+      body:`Feet shoulder-width apart. Ball position changes with the club — center for short irons, moving toward your ${lead} heel as clubs get longer. Weight 50/50 at address.`,
+      cue:`Stand tall — spine angle set, not hunched` },
+    { n:'2', color:'tag-gold', title:'Grip Pressure',
+      body:`Hold the club like you're holding a tube of toothpaste without squeezing any out. Too tight = tension. Too loose = club twists at impact. Find the "5 out of 10."`,
+      cue:`Light grip = free swing. Tight grip = blocked shot` },
+    { n:'3', color:'tag-orange', title:'Takeaway — One Piece',
+      body:`Start the backswing by moving your hands, arms, and shoulders together as one unit. The club head stays outside the hands for the first 12 inches. No wrist roll early.`,
+      cue:`Turn the triangle — chest, arms, club move together` },
+    { n:'4', color:'tag-blue', title:'Top of Backswing',
+      body:`Your ${trail} shoulder moves under your chin. Club should be parallel to the ground or slightly short — overswinging kills consistency. Feel the stretch in your core.`,
+      cue:`Coil, don't collapse — feel tension in your torso` },
+    { n:'5', color:'tag-green', title:'Transition — Hips Lead',
+      body:`Before your backswing finishes, your ${lead} hip starts bumping toward the target. This is the move that separates good ball-strikers from everyone else. Hips before hands, always.`,
+      cue:`Bump the hip, then fire — sequence is everything` },
+    { n:'6', color:'tag-purple', title:'Impact — Hands Ahead',
+      body:`At impact, your hands should be slightly ahead of the ball. Weight shifted to ${lead} side (80–90%). The shaft leans toward the target. This is what creates compression and that crisp "click."`,
+      cue:`Ball first, ground second — compress it` },
+    { n:'7', color:'tag-gold', title:'Follow Through & Finish',
+      body:`After impact, keep rotating. Your belt buckle should face the target, ${trail} foot up on its toe, and the club finishes high over your ${lead} shoulder. A full finish = a full swing.`,
+      cue:`Hold the finish — if you can't pose it, you rushed it` },
+  ];
+  return steps.map(s => `<div class="card">
+    <div style="display:flex;align-items:flex-start;gap:14px;">
+      <div style="background:rgba(201,168,76,0.15);border:1px solid var(--gold);border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:1.2rem;color:var(--gold);flex-shrink:0;">${s.n}</div>
+      <div style="flex:1;">
+        <div class="card-title">${s.title}</div>
+        <div class="card-body">${s.body}</div>
+        <div class="cue-box">💬 ${s.cue}</div>
+      </div>
+    </div></div>`).join('');
+}
+
+function buildStrategySection(a) {
+  const goal = a.goal;
+  const hasCourse = a.weaknesses.includes('course');
+  const hasMental = a.weaknesses.includes('mental');
+
+  const stratTips = {
+    fun:      ['🌳 Play the easier tee box — there is zero shame in this', '⛳ Pick one target per shot and commit fully', '😄 Celebrate every par — they\'re harder than they look'],
+    break120: ['🎯 Tee it up on every par 3 — it\'s legal and helpful', '🔄 Take more club than you think — most beginners come up short', '📍 Aim for the fat part of every green, not the flag'],
+    break100: ['🚫 Never try the hero shot — chip out sideways to save bogey', '📐 Course management > swing improvement right now', '🎯 Two-putt every hole and you\'ll break 100 automatically'],
+    break90:  ['📊 Track your stats: fairways hit, GIR, putts per round', '🧠 Play for position, not distance — where does the miss hurt least?', '⛳ Lag putting from outside 20 feet eliminates 3-putts'],
+    break80:  ['📍 Know your exact carry distances for every club', '🗺️ Play backwards from the hole — pick your ideal approach angle', '🧊 Stay in the present — one shot at a time, no scoreboard math'],
+  };
+
+  const mentalTips = [
+    '🧘 <strong>Pre-shot routine:</strong> Same 3 steps before every shot. Pick target → visualize the shot → pull the trigger. Takes 10 seconds.',
+    '🔄 <strong>Bad shot reset:</strong> Allow yourself 10 seconds to be annoyed. Then take one deep breath and it\'s gone. Never carry a shot to the next tee.',
+    '💬 <strong>One thought only:</strong> Pick one swing cue before you start ("turn and fire", "hips first"). Stick to it the whole round — no changing mid-round.',
+  ];
+
+  let html = '';
+
+  const tips = stratTips[goal] || stratTips['fun'];
+  html += `<div class="card" ${hasCourse ? 'style="border-color:rgba(201,168,76,0.5);"' : ''}>
+    ${hasCourse ? '<span class="tag tag-gold">⭐ YOUR FOCUS</span>' : ''}
+    <div class="card-title">On-Course Strategy — ${goalLabel(goal)}</div>
+    <div class="card-body">
+      ${tips.map(t => `<div class="check-row"><span>${t}</span></div>`).join('')}
+    </div></div>`;
+
+  if (hasMental || goal === 'break80' || goal === 'break90') {
+    html += `<div class="card" ${hasMental ? 'style="border-color:rgba(201,168,76,0.5);"' : ''}>
+      ${hasMental ? '<span class="tag tag-gold">⭐ YOUR FOCUS</span>' : ''}
+      <div class="card-title">Mental Game</div>
+      <div class="card-body">
+        ${mentalTips.map(t => `<div class="check-row"><span>${t}</span></div>`).join('')}
+      </div>
+      <div class="cue-box">💬 Golf is 90% mental once you can make contact. Your brain is either your biggest asset or your biggest liability.</div>
+    </div>`;
+  }
+
+  html += `<div class="card">
+    <div class="card-title">The 3 Rules That Save Shots</div>
+    <div class="card-body">
+      <div class="check-row"><span>🚫 <strong>Never go for a shot you've never practiced.</strong> On the course is not the place to try it for the first time.</span></div>
+      <div class="check-row"><span>📍 <strong>Miss to the right side of danger.</strong> Plan your misses — know where the safe miss is before you swing.</span></div>
+      <div class="check-row"><span>⏱ <strong>Take your time on the first tee, last hole, and any shot over water.</strong> Those are where amateurs throw strokes away.</span></div>
+    </div></div>`;
+
+  return html;
+}
+
+// ════════════════════════════════════════
+function generateGuide() {
+  const a = getAnswers();
+  // Encode family members as pipe-separated tilde-delimited fields
+  const fm = a.members.map(m =>
+    `${encodeURIComponent(m.name)}~${m.age}~${m.hand[0]}~${m.goal}`
+  ).join('|');
+  const dist = getDistances();
+  const params = new URLSearchParams({
+    n: a.name,
+    h: a.hand[0],
+    gdr: a.gender || 'm',
+    a: a.age,
+    exp: a.experience || '',
+    s: a.skill,
+    g: a.goal,
+    loc: a.location || '',
+    w: a.weaknesses.join(','),
+    f: a.freq,
+    d: a.duration,
+    e: a.equip,
+    b: a.bag,
+    les: a.lessons || '',
+    p: a.physical,
+    ...(fm ? { fm } : {}),
+    ...(dist.replace(/,/g,'') ? { dist } : {})
+  });
+  const guideUrl = 'guide.html?' + params.toString();
+
+  // ── NETLIFY FORM SUBMISSION (silent background log) ──
+  const formData = new FormData();
+  formData.append('form-name', 'guide-log');
+  formData.append('name',       a.name);
+  formData.append('gender',     a.gender || '');
+  formData.append('skill',      a.skill);
+  formData.append('goal',       a.goal);
+  formData.append('experience', a.experience || '');
+  formData.append('location',   a.location || '');
+  formData.append('lessons',    a.lessons || '');
+  formData.append('weaknesses', a.weaknesses.join(', '));
+  formData.append('freq',       a.freq);
+  formData.append('duration',   a.duration);
+  formData.append('physical',   a.physical || 'none');
+  formData.append('bag',        a.bag || '');
+  formData.append('guide_url',  location.origin + '/' + guideUrl);
+
+  fetch('/', { method: 'POST', body: formData }).catch(() => {});
+  // always navigate regardless of fetch result
+  window.location.href = guideUrl;
+}
+
+</script>
+
+<!-- Netlify form detection (hidden, never shown to user) -->
+<form name="guide-log" netlify netlify-honeypot="bot-field" hidden>
+  <input type="hidden" name="form-name" value="guide-log">
+  <input name="bot-field">
+  <input name="name">
+  <input name="gender">
+  <input name="skill">
+  <input name="goal">
+  <input name="experience">
+  <input name="location">
+  <input name="lessons">
+  <input name="weaknesses">
+  <input name="freq">
+  <input name="duration">
+  <input name="physical">
+  <input name="bag">
+  <input name="guide_url">
+</form>
+</body>
+</html>

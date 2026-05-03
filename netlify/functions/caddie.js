@@ -1,0 +1,121 @@
+// ── CADDIE FUNCTION ──
+// Proxies voice caddie requests to Claude Haiku.
+// API key stays server-side; origin check prevents third-party abuse.
+
+const https = require('https');
+
+const ALLOWED_ORIGINS = [
+  'https://golf.spinvibes.com',
+  'https://www.golf.spinvibes.com',
+  'http://localhost:8888',  // netlify dev
+  'http://localhost:3000',
+];
+
+exports.handler = async (event) => {
+  // ── CORS preflight ──
+  if (event.httpMethod === 'OPTIONS') {
+    return {
+      statusCode: 204,
+      headers: corsHeaders(event),
+      body: '',
+    };
+  }
+
+  // ── Method check ──
+  if (event.httpMethod !== 'POST') {
+    return { statusCode: 405, body: 'Method Not Allowed' };
+  }
+
+  // ── Origin / Referer check ──
+  const origin = event.headers['origin'] || event.headers['referer'] || '';
+  const isAllowed = ALLOWED_ORIGINS.some(o => origin.startsWith(o));
+  if (!isAllowed) {
+    console.warn('Blocked origin:', origin);
+    return { statusCode: 403, body: 'Forbidden' };
+  }
+
+  // ── Parse body ──
+  let body;
+  try {
+    body = JSON.parse(event.body || '{}');
+  } catch {
+    return { statusCode: 400, body: 'Bad Request: invalid JSON' };
+  }
+
+  const { message, systemPrompt } = body;
+  if (!message || typeof message !== 'string' || message.length > 500) {
+    return { statusCode: 400, body: 'Bad Request: message missing or too long' };
+  }
+  if (!systemPrompt || typeof systemPrompt !== 'string') {
+    return { statusCode: 400, body: 'Bad Request: systemPrompt missing' };
+  }
+
+  // ── API key ──
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) {
+    console.error('ANTHROPIC_API_KEY not set');
+    return { statusCode: 500, body: 'Caddie not configured yet' };
+  }
+
+  // ── Call Claude Haiku ──
+  const requestBody = JSON.stringify({
+    model: 'claude-haiku-4-5-20251001',
+    max_tokens: 80,
+    system: systemPrompt,
+    messages: [{ role: 'user', content: message }],
+  });
+
+  return new Promise((resolve) => {
+    const req = https.request(
+      {
+        hostname: 'api.anthropic.com',
+        path: '/v1/messages',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': apiKey,
+          'anthropic-version': '2023-06-01',
+          'Content-Length': Buffer.byteLength(requestBody),
+        },
+      },
+      (res) => {
+        let data = '';
+        res.on('data', (chunk) => (data += chunk));
+        res.on('end', () => {
+          try {
+            const parsed = JSON.parse(data);
+            const text =
+              parsed.content?.[0]?.text ||
+              "Sorry, couldn't read that. Try again.";
+            resolve({
+              statusCode: 200,
+              headers: {
+                'Content-Type': 'application/json',
+                ...corsHeaders(event),
+              },
+              body: JSON.stringify({ reply: text }),
+            });
+          } catch {
+            resolve({ statusCode: 500, body: 'Parse error from Claude API' });
+          }
+        });
+      }
+    );
+    req.on('error', (err) => {
+      console.error('Claude API error:', err);
+      resolve({ statusCode: 502, body: 'Upstream request failed' });
+    });
+    req.write(requestBody);
+    req.end();
+  });
+};
+
+function corsHeaders(event) {
+  const origin = event.headers['origin'] || '';
+  const isAllowed = ALLOWED_ORIGINS.some(o => origin.startsWith(o));
+  return {
+    'Access-Control-Allow-Origin': isAllowed ? origin : ALLOWED_ORIGINS[0],
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+  };
+}

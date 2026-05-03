@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Golf Guide</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#f4efe3;--surface:#fff;--surface2:#ebe5d4;--surface3:#ddd6c2;--green:#2d6a3f;--green-b:#3d8a52;--gold:#8a6010;--gold-l:#6b4a0c;--cream:#1c2018;--muted:#6a7a68;--border:rgba(0,0,0,0.1);--nav-h:64px;--safe-b:env(safe-area-inset-bottom,0px);}
+    body.dark{--bg:#0a1a0e;--surface:#111f15;--surface2:#1a2f1e;--surface3:#223828;--gold:#c9a84c;--gold-l:#e8cc7a;--cream:#f0ead8;--muted:#6a8a6e;--border:rgba(255,255,255,0.08);}
+    *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+    html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--cream);font-family:'Outfit',sans-serif;transition:background .2s,color .2s;}
+    /* ── SHELL ── */
+    #app{display:flex;flex-direction:column;height:100dvh;}
+    #topbar{flex-shrink:0;background:var(--surface);border-bottom:1px solid var(--border);padding:10px 16px;padding-top:calc(10px + env(safe-area-inset-top,0px));display:flex;align-items:center;justify-content:space-between;gap:8px;}
+    .tb-logo{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:2px;color:var(--gold);cursor:pointer;flex-shrink:0;}
+    .tb-logo span{color:var(--cream);}
+    .tb-sub{font-size:0.6rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;}
+    #pills{display:flex;gap:5px;flex-wrap:wrap;flex:1;justify-content:center;}
+    .pill{background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:4px 11px;color:var(--muted);font-family:'Outfit',sans-serif;font-size:0.68rem;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap;}
+    .pill.on{background:rgba(138,96,16,0.15);border-color:var(--gold);color:var(--gold);}
+    body.dark .pill.on{background:rgba(201,168,76,0.15);}
+    .tb-btn{background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:5px 9px;font-size:0.9rem;cursor:pointer;color:var(--cream);flex-shrink:0;}
+    #pages{flex:1;overflow:hidden;position:relative;}
+    .page{position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;opacity:0;pointer-events:none;transform:translateY(10px);transition:opacity .22s,transform .22s;padding-bottom:calc(var(--nav-h) + var(--safe-b) + 16px);}
+    .page.on{opacity:1;pointer-events:all;transform:translateY(0);}
+    #nav{flex-shrink:0;background:var(--surface);border-top:1px solid var(--border);display:flex;height:calc(var(--nav-h) + var(--safe-b));padding-bottom:var(--safe-b);}
+    .nb{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border:none;background:none;color:var(--muted);font-family:'Outfit',sans-serif;font-size:0.54rem;font-weight:500;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;transition:color .15s;padding-top:5px;}
+    .nb svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+    .nb.on{color:var(--gold);}
+    .nb.on svg{stroke:var(--gold);}
+    /* ── LANDING ── */
+    #landing{position:fixed;inset:0;z-index:999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:28px 20px;padding-top:calc(44px + env(safe-area-inset-top,0px));overflow-y:auto;}
+    #landing.hidden{opacity:0;pointer-events:none;transition:opacity .3s;}
+    .ld-logo{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;letter-spacing:4px;color:var(--gold);text-align:center;}
+    .ld-logo span{color:var(--cream);}
+    .ld-sub{font-size:0.68rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin:4px 0 28px;text-align:center;}
+    .ld-q{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:2px;color:var(--cream);margin-bottom:12px;text-align:center;}
+    .ld-cards{display:flex;flex-direction:column;gap:10px;width:100%;max-width:400px;}
+    .ld-card{border-radius:18px;padding:16px 18px;cursor:pointer;display:flex;align-items:center;gap:16px;border:2px solid var(--border);background:var(--surface);box-shadow:0 4px 20px rgba(0,0,0,0.08);transition:border-color .18s,transform .15s;user-select:none;}
+    body.dark .ld-card{box-shadow:0 4px 20px rgba(0,0,0,0.4);}
+    .ld-card:active{transform:scale(0.97);}
+    .ld-card:hover{border-color:var(--gold);}
+    .ld-av{font-size:2.4rem;flex-shrink:0;}
+    .ld-name{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:2px;color:var(--gold);line-height:1;}
+    .ld-desc{font-size:0.65rem;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-top:2px;}
+    .ld-arr{font-size:1.3rem;color:var(--muted);}
+    /* ── COMPONENTS ── */
+    .ph{background:linear-gradient(160deg,var(--surface2) 0%,var(--bg) 100%);padding:22px 20px 18px;border-bottom:2px solid rgba(138,96,16,0.25);position:relative;overflow:hidden;}
+    body.dark .ph{border-bottom-color:rgba(201,168,76,0.25);}
+    .ph::after{content:attr(data-icon);position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:3rem;opacity:.1;}
+    .ph-tag{font-size:0.62rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:3px;}
+    .ph-title{font-family:'Bebas Neue',sans-serif;font-size:1.9rem;letter-spacing:2px;color:var(--cream);line-height:1;}
+    .ph-sub{font-size:0.75rem;color:var(--muted);margin-top:5px;}
+    .sect{padding:14px 18px;}
+    .sect-title{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:1.5px;color:var(--gold);margin-bottom:10px;text-transform:uppercase;}
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:10px;}
+    .ct{font-weight:700;font-size:0.92rem;color:var(--cream);margin-bottom:6px;}
+    .cb{font-size:0.83rem;color:var(--muted);line-height:1.6;}
+    .cb strong{color:var(--cream);}
+    .cue{background:rgba(138,96,16,0.08);border-left:3px solid var(--gold);border-radius:0 10px 10px 0;padding:9px 13px;font-size:0.8rem;color:var(--gold-l);margin-top:9px;line-height:1.5;}
+    body.dark .cue{background:rgba(201,168,76,0.08);color:var(--gold-l);}
+    .pills-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:9px;}
+    .ptag{background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:3px 9px;font-size:0.7rem;color:var(--cream);}
+    .tag{display:inline-block;font-size:0.62rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:2px 9px;border-radius:20px;margin-bottom:5px;}
+    .tg-pur{background:rgba(139,92,246,.15);color:#a78bfa;border:1px solid rgba(139,92,246,.3);}
+    .tg-gld{background:rgba(201,168,76,.15);color:var(--gold);border:1px solid rgba(201,168,76,.3);}
+    body.dark .tg-gld{color:var(--gold-l);}
+    .tg-org{background:rgba(251,146,60,.15);color:#fb923c;border:1px solid rgba(251,146,60,.3);}
+    .tg-blu{background:rgba(59,130,246,.15);color:#60a5fa;border:1px solid rgba(59,130,246,.3);}
+    .tg-grn{background:rgba(45,106,63,.2);color:var(--gold);border:1px solid rgba(45,106,63,.4);}
+    /* ── LOCATION SWITCHER ── */
+    .loc-switcher{display:flex;gap:6px;padding:14px 18px 6px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+    .loc-switcher::-webkit-scrollbar{display:none;}
+    .loc-btn{flex-shrink:0;border:1px solid var(--border);border-radius:20px;padding:7px 16px;font-family:'Outfit',sans-serif;font-size:0.82rem;font-weight:600;background:var(--surface2);color:var(--muted);cursor:pointer;transition:all .18s;}
+    .loc-btn.active{background:var(--green);border-color:var(--green);color:#fff;}
+    .loc-btn:active{transform:scale(0.96);}
+    .loc-panel{display:none;}.loc-panel.on{display:block;}
+    /* ── END LOCATION SWITCHER ── */
+    .stat-row{display:flex;gap:7px;padding:14px 18px;flex-wrap:wrap;}
+    .stat{flex:1;min-width:55px;background:var(--surface2);border-radius:11px;padding:11px 7px;text-align:center;}
+    .sn{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;color:var(--gold);line-height:1;}
+    .sl{font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:2px;}
+    .hero{background:linear-gradient(160deg,var(--surface2) 0%,var(--bg) 100%);padding:24px 18px 20px;border-bottom:2px solid rgba(138,96,16,0.2);}
+    body.dark .hero{border-bottom-color:rgba(201,168,76,0.2);}
+    .hg{font-size:0.72rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:5px;}
+    .ht{font-family:'Bebas Neue',sans-serif;font-size:2.6rem;letter-spacing:2px;color:var(--cream);line-height:1;margin-bottom:14px;}
+    .ht span{color:var(--gold);}
+    .hgoal{background:rgba(45,106,63,0.1);border:1px solid rgba(138,96,16,0.3);border-radius:13px;padding:13px 15px;display:flex;align-items:center;gap:13px;}
+    body.dark .hgoal{background:rgba(45,106,63,0.15);border-color:rgba(201,168,76,0.3);}
+    .hgn{font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--gold);line-height:1;flex-shrink:0;}
+    .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;padding:14px 18px;}
+    .gc{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px;cursor:pointer;transition:border-color .18s,transform .15s;text-decoration:none;display:block;}
+    .gc:active{transform:scale(0.97);}
+    .gc:hover{border-color:var(--gold);}
+    .gi{font-size:1.5rem;display:block;margin-bottom:7px;}
+    .gt{font-weight:700;font-size:0.83rem;color:var(--cream);margin-bottom:2px;}
+    .gs{font-size:0.7rem;color:var(--muted);}
+    .nb-box{background:rgba(45,106,63,0.08);border:1px solid rgba(45,106,63,0.25);border-radius:11px;padding:11px 13px;font-size:0.8rem;color:var(--cream);line-height:1.6;margin-bottom:10px;}
+    body.dark .nb-box{background:rgba(45,106,63,0.12);}
+    .nb-box strong{color:var(--gold);}
+    .cr{display:flex;align-items:flex-start;gap:9px;padding:9px 0;border-bottom:1px solid var(--border);font-size:0.83rem;color:var(--cream);line-height:1.5;}
+    .cr:last-child{border-bottom:none;}
+    /* progress */
+    .prog-entry{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+    .pe-date{font-size:0.75rem;color:var(--muted);flex-shrink:0;}
+    .pe-note{font-size:0.82rem;color:var(--cream);flex:1;padding:0 10px;}
+    .pe-del{background:none;border:none;color:var(--muted);cursor:pointer;font-size:1rem;padding:3px;}
+    textarea#pnote{width:100%;background:var(--surface);border:2px solid var(--border);border-radius:11px;padding:11px;color:var(--cream);font-family:'Outfit',sans-serif;font-size:0.85rem;resize:vertical;min-height:76px;outline:none;transition:border-color .18s;}
+    textarea#pnote:focus{border-color:var(--gold);}
+    .log-btn{background:linear-gradient(135deg,var(--green),#1e4d2b);border:1px solid var(--green-b);border-radius:11px;padding:11px 18px;color:#e8cc7a;font-family:'Outfit',sans-serif;font-size:0.88rem;font-weight:700;cursor:pointer;margin-top:7px;width:100%;}
+    /* swing steps */
+    .sw-step{display:flex;align-items:flex-start;gap:13px;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:10px;}
+    .sw-num{background:rgba(138,96,16,0.12);border:1px solid var(--gold);border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--gold);flex-shrink:0;}
+    body.dark .sw-num{background:rgba(201,168,76,0.12);}
+    @media(min-width:600px){#app{max-width:500px;margin:0 auto;box-shadow:0 0 60px rgba(0,0,0,.12);}body.dark #app{box-shadow:0 0 80px rgba(0,0,0,.7);}#landing{align-items:center;}#landing>*{width:100%;max-width:480px;}.ld-cards{max-width:440px;}}
+    /* ── CADDIE ── */
+    .mic-wrap{display:flex;flex-direction:column;align-items:center;padding:20px 0 10px;}
+    .mic-btn{width:76px;height:76px;border-radius:50%;border:none;background:linear-gradient(135deg,var(--green),#1e4d2b);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.9rem;box-shadow:0 4px 22px rgba(45,106,63,0.45);transition:transform .15s,box-shadow .15s;}
+    .mic-btn:active{transform:scale(0.93);}
+    .mic-btn.listening{background:linear-gradient(135deg,#b91c1c,#7f1d1d);animation:caddie-pulse 1.4s ease-in-out infinite;}
+    @keyframes caddie-pulse{0%,100%{box-shadow:0 4px 22px rgba(185,28,28,0.4);}50%{box-shadow:0 4px 44px rgba(185,28,28,0.75),0 0 0 12px rgba(185,28,28,0.12);}}
+    .mic-status{font-size:0.72rem;color:var(--muted);text-align:center;margin-top:9px;letter-spacing:.3px;}
+    .caddie-bubble{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:16px 18px;margin:14px 0 6px;font-size:0.9rem;color:var(--cream);line-height:1.65;min-height:64px;}
+    .caddie-club{display:block;font-family:'Bebas Neue',sans-serif;font-size:1.35rem;color:var(--gold);margin-top:8px;letter-spacing:1px;}
+    .example-q{background:var(--surface2);border:1px solid var(--border);border-radius:11px;padding:10px 14px;font-size:0.8rem;color:var(--muted);cursor:pointer;margin-bottom:7px;transition:border-color .15s,color .15s;display:block;width:100%;text-align:left;}
+    .example-q:hover,.example-q:active{border-color:var(--gold);color:var(--cream);}
+    .caddie-dists{font-size:0.75rem;color:var(--muted);line-height:2;}
+    .caddie-dists span{color:var(--cream);margin-right:10px;}
+  </style>
+</head>
+<body class="dark">
+
+<div id="landing">
+  <div class="ld-logo">⛳ Golf<span>Guide</span></div>
+  <div class="ld-sub" id="ld-sub">Your family pocket caddie</div>
+  <div class="ld-q">Who's playing today?</div>
+  <div class="ld-cards" id="ld-cards">
+    <div class="card" style="text-align:center;padding:20px;">Loading your guide…</div>
+  </div>
+</div>
+
+<div id="app">
+  <div id="topbar">
+    <div onclick="toLanding()" style="cursor:pointer;">
+      <div class="tb-logo">⛳ Golf<span>Guide</span></div>
+      <div class="tb-sub" id="tb-sub"></div>
+    </div>
+    <div id="pills"></div>
+    <button class="tb-btn" onclick="toggleDark()" id="darkBtn">☀️</button>
+  </div>
+  <div id="pages">
+    <div class="page on" id="pg-home"></div>
+    <div class="page" id="pg-range"></div>
+    <div class="page" id="pg-swing"></div>
+    <div class="page" id="pg-short"></div>
+    <div class="page" id="pg-progress"></div>
+    <div class="page" id="pg-caddie"></div>
+  </div>
+  <nav id="nav">
+    <button class="nb on" onclick="go('home')" id="nb-home">
+      <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home
+    </button>
+    <button class="nb" onclick="go('range')" id="nb-range">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>Practice
+    </button>
+    <button class="nb" onclick="go('swing')" id="nb-swing">
+      <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>Swing
+    </button>
+    <button class="nb" onclick="go('short')" id="nb-short">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 000 20"/></svg>Short
+    </button>
+    <button class="nb" onclick="go('progress')" id="nb-progress">
+      <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Progress
+    </button>
+    <button class="nb" onclick="go('caddie')" id="nb-caddie">
+      <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>Caddie
+    </button>
+  </nav>
+</div>
+
+<script>
+// ── PARSE URL PARAMS ──
+const P = new URLSearchParams(location.search);
+const a = {
+  name:      decodeURIComponent(P.get('n') || 'Golfer'),
+  hand:      P.get('h') === 'l' ? 'left' : 'right',
+  age:       P.get('a') || 'adult',
+  experience:P.get('exp') || 'some',   // none | some | returning | years
+  gender:    P.get('gdr') || 'm',      // m | f | x
+  skill:     P.get('s') || 'mid',
+  goal:      P.get('g') || 'break90',
+  location:  P.get('loc') || 'range',  // range | sim | backyard | mix
+  weaknesses:(P.get('w') || '').split(',').filter(Boolean),
+  freq:      P.get('f') || 'weekly',
+  duration:  P.get('d') || 'long',
+  equip:     P.get('e') || 'full',
+  bag:       decodeURIComponent(P.get('b') || ''),
+  lessons:   P.get('les') || 'none',   // none | video | few | regular
+  physical:  P.get('p') || 'none',
+  members:   parseFM(P.get('fm') || '')
+};
+
+function parseFM(s) {
+  if (!s) return [];
+  return s.split('|').map(seg => {
+    const [name,age,hand,goal] = seg.split('~');
+    return { name: decodeURIComponent(name||''), age: parseInt(age)||10, hand: hand||'right', goal: goal||'fun' };
+  }).filter(m => m.name);
+}
+
+// ── PARSE DISTANCES ──
+const distKeys = ['driver','3w','hybrid','7i','9i','pw','sw'];
+const distNames = {driver:'Driver','3w':'3-Wood',hybrid:'Hybrid / 5-Iron','7i':'7-Iron','9i':'9-Iron',pw:'Pitching Wedge',sw:'Sand Wedge'};
+const distEmoji = {driver:'🚀','3w':'🌲',hybrid:'🔄','7i':'🎯','9i':'⛳',pw:'🏌️',sw:'🏖️'};
+const distances = {};
+(P.get('dist')||'').split(',').forEach((v,i) => { if (v && distKeys[i]) distances[distKeys[i]] = parseInt(v); });
+
+function clubFor(yards) {
+  const entries = Object.entries(distances);
+  if (!entries.length) return null;
+  return entries.reduce((best, [club, dist]) =>
+    Math.abs(dist - yards) < Math.abs(distances[best] - yards) ? club : best
+  , entries[0][0]);
+}
+function clubLabelFor(yards) {
+  const c = clubFor(yards);
+  return c ? distNames[c] + (distances[c] ? ' (' + distances[c] + ' yds)' : '') : null;
+}
+
+// ── HELPERS ──
+const gLabel = {fun:'Enjoy the Game',break120:'Break 120',break100:'Break 100',break90:'Break 90',break80:'Break 80'};
+const gNum   = {fun:'😄',break120:'120',break100:'100',break90:'90',break80:'80'};
+const wLabel = {driving:'Driving',irons:'Iron Play',shortgame:'Short Game',putting:'Putting',course:'Course Mgmt',mental:'Mental Game'};
+const sLabel = {beginner:'Beginner',high:'110+','mid-high':'100–110',mid:'90–100','low-mid':'80–90',low:'Under 80'};
+const hl = h => h === 'left' ? 'Lefty' : 'Righty';
+const lead  = () => a.hand === 'left' ? 'right' : 'left';
+const trail = () => a.hand === 'left' ? 'left' : 'right';
+const wk    = () => a.weaknesses.map(w => wLabel[w]||w).join(' & ');
+const balls = () => ({short:28,medium:45,long:60,full:80}[a.duration]||50);
+const phases= () => ({short:2,medium:3,long:4,full:4}[a.duration]||3);
+
+// ── RENDER HOME ──
+function renderHome(profile) {
+  const isMain = profile === 'main';
+  if (isMain) {
+    return `
+    <div class="hero">
+      <div class="hg">Welcome back, ${a.name}</div>
+      <div class="ht">Your Golf<br><span>Pocket Guide</span></div>
+      <div class="hgoal">
+        <div class="hgn">${gNum[a.goal]||'⛳'}</div>
+        <div>
+          <div style="font-weight:700;font-size:0.83rem;color:var(--cream);">${gLabel[a.goal]||a.goal}</div>
+          <div style="font-size:0.72rem;color:var(--muted);">${hl(a.hand)} · ${sLabel[a.skill]||a.skill} · Focus: ${wk()}</div>
+        </div>
+      </div>
+    </div>
+    <div class="grid">
+      <a class="gc" onclick="go('range')"><span class="gi">🏌️</span><div class="gt">Practice Session</div><div class="gs">Range · Sim · Home</div></a>
+      <a class="gc" onclick="go('swing')"><span class="gi">⚡</span><div class="gt">Swing Sequence</div><div class="gs">7 steps · warmup inside</div></a>
+      <a class="gc" onclick="go('short')"><span class="gi">🎯</span><div class="gt">Short Game</div><div class="gs">Chipping · Putting · Strategy</div></a>
+      <a class="gc" onclick="go('progress')"><span class="gi">📈</span><div class="gt">My Progress</div><div class="gs">Log & track</div></a>
+    </div>
+    <div class="sect">
+      ${bagSection()}
+      ${renderYardageChart()}
+      <div class="sect-title" style="margin-top:4px;">Swing Thoughts — ${sLabel[a.skill]||a.skill}</div>
+      ${renderSwingThoughts()}
+      <div class="sect-title" style="margin-top:4px;">Quick Reminders</div>
+      <div class="card">
+        <div class="cb">
+          🎯 <strong>One swing thought per session</strong> — never switch mid-session<br><br>
+          ${freqNote()}<br><br>
+          📌 ${lessonNote()}
+          ${physNote() ? '<br><br>' + physNote() : ''}
+        </div>
+      </div>
+    </div>`;
+  } else {
+    const m = a.members.find(m => slug(m.name) === profile);
+    if (!m) return '<div class="sect"><div class="card"><div class="cb">Profile not found.</div></div></div>';
+    return renderMemberHome(m);
+  }
+}
+
+function renderMemberHome(m) {
+  const isKid    = m.age < 13;
+  const isJunior = m.age >= 13 && m.age < 18;
+  const isSenior = m.age >= 65 || m.goal === 'return';
+  const emoji    = isKid ? '⭐' : isJunior ? '🏆' : isSenior ? '💜' : '⛳';
+  const color    = isKid ? '#ec4899' : isJunior ? '#3b82f6' : isSenior ? '#d4af70' : 'var(--gold)';
+  const tagline  = isKid ? `${hl(m.hand)} · Age ${m.age} · Fun First`
+                 : isJunior ? `${hl(m.hand)} · Age ${m.age} · Junior`
+                 : isSenior ? `${hl(m.hand)} · Welcome Back`
+                 : `${hl(m.hand)} · ${m.goal === 'fun' ? 'Playing for fun' : 'Building their game'}`;
+  const goalLine = isKid    ? 'Make contact. Laugh out loud. Come back next time. 🌈'
+                 : isJunior ? 'Have Fun. Learn Right. Get Good.'
+                 : isSenior ? 'Move gently. Enjoy every swing. Welcome golf back into your life.'
+                 : 'Build consistency. Have fun. Keep improving.';
+  const tips     = isKid
+    ? ['⏱ <strong>10–15 min max</strong> — short sessions are perfect','🌈 <strong>Follow their lead</strong> — if they want to putt, putt all day','🏆 <strong>Celebrate everything</strong> — any contact = amazing','🚫 <strong>No swing fixes mid-swing</strong> — keep it positive only']
+    : isJunior
+    ? ['💥 <strong>Swing hard on the range</strong> — no holding back','😂 <strong>Miss one? Shake it off</strong> — pros hit bad shots too','🎯 <strong>One swing thought per session</strong>','🧠 <strong>Start with 7-iron</strong> before driver every time']
+    : isSenior
+    ? ['⏱ <strong>15–20 min is plenty</strong> — quality over quantity','🌿 <strong>Start with your most forgiving club</strong>','🎵 <strong>Tempo is everything</strong> — smooth and easy','🤲 <strong>Light grip pressure</strong> — hold the club like a flower']
+    : ['🎯 <strong>One swing thought per session</strong>','📈 <strong>Track one stat per round</strong> — fairways, GIR, or putts','🏌️ <strong>Warmup before every session</strong>','🎉 <strong>End on a good shot</strong> — finish positive'];
+  return `
+    <div class="hero" style="background:linear-gradient(160deg,rgba(138,96,16,0.12) 0%,var(--bg) 100%);">
+      <div class="hg">${tagline}</div>
+      <div class="ht">${m.name}'s<br><span>Golf Guide</span></div>
+      <div class="hgoal" style="border-color:rgba(138,96,16,0.3);">
+        <div class="hgn" style="color:${color};">${emoji}</div>
+        <div>
+          <div style="font-weight:700;font-size:0.83rem;color:var(--cream);">The Goal</div>
+          <div style="font-size:0.72rem;color:var(--muted);">${goalLine}</div>
+        </div>
+      </div>
+    </div>
+    <div class="sect">
+      <div class="sect-title">Session Tips for ${m.name}</div>
+      <div class="card">${tips.map(t=>`<div class="cr"><span>${t}</span></div>`).join('')}</div>
+    </div>`;
+}
+
+// ── YARDAGE CHART ──
+// Male distances — anchored to Golf Mentor research data (Beginner/Average/Advanced)
+const genericDistsM = {
+  high:      {driver:'185–215', '3w':'175–200', hybrid:'120–145', '7i':'105–128', '9i':'85–108',  pw:'78–97',  sw:'58–75'},
+  'mid-high':{driver:'205–228', '3w':'190–215', hybrid:'135–158', '7i':'118–140', '9i':'100–117', pw:'86–106', sw:'64–83'},
+  mid:       {driver:'218–245', '3w':'202–228', hybrid:'148–173', '7i':'128–153', '9i':'104–127', pw:'94–116', sw:'72–90'},
+  'low-mid': {driver:'228–255', '3w':'212–238', hybrid:'158–183', '7i':'138–160', '9i':'112–133', pw:'101–122',sw:'77–93'},
+  low:       {driver:'240–265', '3w':'220–248', hybrid:'168–192', '7i':'145–168', '9i':'118–140', pw:'107–130',sw:'82–98'},
+};
+// Female distances — anchored to Golf Mentor research data
+const genericDistsF = {
+  high:      {driver:'118–145', '3w':'110–135', hybrid:'70–92',   '7i':'62–80',  '9i':'50–67',  pw:'45–62',  sw:'33–48'},
+  'mid-high':{driver:'133–158', '3w':'124–148', hybrid:'82–104',  '7i':'72–90',  '9i':'58–76',  pw:'52–70',  sw:'38–55'},
+  mid:       {driver:'148–175', '3w':'138–165', hybrid:'92–118',  '7i':'80–103', '9i':'66–85',  pw:'60–77',  sw:'44–61'},
+  'low-mid': {driver:'168–194', '3w':'157–182', hybrid:'106–132', '7i':'91–115', '9i':'75–95',  pw:'68–87',  sw:'51–68'},
+  low:       {driver:'188–215', '3w':'175–200', hybrid:'120–145', '7i':'102–128','9i':'84–106', pw:'76–97',  sw:'57–75'},
+};
+function renderYardageChart() {
+  const filled = distKeys.filter(k => distances[k]);
+  const isGeneric = filled.length === 0;
+  const distTable = a.gender === 'f' ? genericDistsF : genericDistsM;
+  const gen = distTable[a.skill] || distTable.mid;
+  const label = isGeneric ? `Estimated Yardages — ${sLabel[a.skill]||'Your Level'}` : 'My Yardage Chart';
+  const genderLabel = a.gender === 'f' ? 'women' : 'men';
+  const note  = isGeneric ? `<div style="font-size:0.7rem;color:var(--muted);padding-top:8px;">📌 Typical ranges for ${genderLabel} at your skill level. Add your actual distances in the wizard to personalize this.</div>` : '';
+  const rows = distKeys.map(k => {
+    const val  = distances[k] ? `${distances[k]} <span style="font-size:0.62rem;color:var(--muted);font-family:'Outfit',sans-serif;font-weight:400;">yds</span>` : `<span style="font-size:0.82rem;color:var(--muted);">${gen[k]} yds</span>`;
+    return `<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);">
+      <div style="font-size:0.88rem;color:var(--cream);">${distEmoji[k]} ${distNames[k]}</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:${distances[k]?'var(--gold)':'var(--muted)'};">${val}</div>
+    </div>`;
+  }).join('');
+  // Smart callouts — only show if actual distances entered
+  const callouts = !isGeneric ? [200,175,150,125,100].map(y => {
+    const c = clubFor(y); if (!c) return null;
+    if (Math.abs(distances[c] - y) > 20) return null;
+    return `<span style="margin-right:8px;">📍 ${y}y → ${distNames[c]}</span>`;
+  }).filter(Boolean) : [];
+  return `
+    <div class="sect-title" style="margin-top:4px;">${label}</div>
+    <div class="card">
+      ${rows}
+      ${callouts.length ? `<div style="font-size:0.75rem;color:var(--gold);padding-top:10px;line-height:1.9;">${callouts.join('')}</div>` : ''}
+      ${note}
+    </div>`;
+}
+
+// ── SWING THOUGHTS ──
+function renderSwingThoughts() {
+  const bySkill = {
+    beginner: [
+      '🎯 <strong>Ball first, then ground</strong> — brush the grass just past where the ball was',
+      '🔄 <strong>Finish your swing</strong> — hold the pose until the ball lands. Can\'t hold it? You rushed it.',
+      '⚖️ <strong>Weight forward at impact</strong> — feel your belt buckle facing the target at the finish',
+      '✋ <strong>Grip pressure: 5 out of 10</strong> — tension kills the swing'
+    ],
+    high: [
+      '🔄 <strong>Slow takeaway</strong> — the backswing has no speed limit. Save it all for the downswing.',
+      '⚖️ <strong>Turn your shoulders, not just your arms</strong> — your chest should face away from the target at the top',
+      '🎯 <strong>One thought per session</strong> — pick it before you start, never change mid-round',
+      '📍 <strong>Divot target: just past the ball</strong> — if your divot starts before the ball, fix this first'
+    ],
+    'mid-high': [
+      '🏌️ <strong>Hip bump starts the downswing</strong> — left hip shifts toward target before arms move',
+      '💬 <strong>Smooth transition</strong> — there\'s a pause at the top. Don\'t rush from backswing to downswing.',
+      '🎯 <strong>Eyes on the back of the ball</strong> — not the top, the back. Watch contact happen.',
+      '✋ <strong>Grip pressure stays constant</strong> — don\'t tighten at impact. It\'s already happening too fast.'
+    ],
+    mid: [
+      '⚡ <strong>Lag — feel the clubhead drop</strong> — delay the release as long as possible. Hear the whoosh at the bottom.',
+      '🏌️ <strong>Hips open before the arms come down</strong> — if you\'re flipping, your hips stopped first',
+      '📐 <strong>Shaft lean at impact</strong> — hands ahead of the ball. This is what compression feels like.',
+      '🧠 <strong>Pick your shot shape</strong> — commit to a target and shape before you step in'
+    ],
+    'low-mid': [
+      '📐 <strong>Pressure shift is the swing</strong> — lead foot loads during transition, not after',
+      '🎯 <strong>Control your miss</strong> — know which way you miss under pressure and aim to compensate',
+      '⚡ <strong>Maintain spine angle to the finish</strong> — early extension kills consistency for your level',
+      '🧠 <strong>Swing thought: one shape, all day</strong> — pick draw or fade for the round and commit'
+    ],
+    low: [
+      '📍 <strong>Right elbow slots in — always</strong> — on the downswing the trail elbow finds your hip pocket',
+      '⚖️ <strong>Pressure leads the swing</strong> — ground force up through the lead side before the arms fire',
+      '🎯 <strong>Face control at impact</strong> — feel the face angle, don\'t just swing the path',
+      '🧠 <strong>Process over outcome</strong> — commit to the routine, let the result happen'
+    ]
+  };
+  const goalAddons = {
+    fun:      '😄 <strong>Have fun first</strong> — tension is the enemy. Laugh off the bad ones.',
+    break120: '🌱 <strong>Make contact and keep moving</strong> — don\'t stop mid-round to fix your swing',
+    break100: '🚫 <strong>One mistake at a time</strong> — bogeys are fine, doubles kill your score',
+    break90:  '🎯 <strong>Commit before you swing</strong> — indecision is the most common double bogey',
+    break80:  '🏆 <strong>Trust your routine</strong> — you have the swing. Trust it.'
+  };
+  const thoughts = bySkill[a.skill] || bySkill.mid;
+  const goalLine = goalAddons[a.goal] || '';
+  return `<div class="card">
+    ${thoughts.map(t => `<div class="cr"><span>${t}</span></div>`).join('')}
+    ${goalLine ? `<div class="cr" style="border-top:1px solid var(--border);margin-top:4px;padding-top:12px;"><span>${goalLine}</span></div>` : ''}
+  </div>`;
+}
+
+// ── CONTENT BUILDERS ──
+function bagSection() {
+  const name = a.bag || (a.equip==='none'?'Getting Started':a.equip==='starter'?'Starter Set':a.equip==='full'?'Full Set':'Custom Set');
+  if (a.equip === 'none') return `<div class="card"><div class="ct">Equipment Recommendations</div><div class="cb"><strong>Great starter sets (${hl(a.hand)}):</strong><br><br>🏌️ <strong>Callaway Strata</strong> — Best all-round beginner set<br>🏌️ <strong>Wilson Profile SGI</strong> — Ultra forgiving, great value<br>🏌️ <strong>Cleveland Launcher HB</strong> — Step up option<br><br>Budget $150–350. Search "${hl(a.hand).toLowerCase()} golf set" + any of these.</div></div>`;
+  return `<div class="card"><div class="ct">My Bag — ${name} (${hl(a.hand)})</div><div class="cb">${
+    a.equip==='starter'?'🎒 Starter set — focus on <strong>contact quality</strong> over distance. The clubs will do their job when you hit them flush.':
+    a.equip==='full'?'🏌️ Full set — you have everything you need. Focus on <em>which</em> club to use, not just how far each one goes.':
+    '⭐ Custom-fitted clubs — trust your fitting, swing within yourself, and let the clubs work.'
+  }</div></div>`;
+}
+
+function freqNote() {
+  return {
+    rare:   'Make every session count — quality beats quantity every time.',
+    weekly: 'One session a week is enough to build real momentum. Stay consistent and you\'ll see progress in 4–6 weeks.',
+    multi:  '2–3× a week is the sweet spot for rapid improvement. Mix range work with short game.',
+    daily:  'Daily practice is powerful — vary what you work on. Rotate: full swing, short game, putting.'
+  }[a.freq] || '';
+}
+
+function physNote() {
+  return {
+    back:      '⚠️ <strong>Back note:</strong> Keep your base wide, limit over-rotation at the top. Swing to 75% — distance comes from contact, not effort.',
+    shoulder:  '⚠️ <strong>Shoulder note:</strong> Shorten your backswing if needed. A 3/4 swing with great contact beats a full swing that hurts.',
+    knee:      `⚠️ <strong>Knee/hip note:</strong> Let your ${trail()} heel rise on the backswing — takes pressure off the joint.`,
+    returning: '🌱 <strong>Returning player:</strong> Go easy the first 2–3 sessions — muscle memory comes back fast.'
+  }[a.physical] || '';
+}
+
+function lessonNote() {
+  const exp = a.experience;
+  const les = a.lessons;
+  if (les === 'regular') return '✅ <strong>You\'re taking regular lessons</strong> — use this guide to reinforce what your pro teaches. If anything here conflicts with your pro\'s advice, always follow your pro.';
+  if (les === 'few')     return '📚 <strong>You\'ve had a few lessons</strong> — your fundamentals are set. Book a check-up lesson every 6–8 weeks to keep the patterns grooved.';
+  if (les === 'video')   return '📱 <strong>You\'re self-coaching with video</strong> — great habit. Add one in-person lesson every 2–3 months to catch things video can\'t. A trained eye spots what a camera misses.';
+  // none
+  if (exp === 'none' || exp === 'some') return '🎓 <strong>No formal lessons yet</strong> — one lesson with a local pro is the single best investment you can make. Even one session sets you on the right track and prevents bad habits from locking in.';
+  return '🎓 <strong>Consider a check-up lesson</strong> — even experienced players benefit from a fresh set of eyes every few months.';
+}
+
+function experienceBadge() {
+  return {
+    none:      {label:'Brand New', color:'tg-pur'},
+    some:      {label:'Some Rounds', color:'tg-gld'},
+    returning: {label:'Returning', color:'tg-org'},
+    years:     {label:'Multi-Year', color:'tg-grn'}
+  }[a.experience] || {label:'Golfer', color:'tg-gld'};
+}
+
+function renderRangeWarmup() {
+  const isBack   = a.physical === 'back';
+  const isSenior = a.age === 'senior';
+  const items = [
+    {e:'🔄', t:'Hip Rotations', d:'Hands on hips, slow circles. 10× each direction. Gets the lower body moving before any loading.'},
+    {e:'🙆', t:'Arm Circles', d:'Big slow circles forward then back. 10× each way. Loosens the shoulder girdle before you swing.'},
+    {e:'🤸', t:'Trunk Twists', d: isBack ? 'Gentle only — hold a club across your chest, rotate slowly each way. Stop at any discomfort.' : 'Club across your shoulders, rotate left and right. Hold 2 seconds at each end. 10 reps.'},
+    {e:'👐', t:'Wrist Circles', d:'Arms extended, circle wrists both ways. 10× each. Keeps the wrists loose through impact.'},
+    {e:'🏌️', t:'10 Pump Swings — No Ball', d: isSenior ? 'Half-swings only. Feel the arc, don\'t try to hit anything. Rhythm over range.' : 'Full practice swings without a ball. Feel the whole arc. Slow and smooth — this is not the time to rip it.'},
+    {e:'👣', t:'Feet Together Drill — 5 Balls', d:'First 5 balls with feet touching. Forces balance automatically. If you fall over, you\'re swinging too hard.'},
+  ];
+  return `<div class="card">
+    ${items.map(i=>`<div style="display:flex;align-items:flex-start;gap:12px;padding:9px 0;border-bottom:1px solid var(--border);">
+      <div style="font-size:1.5rem;flex-shrink:0;">${i.e}</div>
+      <div><div class="ct" style="font-size:0.85rem;">${i.t}</div><div class="cb">${i.d}</div></div>
+    </div>`).join('')}
+    <div class="cue" style="margin-top:6px;">💡 5 min warmup = 10 fewer penalty shots. Never skip it.</div>
+  </div>`;
+}
+
+function renderRange() {
+  const b = balls(), ph = phases();
+  const b0=5, b1=Math.round((b-b0)*0.40), b2=Math.round((b-b0)*0.35), b3=b-b0-b1-b2;
+  const hasDrv = a.weaknesses.includes('driving');
+  const hasIrn = a.weaknesses.includes('irons');
+  const hasSG  = a.weaknesses.includes('shortgame');
+  const focus  = wk();
+
+  const phaseCard = (n,color,title,clubs,balls,body,cue,highlight) =>
+    `<div class="card" ${highlight?'style="border-color:rgba(138,96,16,0.5);"':''}>
+      <span class="tag ${color}">${highlight?'⭐ ':''}Phase ${n}</span>
+      <div class="ct">${title}</div>
+      <div class="pills-row">${clubs.map(c=>`<span class="ptag">${c}</span>`).join('')}<span class="ptag">${balls} balls</span></div>
+      <div class="cb">${body}</div>
+      <div class="cue">💬 ${cue}</div>
+    </div>`;
+
+  let html = `<div class="stat-row">
+    <div class="stat"><div class="sn">${b}</div><div class="sl">Balls</div></div>
+    <div class="stat"><div class="sn">${ph}</div><div class="sl">Phases</div></div>
+    <div class="stat"><div class="sn">${{short:'15–30',medium:'30–45',long:'45–60',full:'60–90'}[a.duration]||'45–60'}</div><div class="sl">Minutes</div></div>
+    <div class="stat"><div class="sn">${gNum[a.goal]||'⛳'}</div><div class="sl">Goal</div></div>
+  </div>`;
+
+  // Warmup
+  html += `<div class="card"><span class="tag tg-pur">Phase 0</span><div class="ct">Warmup — No ball yet</div>
+    <div class="pills-row"><span class="ptag">PW</span><span class="ptag">3 min</span><span class="ptag">Always first</span></div>
+    <div class="cb">
+      <strong>Pump Swings</strong> · 10 reps, no ball — feel the club like a pendulum<br><br>
+      <strong>Feet Together</strong> · 5 shots — forces balance. Fall over? You swung too hard.<br><br>
+      <strong>Half Swings</strong> · 5 shots — club to 9 o'clock back, 3 o'clock through. Clean contact before full speed.
+    </div>
+    <div class="cue">💬 Warmup is non-negotiable — cold muscles build bad habits</div></div>`;
+
+  // Phase 1
+  html += phaseCard(1,'tg-gld','Short Irons — Contact Quality',['9-iron','PW','GW'],b1,
+    (hasIrn?'<strong>⭐ YOUR FOCUS AREA</strong> — this is where you recoup strokes. Every ball here is worth two on the course.<br><br>':'')
+    +`<strong>Ball position:</strong> center of stance. Weight 50/50 at setup, shifts fully to ${lead()} side at impact.<br>Focus: flush contact, divot just past the ball, consistent finish.`,
+    'Ball first, then ground — compress it', hasIrn);
+
+  if (ph >= 3) html += phaseCard(2,'tg-org','Mid Irons + Hybrid',['7-iron','6-iron','Hybrid'],b2,
+    `<strong>Ball position:</strong> 1–2 ball-widths toward ${trail()} foot as clubs get longer.<br>Same hip-fire sequence — hips before hands, always. Wider arc, not harder swing.`,
+    'Wider arc, same sequence — let the shaft do the work', false);
+
+  if (ph >= 4 || hasDrv) html += phaseCard(3,'tg-blu','Driver',[`Driver`],Math.round(b3*0.6),
+    (hasDrv?'<strong>⭐ YOUR FOCUS AREA</strong> — pick a target and commit. Swing at 80% — control beats distance every time.<br><br>':'')
+    +`<strong>Ball position:</strong> off ${lead()} instep. Tee high, slight upswing at impact. Swing smoother, not harder.`,
+    'Sweep up through the ball — tempo over power', hasDrv);
+
+  if (ph >= 4) html += phaseCard(4,'tg-grn','Game Simulation',['Any club'],Math.round(b3*0.4),
+    (hasSG?'<strong>⭐ YOUR FOCUS AREA</strong> — pick targets, play real shots. Land it on a spot and let it release.<br><br>':'')
+    +'Pick a different target every shot. Simulate real course decisions. Play the miss, not just the perfect shot.',
+    'Pick a target, commit, execute — no practice swings', hasSG);
+
+  return html;
+}
+
+// ── BACKYARD / HOME PLAN ──
+function renderBackyardPlan() {
+  const isShort  = a.duration === 'short';
+  const isMedium = a.duration === 'medium';
+  const minutes  = {short:'15–20', medium:'25–35', long:'40–50', full:'50–60'}[a.duration] || '30–45';
+  const hasPutt  = a.weaknesses.includes('putting');
+  const hasChip  = a.weaknesses.includes('shortgame');
+  const isBack   = a.physical === 'back';
+
+  const drill = (e,title,sub,body,cue,highlight) =>
+    `<div class="card" ${highlight?'style="border-color:rgba(138,96,16,0.5);"':''}>
+      ${highlight?'<span class="tag tg-gld">⭐ Focus Area</span>':''}
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+        <div style="font-size:1.6rem;">${e}</div>
+        <div><div class="ct">${title}</div><div style="font-size:0.72rem;color:var(--muted);">${sub}</div></div>
+      </div>
+      <div class="cb">${body}</div>
+      ${cue?`<div class="cue">💬 ${cue}</div>`:''}
+    </div>`;
+
+  let html = `<div class="stat-row">
+    <div class="stat"><div class="sn">${minutes}</div><div class="sl">Minutes</div></div>
+    <div class="stat"><div class="sn">0</div><div class="sl">Balls Needed</div></div>
+    <div class="stat"><div class="sn">🏠</div><div class="sl">No Range</div></div>
+    <div class="stat"><div class="sn">${gNum[a.goal]||'⛳'}</div><div class="sl">Goal</div></div>
+  </div>
+  <div class="card" style="background:rgba(45,106,63,0.08);border-color:rgba(45,106,63,0.3);">
+    <div class="cb" style="font-size:0.78rem;">🏡 <strong>No range needed.</strong> These drills build the same skills as a range session — just at a smaller scale. Grip, tempo, and putting are best practiced at home anyway.</div>
+  </div>`;
+
+  // Grip & Setup
+  html += drill('🤜','Grip & Setup Rehearsal','5 min · no ball required',
+    `Pick up your club 10 times and regrip from scratch each time. Check: <br>
+    <strong>1.</strong> Clubface square before your hands go on<br>
+    <strong>2.</strong> Light pressure — toothpaste test<br>
+    <strong>3.</strong> Ball position (use a tee on the floor if inside)<br>
+    Then take 20 slow practice swings focusing only on your takeaway — one-piece, hands-arms-chest together.`,
+    'Grip is the only contact with the club — get it right first', false);
+
+  // Mirror work
+  html += drill('🪞','Mirror Work — Swing Check','5 min · use any mirror or window',
+    `Stand side-on to a mirror (hallway mirror, bathroom, glass door). Take slow practice swings and check:<br>
+    <strong>Takeaway:</strong> club should track outside the hands, not roll inside<br>
+    <strong>Top:</strong> ${a.physical==='shoulder'?'Keep it to 3/4 — don\'t force a full turn if the shoulder protests':'club roughly parallel to ground, left arm relatively straight'}<br>
+    <strong>Finish:</strong> belt buckle facing target, ${trail()} foot on toe`,
+    'What you see in the mirror is what the ball sees', false);
+
+  // Putting mat or carpet
+  html += drill('🎳',hasPutt?'Putting — YOUR FOCUS AREA':'Putting Practice',
+    hasPutt?'10 min · high priority':'8 min · mat or smooth carpet',
+    `${hasPutt?'<strong>⭐ This is where you drop the most strokes. 10 minutes here is worth 20 at the range.</strong><br><br>':''}
+    <strong>3-foot circle drill:</strong> Place 4–6 balls in a circle around a target (a coin, a cup, any mark). Make every one before you move out. Start at 3 feet.<br><br>
+    <strong>Gate drill:</strong> Put two tees 1 ball-width apart, 6 inches in front of the ball. Roll it through the gate — teaches a square putter face.<br><br>
+    <strong>Lag drill:</strong> If you have space, practice 10-footers to just stop the ball at a target. Distance control wins more putts than line.`,
+    'Make 10 from 3 feet before you touch a longer putt', hasPutt);
+
+  // Chipping net or chip without net
+  if (!isShort) {
+    html += drill('🏹',hasChip?'Chipping — YOUR FOCUS AREA':'Chipping Practice',
+      hasChip?'8 min · chipping net or a towel target':'5 min · chip into a target',
+      `${hasChip?'<strong>⭐ Short game is the fastest way to lower your score. Every chip counts.</strong><br><br>':''}
+      <strong>No net?</strong> Set a folded towel on the grass or carpet. Try to land the ball on it using a PW or 9-iron.<br><br>
+      <strong>Hinge-and-hold drill:</strong> Hinge the wrist on the backswing, then hold the angle through impact — no flipping. Your hands should finish slightly ahead of the clubhead.<br><br>
+      <strong>Key thought:</strong> Small backswing, accelerate through. Chip from a narrow stance, weight forward (60% on ${lead()} foot).`,
+      'Hands ahead at impact — every time', hasChip);
+  }
+
+  // Alignment & Balance
+  if (!isShort) {
+    html += drill('⚖️','Balance & Tempo Drill','5 min · slow swings only',
+      `${isBack?'⚠️ Keep these at 50% effort max — no torque on the lower back.<br><br>':''}
+      Take 20 full practice swings with your <strong>feet together</strong> (touching). This forces you to swing in balance. If you fall over, you're using too much body and not enough arms.<br><br>
+      Then take 10 more with a towel under your ${trail()} armpit. Keep it from falling — this keeps your arms connected to your body through the swing.`,
+      'Balance is the foundation — tempo follows', false);
+  }
+
+  return html;
+}
+
+// ── SIMULATOR PLAN ──
+function renderSimPlan() {
+  const b = balls(), ph = phases();
+  const minutes = {short:'30–40', medium:'45–60', long:'60–75', full:'75–90'}[a.duration] || '60–75';
+  const hasDrv  = a.weaknesses.includes('driving');
+  const hasIrn  = a.weaknesses.includes('irons');
+  const hasSG   = a.weaknesses.includes('shortgame');
+
+  const phaseCard = (n,color,title,clubs,desc,dataFocus,cue,highlight) =>
+    `<div class="card" ${highlight?'style="border-color:rgba(138,96,16,0.5);"':''}>
+      <span class="tag ${color}">${highlight?'⭐ ':''}Phase ${n}</span>
+      <div class="ct">${title}</div>
+      <div class="pills-row">${clubs.map(c=>`<span class="ptag">${c}</span>`).join('')}</div>
+      <div class="cb">${desc}</div>
+      ${dataFocus?`<div style="background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.2);border-radius:10px;padding:10px 13px;margin-top:9px;font-size:0.78rem;color:#60a5fa;">📊 <strong>Data to watch:</strong> ${dataFocus}</div>`:''}
+      <div class="cue">💬 ${cue}</div>
+    </div>`;
+
+  let html = `<div class="stat-row">
+    <div class="stat"><div class="sn">${b}</div><div class="sl">Balls</div></div>
+    <div class="stat"><div class="sn">${ph}</div><div class="sl">Phases</div></div>
+    <div class="stat"><div class="sn">${minutes}</div><div class="sl">Minutes</div></div>
+    <div class="stat"><div class="sn">📡</div><div class="sl">Sim Data</div></div>
+  </div>
+  <div class="card" style="background:rgba(59,130,246,0.06);border-color:rgba(59,130,246,0.25);">
+    <div class="ct" style="color:#60a5fa;">Using the Sim Data</div>
+    <div class="cb">Your simulator gives you real-time data. Focus on <strong>one number per phase</strong> — not all of them at once. The three numbers that matter most: <strong>face angle at impact</strong> (aim), <strong>attack angle</strong> (path), and <strong>smash factor</strong> (contact efficiency).</div>
+  </div>`;
+
+  // Warmup
+  html += `<div class="card"><span class="tag tg-pur">Phase 0</span><div class="ct">Warmup Shots — Get Your Baseline</div>
+    <div class="pills-row"><span class="ptag">PW or 9-iron</span><span class="ptag">10 balls</span><span class="ptag">50–60% effort</span></div>
+    <div class="cb">Hit 10 balls at partial effort. Don't look at anything yet. Let your body find its rhythm. On balls 6–10, start glancing at <strong>carry distance</strong> — this is your baseline for today.</div>
+    <div class="cue">💬 Don't chase numbers on warmup shots — just warm up</div></div>`;
+
+  // Phase 1: Face Angle Work
+  html += phaseCard(1,'tg-gld','Face Angle — The #1 Cause of Miss',
+    ['7-iron','9-iron'],
+    `Hit ${Math.round(b*0.3)} balls focused only on face angle at impact. A closed face = pull/hook, open face = push/slice.<br><br>
+    <strong>Drill:</strong> Hit 5 shots aiming to start the ball dead straight (not curve it). Note face angle on the sim display.<br>
+    <strong>Target:</strong> Get face angle within ±2° of square consistently.`,
+    'Face Angle at Impact — aim for ±2° of 0',
+    'Square face + any path = decent shot. Open face + anything = right field.', hasIrn);
+
+  if (ph >= 3) html += phaseCard(2,'tg-org','Attack Angle — Sweep vs. Dig',
+    [hasDrv?'Driver':'Hybrid', '5-iron or 7-iron'],
+    `${hasDrv?'<strong>⭐ Driver tip:</strong> You want a +2° to +4° attack angle (hitting up on the ball) for max carry and lower spin.<br><br>':''}
+    For irons, you want a slight negative attack angle (–2° to –4°) — ball first, then turf.<br><br>
+    <strong>Drill:</strong> Hit 10 driver shots. Check if your attack angle is positive. If negative, tee the ball higher and feel like you're sweeping up through it.`,
+    hasDrv ? 'Attack Angle (Driver) — aim for +2° to +4°' : 'Attack Angle (Irons) — aim for –2° to –4°',
+    hasDrv ? 'Sweep the driver up — ball launches higher, spins less, carries further' : 'Ball first, turf second — divot starts past where the ball was', hasDrv);
+
+  if (ph >= 4) html += phaseCard(3,'tg-blu','Smash Factor — Clean Contact',
+    ['Driver', '7-iron'],
+    `Smash factor = ball speed ÷ club speed. Target: <strong>Driver 1.48–1.50, Irons 1.38–1.42</strong>.<br><br>
+    If your smash is below target, you're losing energy at impact (toe/heel hits). Hit 10 balls trying to feel the center of the face every time.<br><br>
+    <strong>Impact tape drill:</strong> If available, put a piece of tape on the face after warmup — your impact pattern tells you everything.`,
+    'Smash Factor — Driver: 1.48+, Irons: 1.38+',
+    'Smash factor doesn\'t lie — low number = off-center contact', false);
+
+  html += phaseCard(ph >= 4 ? 4 : 3, 'tg-grn',hasSG?'Short Game Sim — YOUR FOCUS AREA':'Course Simulation',
+    ['Any club'],
+    `${hasSG?'<strong>⭐ Play a sim round focused on short game strategy — take the smarter shot every time, not the hero shot.</strong><br><br>':''}
+    Play 3–5 holes on the sim as a real round. Each shot: pick a specific target, not just "the fairway." Use your real pre-shot routine. Treat every shot like it counts.<br><br>
+    <strong>Strategy rule:</strong> Never aim at a pin guarded by trouble. Use the whole green. Miss in the easy spot.`,
+    null,
+    'Pick a target, commit, swing — sim rounds are real practice', hasSG);
+
+  return html;
+}
+
+// ── LOCATION SWITCHER ──
+let activeLoc = a.location || 'range';
+
+function switchLoc(loc) {
+  activeLoc = loc;
+  document.querySelectorAll('.loc-btn').forEach(b => b.classList.toggle('active', b.dataset.loc === loc));
+  document.querySelectorAll('.loc-panel').forEach(p => p.classList.toggle('on', p.dataset.loc === loc));
+}
+
+function renderSwing() {
+  const steps = [
+    {n:1,title:'Setup & Stance',body:`Feet shoulder-width. Ball center for short irons, moving toward your ${lead()} heel as clubs get longer. Weight 50/50. Stand tall — don't hunch over the ball.`,cue:'Spine angle set, chin up'},
+    {n:2,title:'Grip Pressure',body:'Hold the club like you\'re holding a tube of toothpaste without squeezing any out. Too tight = tension and blocked shots. Find the "5 out of 10."',cue:'Light grip = free swing'},
+    {n:3,title:'Takeaway — One Piece',body:`Hands, arms, and shoulders move together as one unit for the first 12 inches. No early wrist roll. Club head stays outside the hands.`,cue:'Turn the triangle — chest, arms, club together'},
+    {n:4,title:'Top of Backswing',body:`Your ${trail()} shoulder moves under your chin. Club parallel to the ground or slightly short — overswinging kills consistency. Feel the stretch in your core.`,cue:'Coil, don\'t collapse — feel the tension'},
+    {n:5,title:'Transition — Hips Lead',body:`Before your backswing finishes, your ${lead()} hip bumps toward the target. This is the move that separates good ball-strikers from everyone else. Hips before hands. Always.`,cue:'Bump the hip, then fire — sequence is everything'},
+    {n:6,title:'Impact — Hands Ahead',body:`Hands slightly ahead of the ball at impact. Weight shifted to ${lead()} side (80–90%). Shaft leans toward target. This is what creates that crisp "click."`,cue:'Ball first, ground second'},
+    {n:7,title:'Follow Through & Finish',body:`Belt buckle faces the target. ${trail()} foot up on its toe. Club finishes high over your ${lead()} shoulder. A full finish means a full swing.`,cue:'Hold the finish — if you can\'t pose it, you rushed it'},
+  ];
+  return steps.map(s=>`<div class="sw-step"><div class="sw-num">${s.n}</div><div style="flex:1;"><div class="ct">${s.title}</div><div class="cb">${s.body}</div><div class="cue">💬 ${s.cue}</div></div></div>`).join('');
+}
+
+function renderWarmup() {
+  const stretches = [
+    {e:'🔄',n:'Hip Rotations',d:'Hands on hips, slow circles. 10× each direction.',t:'1 min'},
+    {e:'🙆',n:'Arm Circles',d:'Big slow circles forward and back. Loosens the shoulder girdle.',t:'45 sec'},
+    {e:'🤸',n:'Trunk Twists',d:a.physical==='back'?'Gentle only — hold a club across your chest, rotate slowly. Stop at any discomfort.':'Club across shoulders, rotate left and right. Hold 2 seconds at each end.',t:'1 min'},
+    {e:'🦵',n:'Quad Stretch',d:'Hold one foot behind you, use a club for balance. 20 sec each leg.',t:'45 sec'},
+    {e:'👐',n:'Wrist Circles',d:'Extend arms, circle wrists both ways. Keeps wrists loose through impact.',t:'30 sec'},
+    {e:'🏌️',n:'Slow Practice Swings',d:a.age==='senior'||a.physical==='returning'?'Half-swings only — feel the arc, don\'t try to hit anything. 10 swings.':'Full swings without a ball. Feel the whole arc. 10 swings.',t:'2 min'},
+  ];
+  return stretches.map(s=>`<div class="card"><div style="display:flex;align-items:center;gap:12px;"><div style="font-size:1.8rem;">${s.e}</div><div style="flex:1;"><div class="ct">${s.n} <span style="color:var(--muted);font-size:0.72rem;font-weight:400;">· ${s.t}</span></div><div class="cb">${s.d}</div></div></div></div>`).join('');
+}
+
+function renderShort() {
+  const isPutt = a.weaknesses.includes('putting');
+  const isSG   = a.weaknesses.includes('shortgame');
+  const hasCourse = a.weaknesses.includes('course');
+  const hasMental = a.weaknesses.includes('mental');
+
+  let h = '';
+  if (isSG || isPutt) h += `<div class="nb-box">⭐ <strong>This is your priority area.</strong> 60% of all shots happen inside 100 yards. Owning this section drops more strokes than anything else in your bag.</div>`;
+
+  // Chipping
+  h += `<div class="card" ${isSG?'style="border-color:rgba(138,96,16,0.5);"':''}>
+    ${isSG?'<span class="tag tg-gld">⭐ YOUR FOCUS</span>':''}
+    <div class="ct">Chipping — The 7-Iron Method</div>
+    <div class="pills-row"><span class="ptag">7-Iron</span><span class="ptag">PW</span><span class="ptag">SW</span></div>
+    <div class="cb"><strong>Setup:</strong> Ball back in stance, weight on your ${lead()} side, hands ahead of the ball.<br><br>
+    <strong>The move:</strong> Shoulders rock like a putting stroke. No wrist flip — let the loft do the work.<br><br>
+    <strong>Drill:</strong> Place a towel 3 feet onto the green. Land 10 chips on it. Count your hits.</div>
+    <div class="cue">💬 Think "putt with a lofted club"</div></div>`;
+
+  // Putting
+  h += `<div class="card" ${isPutt?'style="border-color:rgba(138,96,16,0.5);"':''}>
+    ${isPutt?'<span class="tag tg-gld">⭐ YOUR FOCUS</span>':''}
+    <div class="ct">Putting — Distance Control First</div>
+    <div class="pills-row"><span class="ptag">Putter</span><span class="ptag">Every session</span></div>
+    <div class="cb"><strong>Gate drill:</strong> Two tees 1 inch wider than your putter. Roll 20 putts through the gate from 6 feet.<br><br>
+    <strong>Lag drill:</strong> From 30 feet, stop 3 balls within 3 feet of the hole. Keep going until you nail 3 in a row.<br><br>
+    <strong>Rule:</strong> Never 3-putt from inside 6 feet. Lag everything outside 20.</div>
+    <div class="cue">💬 Eyes over ball, rock the shoulders, quiet hands</div></div>`;
+
+  // Sand
+  if (a.equip !== 'none') h += `<div class="card"><div class="ct">Sand / Bunker Basics</div>
+    <div class="pills-row"><span class="ptag">Sand Wedge</span></div>
+    <div class="cb">Open your stance, open the clubface. Hit 2 inches <em>behind</em> the ball — you're splashing sand, not hitting the ball.<br><br>
+    <strong>Drill:</strong> Draw a line in the sand. Practice hitting the line consistently before adding a ball.</div>
+    <div class="cue">💬 Splash the sand — the ball rides along for free</div></div>`;
+
+  // Strategy
+  const stratTips = {
+    fun:      ['🌳 Play the easier tee box — zero shame, maximum fun','⛳ Pick one target per shot and commit fully','😄 Celebrate every par — they\'re harder than they look'],
+    break120: ['🎯 Tee it up on every par 3 — it\'s legal and it helps','🔄 Take more club than you think — most beginners come up short','📍 Aim for the center of every green, not the flag'],
+    break100: ['🚫 Never go for the hero shot — chip sideways and save bogey','📐 Course management beats swing improvement right now','🎯 Two-putt every hole and you\'ll break 100 automatically'],
+    break90:  ['📊 Track your stats: fairways, GIR, putts per round','🧠 Play for position — where does the miss hurt least?','⛳ Lag putt from outside 20 feet to eliminate 3-putts'],
+    break80:  ['📍 Know your exact carry distances for every club','🗺️ Play backwards from the hole — pick your ideal approach angle','🧊 Stay present — one shot at a time, no scoreboard math'],
+  };
+  const tips = stratTips[a.goal] || stratTips.fun;
+  h += `<div class="sect-title" style="margin-top:6px;">Course Strategy</div>`;
+  h += `<div class="card" ${hasCourse?'style="border-color:rgba(138,96,16,0.5);"':''}>
+    ${hasCourse?'<span class="tag tg-gld">⭐ YOUR FOCUS</span>':''}
+    <div class="ct">On-Course Strategy — ${gLabel[a.goal]||a.goal}</div>
+    <div class="cb">${tips.map(t=>`<div class="cr"><span>${t}</span></div>`).join('')}</div></div>`;
+
+  if (hasMental || a.goal === 'break80' || a.goal === 'break90') {
+    h += `<div class="card" ${hasMental?'style="border-color:rgba(138,96,16,0.5);"':''}>
+      ${hasMental?'<span class="tag tg-gld">⭐ YOUR FOCUS</span>':''}
+      <div class="ct">Mental Game</div>
+      <div class="cb">
+        <div class="cr"><span>🧘 <strong>Pre-shot routine:</strong> Pick target → visualize → pull trigger. Same 3 steps every time. Takes 10 seconds.</span></div>
+        <div class="cr"><span>🔄 <strong>Bad shot reset:</strong> 10 seconds to be annoyed. One deep breath. Then it's gone — never carry a shot to the next tee.</span></div>
+        <div class="cr"><span>💬 <strong>One thought only:</strong> Pick one swing cue before you start and stick to it the whole round.</span></div>
+      </div>
+      <div class="cue">💬 Golf is 90% mental once you can make contact</div></div>`;
+  }
+
+  h += `<div class="card"><div class="ct">The 3 Rules That Save Shots</div><div class="cb">
+    <div class="cr"><span>🚫 <strong>Never attempt a shot you haven't practiced.</strong> On the course is not the place to try it for the first time.</span></div>
+    <div class="cr"><span>📍 <strong>Miss to the safe side.</strong> Plan your misses — know where trouble is before you swing.</span></div>
+    <div class="cr"><span>⏱ <strong>Slow down on the first tee, last hole, and any shot over water.</strong> That's where amateurs throw strokes away.</span></div>
+  </div></div>`;
+
+  return h;
+}
+
+// ── CADDIE ──
+function getEffectiveDistances() {
+  const distTable = a.gender === 'f' ? genericDistsF : genericDistsM;
+  const gen = distTable[a.skill] || distTable.mid;
+  const result = {};
+  distKeys.forEach(k => {
+    if (distances[k]) {
+      result[k] = distances[k];
+    } else {
+      const range = gen[k] || '150–160';
+      const parts = range.split('–').map(Number);
+      result[k] = parts.length === 2 ? Math.round((parts[0] + parts[1]) / 2) : 150;
+    }
+  });
+  return result;
+}
+
+function buildCaddieSystemPrompt() {
+  const d = getEffectiveDistances();
+  const isGeneric = Object.keys(distances).filter(k => distances[k]).length === 0;
+  const distNote = isGeneric ? ' (typical for skill level)' : '';
+  const physNote = a.physical && a.physical !== 'none' ? ` Physical constraint: ${a.physical}.` : '';
+  return `You are a golf caddie for ${a.name}. Reply in ONE sentence only, max 20 words. Always end with the club in [brackets] if a club recommendation is relevant.
+Distances${distNote}: Driver ${d.driver}y · 3W ${d['3w']}y · Hybrid ${d.hybrid}y · 7i ${d['7i']}y · 9i ${d['9i']}y · PW ${d.pw}y · SW ${d.sw}y
+Skill: ${sLabel[a.skill]||a.skill}. Goal: ${gLabel[a.goal]||a.goal}.${physNote}
+Rules: Account for wind/elevation/lie if mentioned. Recommend one club only. No filler words. No yardage math shown.`;
+}
+
+function renderCaddie() {
+  const hasActualDists = distKeys.filter(k => distances[k]).length > 0;
+  const d = getEffectiveDistances();
+  const distNote = hasActualDists
+    ? 'Using your personalized distances.'
+    : 'Using estimated distances — add yours in the wizard for more precision.';
+
+  return `
+  <div class="ph" data-icon="🎙️">
+    <div class="ph-tag">⛳ AI-Powered</div>
+    <div class="ph-title">Voice Caddie</div>
+    <div class="ph-sub">Ask about your next shot</div>
+  </div>
+  <div class="sect">
+    <div class="mic-wrap">
+      <button class="mic-btn" id="micBtn" onclick="toggleListening()">🎙️</button>
+      <div class="mic-status" id="caddieStatus">Tap to ask your caddie</div>
+    </div>
+    <div class="caddie-bubble" id="caddieBubble">
+      <span style="color:var(--muted);font-size:0.83rem;">Your caddie is ready. Ask about distance, club selection, wind, or strategy.</span>
+    </div>
+    <div class="sect-title" style="margin-top:4px;">Try asking…</div>
+    <button class="example-q" onclick="askCaddie('I have 165 yards to the pin, slight downhill, no wind.')">📍 165 yards, slight downhill — what club?</button>
+    <button class="example-q" onclick="askCaddie('150 yards to the flag, into a 10 mph headwind.')">💨 150 yards into headwind</button>
+    <button class="example-q" onclick="askCaddie('I am in a greenside bunker, ball is sitting cleanly, 15 yards to the pin.')">🏖️ Greenside bunker, clean lie, 15 yards</button>
+    <button class="example-q" onclick="askCaddie('Tight lie 30 yards from the green, flag is front-left, need to land it short.')">🎯 30 yards out, tight lie, front pin</button>
+    <button class="example-q" onclick="askCaddie('Should I lay up or go for the green? 210 yards over water, I am hitting well today.')">🌊 210 yards over water — lay up or go?</button>
+  </div>
+  <div class="sect">
+    <div class="sect-title">My Distances (used by caddie)</div>
+    <div class="card">
+      <div class="caddie-dists">${distNote}<br><br>
+        ${distKeys.map(k => `<span>${distEmoji[k]} <strong>${distNames[k]}</strong> ${d[k]}y</span>`).join(' ')}
+      </div>
+    </div>
+  </div>`;
+}
+
+// ── CADDIE STATE ──
+let caddieRecognition = null;
+let caddieListening   = false;
+
+async function askCaddie(text) {
+  const bubble = document.getElementById('caddieBubble');
+  const status = document.getElementById('caddieStatus');
+  if (!bubble) return;
+
+  bubble.innerHTML = '<span style="color:var(--muted);">🤔 Thinking…</span>';
+  if (status) status.textContent = 'Consulting your caddie…';
+
+  try {
+    const res = await fetch('/.netlify/functions/caddie', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: text, systemPrompt: buildCaddieSystemPrompt() }),
+    });
+
+    if (!res.ok) {
+      const errText = await res.text();
+      throw new Error(errText || 'Server error');
+    }
+
+    const data = await res.json();
+    const reply = data.reply || "Let me think about that one.";
+
+    // Highlight club recommendation [in brackets]
+    const display = reply.replace(/\[([^\]]+)\]/g, '<span class="caddie-club">🏌️ $1</span>');
+    bubble.innerHTML = `<div>${display}</div>`;
+    if (status) status.textContent = 'Tap to ask another question';
+
+    // Speak the reply (strip brackets for TTS)
+    speakCaddieReply(reply.replace(/\[([^\]]+)\]/g, '$1'));
+
+  } catch (err) {
+    console.error('Caddie error:', err);
+    const msg = err.message.includes('Caddie not configured')
+      ? '⚙️ Caddie is being set up — check back soon.'
+      : '📡 Can\'t reach caddie right now. Check your connection.';
+    bubble.innerHTML = `<span style="color:#f87171;font-size:0.85rem;">${msg}</span>`;
+    if (status) status.textContent = 'Tap to try again';
+  }
+}
+
+function speakCaddieReply(text) {
+  if (!window.speechSynthesis) return;
+  speechSynthesis.cancel();
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.rate  = 1.05;
+  utter.pitch = 1.0;
+  // Prefer a clear male voice if available
+  const loadVoice = () => {
+    const voices = speechSynthesis.getVoices();
+    const pref = voices.find(v =>
+      v.name === 'Daniel' || v.name === 'Alex' ||
+      (v.lang.startsWith('en') && v.name.includes('Male'))
+    ) || voices.find(v => v.lang.startsWith('en-US'));
+    if (pref) utter.voice = pref;
+    speechSynthesis.speak(utter);
+  };
+  if (speechSynthesis.getVoices().length) {
+    loadVoice();
+  } else {
+    speechSynthesis.onvoiceschanged = loadVoice;
+  }
+}
+
+function toggleListening() {
+  caddieListening ? stopListening() : startListening();
+}
+
+function startListening() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) {
+    const s = document.getElementById('caddieStatus');
+    if (s) s.textContent = 'Voice not supported — use the examples below';
+    return;
+  }
+
+  caddieRecognition = new SR();
+  caddieRecognition.continuous     = false;
+  caddieRecognition.interimResults = true;
+  caddieRecognition.lang           = 'en-US';
+
+  caddieRecognition.onstart = () => {
+    caddieListening = true;
+    const btn = document.getElementById('micBtn');
+    const status = document.getElementById('caddieStatus');
+    if (btn) { btn.classList.add('listening'); btn.textContent = '⏹️'; }
+    if (status) status.textContent = 'Listening…';
+    const bubble = document.getElementById('caddieBubble');
+    if (bubble) bubble.innerHTML = '<span style="color:var(--muted);font-style:italic;">Say your shot details…</span>';
+  };
+
+  caddieRecognition.onresult = (event) => {
+    const transcript = Array.from(event.results).map(r => r[0].transcript).join('');
+    const bubble = document.getElementById('caddieBubble');
+    if (bubble) bubble.innerHTML = `<span style="color:var(--muted);font-style:italic;">"${transcript}"</span>`;
+    if (event.results[event.results.length - 1].isFinal) {
+      stopListening();
+      askCaddie(transcript);
+    }
+  };
+
+  caddieRecognition.onerror = (e) => {
+    stopListening();
+    const s = document.getElementById('caddieStatus');
+    if (s) s.textContent = e.error === 'not-allowed'
+      ? 'Mic blocked — tap the 🔒 in your browser to allow it'
+      : 'Didn\'t catch that — tap to try again';
+  };
+
+  caddieRecognition.onend = () => stopListening();
+  caddieRecognition.start();
+}
+
+function stopListening() {
+  caddieListening = false;
+  if (caddieRecognition) {
+    try { caddieRecognition.stop(); } catch (_) {}
+    caddieRecognition = null;
+  }
+  const btn = document.getElementById('micBtn');
+  const status = document.getElementById('caddieStatus');
+  if (btn) { btn.classList.remove('listening'); btn.textContent = '🎙️'; }
+  if (status && status.textContent === 'Listening…') {
+    status.textContent = 'Tap to ask your caddie';
+  }
+}
+
+function renderProgress() {
+  return `<div class="sect">
+    <div class="sect-title">Log a Session</div>
+    <textarea id="pnote" placeholder="What did you work on? What clicked? What needs more reps?"></textarea>
+    <button class="log-btn" onclick="logSession()">+ Log This Session</button>
+  </div>
+  <div class="sect">
+    <div class="sect-title">Session History</div>
+    <div id="prog-list"></div>
+  </div>
+  <div class="sect">
+    <div class="sect-title">Goal Tracker</div>
+    <div class="card">
+      <div class="ct">${gLabel[a.goal]||a.goal}</div>
+      <div class="cb">Track your scores. Every round teaches you something — even the rough ones.<br><br><strong>Focus areas:</strong> ${wk()}</div>
+    </div>
+  </div>`;
+}
+
+// ── NAVIGATION ──
+function go(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.nb').forEach(b => b.classList.remove('on'));
+  document.getElementById('pg-' + id).classList.add('on');
+  document.getElementById('nb-' + id).classList.add('on');
+}
+
+function toggleDark() {
+  const dark = document.body.classList.toggle('dark');
+  document.getElementById('darkBtn').textContent = dark ? '☀️' : '🌙';
+}
+
+// ── PROFILES ──
+const slug = s => (s||'').toLowerCase().replace(/\s+/g,'-');
+
+function applyProfile(key) {
+  // Profile context is handled via currentProfile + renderAllPages()
+  // This stub is required for enterProfile() to complete successfully
+}
+let currentProfile = 'main';
+
+const allProfiles = [
+  { key: 'main', name: a.name, desc: `${hl(a.hand)} · ${gLabel[a.goal]||a.goal}` },
+  ...a.members.map(m => ({ key: slug(m.name), name: m.name, desc: `${hl(m.hand)} · Age ${m.age}` }))
+];
+
+function buildLanding() {
+  document.getElementById('ld-sub').textContent = a.name + "'s Family Pocket Caddie";
+  document.getElementById('ld-cards').innerHTML = allProfiles.map(p => `
+    <div class="ld-card" onclick="enterProfile('${p.key}')">
+      <div class="ld-av">${p.key==='main'?(a.age==='senior'?'🧓':a.age==='junior'?'🏌️':'👤'):'👤'}</div>
+      <div style="flex:1;"><div class="ld-name">${p.name}</div><div class="ld-desc">${p.desc}</div></div>
+      <div class="ld-arr">›</div>
+    </div>`).join('');
+  if (allProfiles.length === 1) enterProfile('main'); // skip landing if solo
+}
+
+function buildPills() {
+  if (allProfiles.length <= 1) { document.getElementById('pills').style.display = 'none'; return; }
+  document.getElementById('pills').innerHTML = allProfiles.map(p =>
+    `<button class="pill ${p.key===currentProfile?'on':''}" id="pill-${p.key}" onclick="switchProfile('${p.key}')">${p.name}</button>`
+  ).join('');
+}
+
+function enterProfile(key) {
+  currentProfile = key;
+  document.getElementById('landing').classList.add('hidden');
+  document.getElementById('app').style.display = 'flex';
+  applyProfile(key);
+  renderAllPages();
+  renderProgList();
+  buildPills();
+  go('home');
+}
+
+function switchProfile(key) {
+  currentProfile = key;
+  document.querySelectorAll('.pill').forEach(p => p.classList.remove('on'));
+  const pill = document.getElementById('pill-' + key);
+  if (pill) pill.classList.add('on');
+  renderHome_page(key);
+  go('home');
+}
+
+function toLanding() {
+  if (allProfiles.length === 1) return;
+  document.getElementById('landing').classList.remove('hidden');
+  document.getElementById('app').style.display = 'none';
+}
+
+function renderHome_page(profile) {
+  document.getElementById('pg-home').innerHTML = renderHome(profile);
+  const p = allProfiles.find(p => p.key === profile);
+  document.getElementById('tb-sub').textContent = p ? `${p.desc}` : '';
+}
+
+function renderAllPages() {
+  renderHome_page(currentProfile);
+  const defaultLoc = a.location || 'range';
+  document.getElementById('pg-range').innerHTML = `
+    <div class="ph" data-icon="🏌️"><div class="ph-tag">⛳ Tailored to your game</div><div class="ph-title">Practice Session</div><div class="ph-sub">Where are you today?</div></div>
+    <div class="loc-switcher">
+      <button class="loc-btn${defaultLoc==='range'?' active':''}" data-loc="range" onclick="switchLoc('range')">🏌️ Range</button>
+      <button class="loc-btn${defaultLoc==='sim'?' active':''}" data-loc="sim" onclick="switchLoc('sim')">📡 Simulator</button>
+      <button class="loc-btn${defaultLoc==='backyard'||defaultLoc==='mix'?' active':''}" data-loc="backyard" onclick="switchLoc('backyard')">🏡 Backyard / Home</button>
+    </div>
+    <div class="loc-panel${defaultLoc==='range'?' on':''}" data-loc="range">
+      <div class="sect"><div class="sect-title">Before You Hit a Ball — Warmup</div>${renderRangeWarmup()}</div>
+      <div class="sect"><div class="sect-title">Session Plan</div>${renderRange()}</div>
+    </div>
+    <div class="loc-panel${defaultLoc==='sim'?' on':''}" data-loc="sim">
+      <div class="sect"><div class="sect-title">Simulator Session</div>${renderSimPlan()}</div>
+    </div>
+    <div class="loc-panel${defaultLoc==='backyard'||defaultLoc==='mix'?' on':''}" data-loc="backyard">
+      <div class="sect"><div class="sect-title">Backyard / Home Session</div>${renderBackyardPlan()}</div>
+    </div>`;
+  document.getElementById('pg-swing').innerHTML = `
+    <div class="ph" data-icon="⚡"><div class="ph-tag">Build it once · repeat forever</div><div class="ph-title">Swing Sequence</div><div class="ph-sub">7 checkpoints · same order every time</div></div>
+    <div class="sect">${renderSwing()}</div>
+    <div class="sect"><div class="sect-title">Pre-Round Warmup</div>${renderWarmup()}<div class="card"><div class="cue" style="margin:0;">💡 5 min warmup = 10 strokes saved. Never skip it.</div></div></div>`;
+  document.getElementById('pg-short').innerHTML = `
+    <div class="ph" data-icon="🎯"><div class="ph-tag">Where rounds are won</div><div class="ph-title">Short Game</div><div class="ph-sub">Chipping · Putting · Sand · Strategy</div></div>
+    <div class="sect">${renderShort()}</div>`;
+  document.getElementById('pg-progress').innerHTML = `
+    <div class="ph" data-icon="📈"><div class="ph-tag">Track your journey</div><div class="ph-title">My Progress</div><div class="ph-sub">Log sessions · notes · goal tracker</div></div>
+    ${renderProgress()}`;
+  document.getElementById('pg-caddie').innerHTML = renderCaddie();
+}
+
+// ── PROGRESS LOG ──
+const PKEY = 'gg-prog-' + slug(a.name);
+function logSession() {
+  const ta = document.getElementById('pnote');
+  const note = (ta.value||'').trim();
+  if (!note) return;
+  const saved = JSON.parse(localStorage.getItem(PKEY)||'[]');
+  saved.unshift({ date: new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}), note });
+  localStorage.setItem(PKEY, JSON.stringify(saved));
+  ta.value = '';
+  renderProgList();
+}
+function deleteSession(i) {
+  const saved = JSON.parse(localStorage.getItem(PKEY)||'[]');
+  saved.splice(i,1);
+  localStorage.setItem(PKEY, JSON.stringify(saved));
+  renderProgList();
+}
+function renderProgList() {
+  const el = document.getElementById('prog-list');
+  if (!el) return;
+  const saved = JSON.parse(localStorage.getItem(PKEY)||'[]');
+  el.innerHTML = saved.length
+    ? saved.map((s,i)=>`<div class="prog-entry"><div class="pe-date">${s.date}</div><div class="pe-note">${s.note}</div><button class="pe-del" onclick="deleteSession(${i})">✕</button></div>`).join('')
+    : '<div class="card"><div class="cb" style="text-align:center;padding:10px 0;">No sessions logged yet. Hit the range and come back! 🏌️</div></div>';
+}
+
+// ── INIT ──
+buildLanding();
+</script>
+</body>
+</html>
