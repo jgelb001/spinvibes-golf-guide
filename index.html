@@ -524,7 +524,11 @@
 
   <!-- ══ STEP 1: NAME + HAND + GENDER (combined) ══ -->
   <div class="step" id="step-1">
-    <div class="step-q">Let's start with you.</div>
+    <button onclick="activateBeginnerMode()" id="beginner-toggle" style="display:block;width:100%;background:rgba(34,197,94,0.1);border:2px solid rgba(34,197,94,0.35);border-radius:14px;padding:14px 16px;margin-bottom:20px;cursor:pointer;text-align:left;">
+      <div style="font-size:1rem;font-weight:700;color:#22c55e;margin-bottom:3px;">🌱 Brand new to golf?</div>
+      <div style="font-size:0.8rem;color:var(--muted);line-height:1.4;">Tap here for a beginner-friendly version — just 3 quick questions, no jargon.</div>
+    </button>
+    <div class="step-q">Already playing?</div>
     <div class="step-sub">Your name, dominant hand, and gender — shapes distances, diagrams, and every recommendation.</div>
     <input class="text-field" type="text" id="q-name" placeholder="First name  (e.g. Mike)" maxlength="30" oninput="validateStep()">
     <div class="section-label">Dominant hand</div>
@@ -562,9 +566,6 @@
           <div style="font-size:1.1rem;color:var(--muted);">—</div><div class="opt-label" style="font-size:0.78rem;color:var(--muted);">Prefer not to say</div><div class="opt-check"></div>
         </div>
       </label>
-    </div>
-    <div style="text-align:center;margin-top:4px;margin-bottom:-8px;">
-      <button onclick="activateBeginnerMode()" id="beginner-toggle" style="background:none;border:none;color:var(--muted);font-size:0.78rem;cursor:pointer;text-decoration:underline;padding:4px 0;">🌱 Brand new to golf? Start here instead</button>
     </div>
     <div class="wiz-nav">
       <button class="btn-back" onclick="goBack()">← Back</button>
@@ -1056,8 +1057,19 @@ function activateBeginnerMode() {
   beginnerMode = true;
   STEP_SEQ = BEGINNER_STEP_SEQ;
   TOTAL_STEPS = 5;
-  document.getElementById('beginner-toggle').style.display = 'none';
-  goNext(); // advance from step 1 into b2
+  // Replace the button with a confirmation badge — stay on step 1 so they enter name + gender
+  const btn = document.getElementById('beginner-toggle');
+  btn.style.background = 'rgba(34,197,94,0.18)';
+  btn.style.borderColor = '#22c55e';
+  btn.style.cursor = 'default';
+  btn.innerHTML = '<div style="font-size:1rem;font-weight:700;color:#22c55e;margin-bottom:3px;">✅ Beginner Mode — you\'re all set!</div><div style="font-size:0.8rem;color:var(--muted);line-height:1.4;">Just enter your name below, then we\'ll guide you through 3 simple questions.</div>';
+  btn.onclick = null;
+  // Update step header
+  const stepQ = document.querySelector('#step-1 .step-q');
+  if (stepQ) stepQ.textContent = 'First, tell us your name.';
+  const stepSub = document.querySelector('#step-1 .step-sub');
+  if (stepSub) stepSub.textContent = 'Just your first name and a couple basics — that\'s all we need.';
+  updateProgress();
 }
 
 function startWizard() {
