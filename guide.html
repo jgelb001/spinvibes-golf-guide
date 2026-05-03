@@ -928,11 +928,51 @@ function renderCaddie() {
 // ── CADDIE STATE ──
 let caddieRecognition = null;
 let caddieListening   = false;
+let lastCaddieCall    = 0;
+let caddieCountdownTimer = null;
+const CADDIE_COOLDOWN = 7000; // ms between API calls
+
+function setCaddieControlsDisabled(disabled) {
+  const micBtn = document.getElementById('micBtn');
+  const exampleBtns = document.querySelectorAll('.example-q');
+  if (micBtn) micBtn.disabled = disabled;
+  exampleBtns.forEach(b => { b.disabled = disabled; b.style.opacity = disabled ? '0.4' : ''; });
+}
+
+function startCaddieCountdown() {
+  const status = document.getElementById('caddieStatus');
+  setCaddieControlsDisabled(true);
+  let remaining = Math.ceil(CADDIE_COOLDOWN / 1000);
+  if (status) status.textContent = `Next question in ${remaining}s…`;
+  caddieCountdownTimer = setInterval(() => {
+    remaining--;
+    if (remaining <= 0) {
+      clearInterval(caddieCountdownTimer);
+      caddieCountdownTimer = null;
+      setCaddieControlsDisabled(false);
+      if (status) status.textContent = 'Tap to ask your caddie';
+    } else {
+      if (status) status.textContent = `Next question in ${remaining}s…`;
+    }
+  }, 1000);
+}
 
 async function askCaddie(text) {
   const bubble = document.getElementById('caddieBubble');
   const status = document.getElementById('caddieStatus');
   if (!bubble) return;
+
+  // Rate limit check
+  const now = Date.now();
+  const elapsed = now - lastCaddieCall;
+  if (lastCaddieCall > 0 && elapsed < CADDIE_COOLDOWN) {
+    const wait = Math.ceil((CADDIE_COOLDOWN - elapsed) / 1000);
+    if (status) status.textContent = `Next question in ${wait}s…`;
+    return;
+  }
+
+  lastCaddieCall = now;
+  startCaddieCountdown();
 
   bubble.innerHTML = '<span style="color:var(--muted);">🤔 Thinking…</span>';
   if (status) status.textContent = 'Consulting your caddie…';
@@ -955,7 +995,6 @@ async function askCaddie(text) {
     // Highlight club recommendation [in brackets]
     const display = reply.replace(/\[([^\]]+)\]/g, '<span class="caddie-club">🏌️ $1</span>');
     bubble.innerHTML = `<div>${display}</div>`;
-    if (status) status.textContent = 'Tap to ask another question';
 
     // Speak the reply (strip brackets for TTS)
     speakCaddieReply(reply.replace(/\[([^\]]+)\]/g, '$1'));
@@ -966,7 +1005,6 @@ async function askCaddie(text) {
       ? '⚙️ Caddie is being set up — check back soon.'
       : '📡 Can\'t reach caddie right now. Check your connection.';
     bubble.innerHTML = `<span style="color:#f87171;font-size:0.85rem;">${msg}</span>`;
-    if (status) status.textContent = 'Tap to try again';
   }
 }
 
