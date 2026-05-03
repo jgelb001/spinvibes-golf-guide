@@ -231,7 +231,8 @@ const a = {
   bag:       decodeURIComponent(P.get('b') || ''),
   lessons:   P.get('les') || 'none',   // none | video | few | regular
   physical:  P.get('p') || 'none',
-  members:   parseFM(P.get('fm') || '')
+  members:   parseFM(P.get('fm') || ''),
+  beg:       P.get('beg') || '0'
 };
 
 function parseFM(s) {
@@ -289,10 +290,62 @@ const wk    = () => a.weaknesses.map(w => wLabel[w]||w).join(' & ');
 const balls = () => ({short:28,medium:45,long:60,full:80}[a.duration]||50);
 const phases= () => ({short:2,medium:3,long:4,full:4}[a.duration]||3);
 
+// ── RENDER BEGINNER HOME ──
+function renderBeginnerHome() {
+  const bGoalLabel = {fun:'Enjoy the Game',fitness:'Get Active Outside',social:'Fit In on the Course',compete:'Build Real Skills'};
+  const bEquipLabel = {full:'Full Set',partial:'A Few Clubs',borrow:'Borrowing / Renting',none:'No Clubs Yet'};
+  const equipTip = {
+    full: 'With a full set, start with a 7-iron and putter. Don\'t worry about the other clubs yet.',
+    partial: 'Perfect — a 7-iron, a wedge, and a putter are all you need to learn the game.',
+    borrow: 'Borrowed clubs are totally fine. Pick a 7-iron and putter to focus on for now.',
+    none: 'No clubs needed to start — many courses rent clubs. Or look for a beginner set under $150.'
+  };
+  const goalTip = {
+    fun: 'Golf is best when it\'s social. Focus on keeping up with the group and enjoying the walk.',
+    fitness: 'Walking 18 holes burns 1,500+ calories. Start with 9 holes and build up.',
+    social: 'Know the basics of etiquette and pace of play — that matters more than your score.',
+    compete: 'Start with the fundamentals: grip, stance, and contact. Everything else follows.'
+  };
+  const equip = a.equip || 'full';
+  const bgoal = a.goal || 'fun';
+  return `
+  <div class="hero">
+    <div class="hg">Welcome, ${a.name}! 🌱</div>
+    <div class="ht">Your Beginner<br><span>Golf Guide</span></div>
+    <div class="hgoal">
+      <div class="hgn">🌱</div>
+      <div>
+        <div style="font-weight:700;font-size:0.83rem;color:var(--cream);">${bGoalLabel[bgoal]||'Enjoy the Game'}</div>
+        <div style="font-size:0.72rem;color:var(--muted);">${bEquipLabel[equip]||equip} · Just Getting Started</div>
+      </div>
+    </div>
+  </div>
+  <div class="grid">
+    <a class="gc" onclick="go('range')"><span class="gi">🏌️</span><div class="gt">First Swings</div><div class="gs">Grip · Stance · Contact</div></a>
+    <a class="gc" onclick="go('swing')"><span class="gi">📖</span><div class="gt">Golf Basics</div><div class="gs">Rules · Scoring · Etiquette</div></a>
+    <a class="gc" onclick="go('short')"><span class="gi">🎯</span><div class="gt">The Clubs</div><div class="gs">What each one does</div></a>
+    <a class="gc" onclick="go('progress')"><span class="gi">📈</span><div class="gt">My Progress</div><div class="gs">Log & track</div></a>
+  </div>
+  <div class="sect">
+    <div class="sect-title">Your Goal</div>
+    <div class="card"><div class="cb">🎯 ${goalTip[bgoal]||goalTip.fun}</div></div>
+    <div class="sect-title" style="margin-top:4px;">Your Clubs</div>
+    <div class="card"><div class="cb">🎒 ${equipTip[equip]||equipTip.full}</div></div>
+    <div class="sect-title" style="margin-top:4px;">First Things First</div>
+    <div class="card"><div class="cb">
+      ✅ <strong>Learn to make contact</strong> — hit the ball forward, that's a win<br><br>
+      ✅ <strong>Know the basic rules</strong> — see the Golf Basics tab<br><br>
+      ✅ <strong>Practice your grip</strong> — it's the one thing you can do anywhere<br><br>
+      ✅ <strong>Be patient</strong> — every golfer started exactly where you are
+    </div></div>
+  </div>`;
+}
+
 // ── RENDER HOME ──
 function renderHome(profile) {
   const isMain = profile === 'main';
   if (isMain) {
+    if (a.beg === '1') return renderBeginnerHome();
     return `
     <div class="hero">
       <div class="hg">Welcome back, ${a.name}</div>
@@ -546,7 +599,37 @@ function renderRangeWarmup() {
   </div>`;
 }
 
+function renderBeginnerPractice() {
+  return `
+  <div class="card"><div class="ct">🏌️ Your First Range Session (30 min)</div>
+    <div class="pills-row"><span class="ptag">7-Iron</span><span class="ptag">Putter</span><span class="ptag">~30 balls</span></div>
+    <div class="cb">
+      <strong>Phase 1 — Grip &amp; Setup (5 min, no hitting)</strong><br>
+      Take your grip, set your stance, and just hold the position. Does it feel natural? Adjust until it does. Do this 10 times without swinging.<br><br>
+      <strong>Phase 2 — Half Swings (10 balls)</strong><br>
+      Swing to hip height only — backswing and follow-through. Focus only on making contact. Celebrate every hit ball.<br><br>
+      <strong>Phase 3 — Full Swings (15 balls)</strong><br>
+      Make full swings with your 7-iron. Don't aim for distance — aim for contact and a swing that feels smooth.<br><br>
+      <strong>Phase 4 — Putting (5 min)</strong><br>
+      Find the practice green. Drop 3 balls and putt from 6 feet. Just try to roll it in the hole.
+    </div>
+    <div class="cue">💬 One session a week is enough to see real improvement as a beginner</div>
+  </div>
+  <div class="card"><div class="ct">🎯 What to Focus On (in order)</div><div class="cb">
+    <div class="cr"><span>1️⃣ <strong>Grip</strong> — practice holding the club correctly every time</span></div>
+    <div class="cr"><span>2️⃣ <strong>Contact</strong> — hitting the ball solidly, not distance</span></div>
+    <div class="cr"><span>3️⃣ <strong>Direction</strong> — getting the ball going roughly where you aimed</span></div>
+    <div class="cr"><span>4️⃣ <strong>Putting</strong> — you use this every hole, so don't ignore it</span></div>
+    <div class="cr"><span>5️⃣ <strong>Everything else</strong> — once you have 1–4, the rest will come</span></div>
+  </div></div>
+  <div class="card"><div class="ct">💡 Beginner Tips</div><div class="cb">
+    Don't try to hit the ball far. The harder you swing, the worse it usually goes. Focus on a smooth, balanced swing — distance comes naturally as your technique improves.<br><br>
+    <strong>One tip per session.</strong> Pick one thing to work on and ignore everything else. Trying to fix 5 things at once fixes nothing.
+  </div></div>`;
+}
+
 function renderRange() {
+  if (a.beg === '1') return renderBeginnerPractice();
   const b = balls(), ph = phases();
   const b0=5, b1=Math.round((b-b0)*0.40), b2=Math.round((b-b0)*0.35), b3=b-b0-b1-b2;
   const hasDrv = a.weaknesses.includes('driving');
@@ -762,7 +845,74 @@ function switchLoc(loc) {
   document.querySelectorAll('.loc-panel').forEach(p => p.classList.toggle('on', p.dataset.loc === loc));
 }
 
+function renderBeginnerBasics() {
+  return `
+  <div class="card"><div class="ct">📖 How Golf Is Scored</div><div class="cb">
+    Each hole has a <strong>par</strong> — the number of shots a good player should take.<br><br>
+    <strong>Par 3</strong> = short hole, 3 shots expected<br>
+    <strong>Par 4</strong> = medium hole, 4 shots expected<br>
+    <strong>Par 5</strong> = long hole, 5 shots expected<br><br>
+    Your score per hole = shots taken. Lower is better.<br>
+    A <strong>bogey</strong> = 1 over par. That's totally fine as a beginner!<br>
+    Most beginners shoot 100–120 for 18 holes — and that's great.
+  </div></div>
+  <div class="card"><div class="ct">📋 Basic Rules to Know</div><div class="cb">
+    <div class="cr"><span>⛳ <strong>Tee up</strong> on the first shot of every hole — it makes it easier</span></div>
+    <div class="cr"><span>🚶 <strong>Play it as it lies</strong> — don't move your ball (unless your group agrees otherwise)</span></div>
+    <div class="cr"><span>⏱️ <strong>Keep pace</strong> — be ready to hit when it's your turn</span></div>
+    <div class="cr"><span>🔇 <strong>Stay quiet</strong> while others are hitting</span></div>
+    <div class="cr"><span>🏴 <strong>Rake the bunker</strong> after you play from the sand</span></div>
+    <div class="cr"><span>🌿 <strong>Fix your ball marks</strong> on the green with the repair tool</span></div>
+  </div></div>
+  <div class="card"><div class="ct">🤝 Golf Etiquette</div><div class="cb">
+    Golf has unwritten rules that matter as much as the actual rules.<br><br>
+    <strong>Pace of play</strong> is the #1 thing — keep up with the group ahead of you, not just ahead of the group behind you.<br><br>
+    <strong>Tip:</strong> Pick up your ball if you've taken 2× par on a hole. A 10 on a par 5 slows everyone down — just move on. Nobody minds.
+  </div></div>
+  <div class="card"><div class="ct">💡 Your First Round Tips</div><div class="cb">
+    <div class="cr"><span>✅ Don't keep score your first time out — just focus on having fun</span></div>
+    <div class="cr"><span>✅ Let faster groups play through — just wave them ahead</span></div>
+    <div class="cr"><span>✅ Play from the forward tees — no shame, it's the smart move</span></div>
+    <div class="cr"><span>✅ Bring snacks, water, and sunscreen</span></div>
+    <div class="cr"><span>✅ Ask questions — other golfers love helping beginners</span></div>
+  </div></div>`;
+}
+
+function renderBeginnerClubs() {
+  return `
+  <div class="card"><div class="ct">🎒 The Clubs Explained</div><div class="cb">
+    You don't need to know all 14 clubs. Start with these 4:<br><br>
+    <strong>🏌️ Driver</strong> — your longest club, used off the tee on par 4s and 5s. Hardest to hit. Skip it at first and use a 3-wood or 5-iron instead.<br><br>
+    <strong>⛳ 7-Iron</strong> — the most forgiving mid-range club. This is your best friend. Learn this one first.<br><br>
+    <strong>🎯 Pitching Wedge</strong> — for short shots near the green, chipping, and getting out of rough.<br><br>
+    <strong>🟢 Putter</strong> — used only on the green to roll the ball into the hole. You'll use this on every single hole.
+  </div></div>
+  <div class="card"><div class="ct">✋ The Grip</div><div class="cb">
+    The grip is the only thing connecting you to the club — get this right first.<br><br>
+    1. Hold the club in your fingers, not your palm<br>
+    2. Your ${a.hand === 'l' ? 'right' : 'left'} hand goes on top, ${a.hand === 'l' ? 'left' : 'right'} hand below<br>
+    3. Squeeze at about <strong>5 out of 10</strong> — firm but relaxed<br>
+    4. Both thumbs point straight down the shaft<br><br>
+    <div class="cue">💬 Practice your grip while watching TV — it only takes a few days to make it feel natural</div>
+  </div></div>
+  <div class="card"><div class="ct">🦶 Stance & Setup</div><div class="cb">
+    Before you think about swinging, get your setup right:<br><br>
+    • Feet about shoulder-width apart<br>
+    • Ball roughly in the center of your stance<br>
+    • Slight bend in your knees<br>
+    • Lean forward from your hips (not your waist)<br>
+    • Arms hanging naturally — don't reach<br><br>
+    <div class="cue">💬 If your setup feels awkward, the swing will feel awkward. Spend 5 minutes on setup before every practice session.</div>
+  </div></div>
+  <div class="card"><div class="ct">🎯 Your First Swing Goal</div><div class="cb">
+    Forget distance. Forget form. Just focus on one thing:<br><br>
+    <strong>Make contact with the ball.</strong><br><br>
+    That's it. A ball that rolls 30 yards forward is a success. Once you can make consistent contact, everything else follows naturally.
+  </div></div>`;
+}
+
 function renderSwing() {
+  if (a.beg === '1') return renderBeginnerBasics();
   const steps = [
     {n:1,title:'Setup & Stance',body:`Feet shoulder-width. Ball center for short irons, moving toward your ${lead()} heel as clubs get longer. Weight 50/50. Stand tall — don't hunch over the ball.`,cue:'Spine angle set, chin up'},
     {n:2,title:'Grip Pressure',body:'Hold the club like you\'re holding a tube of toothpaste without squeezing any out. Too tight = tension and blocked shots. Find the "5 out of 10."',cue:'Light grip = free swing'},
@@ -788,6 +938,7 @@ function renderWarmup() {
 }
 
 function renderShort() {
+  if (a.beg === '1') return renderBeginnerClubs();
   const isPutt = a.weaknesses.includes('putting');
   const isSG   = a.weaknesses.includes('shortgame');
   const hasCourse = a.weaknesses.includes('course');

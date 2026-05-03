@@ -563,9 +563,86 @@
         </div>
       </label>
     </div>
+    <div style="text-align:center;margin-top:4px;margin-bottom:-8px;">
+      <button onclick="activateBeginnerMode()" id="beginner-toggle" style="background:none;border:none;color:var(--muted);font-size:0.78rem;cursor:pointer;text-decoration:underline;padding:4px 0;">🌱 Brand new to golf? Start here instead</button>
+    </div>
     <div class="wiz-nav">
       <button class="btn-back" onclick="goBack()">← Back</button>
       <button class="btn-next" id="btn-next-1" onclick="goNext()" disabled>Continue →</button>
+    </div>
+  </div>
+
+  <!-- ══ STEP B2: WHY PLAY (beginner) ══ -->
+  <div class="step" id="step-b2">
+    <div style="display:inline-block;background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.3);border-radius:20px;padding:4px 14px;font-size:0.7rem;color:#22c55e;letter-spacing:1px;margin-bottom:14px;">🌱 BEGINNER MODE</div>
+    <div class="step-q">Why do you want to play golf?</div>
+    <div class="step-sub">No wrong answer — this shapes what your guide focuses on.</div>
+    <div class="opt-grid two-col">
+      <label class="opt"><input type="radio" name="bgoal" value="fun" onchange="validateStep()">
+        <div class="opt-card" style="flex-direction:column;align-items:center;text-align:center;padding:20px 12px;gap:8px;">
+          <div class="opt-icon">🎉</div><div class="opt-label">Fun &amp; Family</div>
+          <div style="font-size:0.7rem;color:var(--muted);">Enjoy the game, play with people you like</div><div class="opt-check"></div>
+        </div>
+      </label>
+      <label class="opt"><input type="radio" name="bgoal" value="fitness" onchange="validateStep()">
+        <div class="opt-card" style="flex-direction:column;align-items:center;text-align:center;padding:20px 12px;gap:8px;">
+          <div class="opt-icon">💪</div><div class="opt-label">Fitness &amp; Outdoors</div>
+          <div style="font-size:0.7rem;color:var(--muted);">Walk the course, get fresh air, stay active</div><div class="opt-check"></div>
+        </div>
+      </label>
+      <label class="opt"><input type="radio" name="bgoal" value="social" onchange="validateStep()">
+        <div class="opt-card" style="flex-direction:column;align-items:center;text-align:center;padding:20px 12px;gap:8px;">
+          <div class="opt-icon">🤝</div><div class="opt-label">Social &amp; Work</div>
+          <div style="font-size:0.7rem;color:var(--muted);">Client rounds, outings, networking</div><div class="opt-check"></div>
+        </div>
+      </label>
+      <label class="opt"><input type="radio" name="bgoal" value="compete" onchange="validateStep()">
+        <div class="opt-card" style="flex-direction:column;align-items:center;text-align:center;padding:20px 12px;gap:8px;">
+          <div class="opt-icon">🏆</div><div class="opt-label">Get Competitive</div>
+          <div style="font-size:0.7rem;color:var(--muted);">Learn the game properly and improve fast</div><div class="opt-check"></div>
+        </div>
+      </label>
+    </div>
+    <div class="wiz-nav">
+      <button class="btn-back" onclick="goBack()">← Back</button>
+      <button class="btn-next" id="btn-next-b2" onclick="goNext()" disabled>Continue →</button>
+    </div>
+  </div>
+
+  <!-- ══ STEP B3: CLUB SITUATION (beginner) ══ -->
+  <div class="step" id="step-b3">
+    <div style="display:inline-block;background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.3);border-radius:20px;padding:4px 14px;font-size:0.7rem;color:#22c55e;letter-spacing:1px;margin-bottom:14px;">🌱 BEGINNER MODE</div>
+    <div class="step-q">What's your club situation?</div>
+    <div class="step-sub">Don't worry if you're just starting out — we'll work with whatever you have.</div>
+    <div class="opt-grid two-col">
+      <label class="opt"><input type="radio" name="bequip" value="full" onchange="validateStep()">
+        <div class="opt-card" style="flex-direction:column;align-items:center;text-align:center;padding:20px 12px;gap:8px;">
+          <div class="opt-icon">🎒</div><div class="opt-label">Full Set</div>
+          <div style="font-size:0.7rem;color:var(--muted);">I have (or am getting) a complete set of clubs</div><div class="opt-check"></div>
+        </div>
+      </label>
+      <label class="opt"><input type="radio" name="bequip" value="partial" onchange="validateStep()">
+        <div class="opt-card" style="flex-direction:column;align-items:center;text-align:center;padding:20px 12px;gap:8px;">
+          <div class="opt-icon">⛳</div><div class="opt-label">Just a Few Clubs</div>
+          <div style="font-size:0.7rem;color:var(--muted);">A driver, a couple irons, and a putter</div><div class="opt-check"></div>
+        </div>
+      </label>
+      <label class="opt"><input type="radio" name="bequip" value="borrow" onchange="validateStep()">
+        <div class="opt-card" style="flex-direction:column;align-items:center;text-align:center;padding:20px 12px;gap:8px;">
+          <div class="opt-icon">🤲</div><div class="opt-label">Borrowing / Renting</div>
+          <div style="font-size:0.7rem;color:var(--muted);">Using someone else's clubs or course rentals</div><div class="opt-check"></div>
+        </div>
+      </label>
+      <label class="opt"><input type="radio" name="bequip" value="none" onchange="validateStep()">
+        <div class="opt-card" style="flex-direction:column;align-items:center;text-align:center;padding:20px 12px;gap:8px;">
+          <div class="opt-icon">🛍️</div><div class="opt-label">Don't Have Any Yet</div>
+          <div style="font-size:0.7rem;color:var(--muted);">Starting from scratch — guide will help</div><div class="opt-check"></div>
+        </div>
+      </label>
+    </div>
+    <div class="wiz-nav">
+      <button class="btn-back" onclick="goBack()">← Back</button>
+      <button class="btn-next" id="btn-next-b3" onclick="goNext()" disabled>Continue →</button>
     </div>
   </div>
 
@@ -969,9 +1046,19 @@
 // Display order: 1→3→5→6→7→9→11→12→14
 // ════════════════════════════════════════
 let currentStep = 0;
-const TOTAL_STEPS = 13;
-const STEP_SEQ = [1,2,3,4,5,6,7,8,9,10,11,15,12,14]; // actual step IDs in order
+let TOTAL_STEPS = 13;
+let STEP_SEQ = [1,2,3,4,5,6,7,8,9,10,11,15,12,14]; // actual step IDs in order
+const BEGINNER_STEP_SEQ = [1,'b2','b3',15,14];
+let beginnerMode = false;
 let familyCount = 0;
+
+function activateBeginnerMode() {
+  beginnerMode = true;
+  STEP_SEQ = BEGINNER_STEP_SEQ;
+  TOTAL_STEPS = 5;
+  document.getElementById('beginner-toggle').style.display = 'none';
+  goNext(); // advance from step 1 into b2
+}
 
 function startWizard() {
   document.getElementById('progressWrap').style.display = 'block';
@@ -1047,6 +1134,10 @@ function validateStep() {
     valid = !!document.querySelector('input[name="family"]:checked');
   } else if (currentStep === 14) {
     valid = true;
+  } else if (currentStep === 'b2') {
+    valid = !!document.querySelector('input[name="bgoal"]:checked');
+  } else if (currentStep === 'b3') {
+    valid = !!document.querySelector('input[name="bequip"]:checked');
   } else {
     const radios = document.querySelectorAll(`input[name="${getFieldName(currentStep)}"]:checked`);
     valid = radios.length > 0;
@@ -1144,18 +1235,18 @@ function getAnswers() {
     name:       document.getElementById('q-name').value.trim(),
     hand:       get('hand'),
     gender:     get('gender'),
-    age:        get('age'),
-    experience: get('experience'),
-    skill:      get('skill'),
-    goal:       get('goal'),
-    location:   get('location'),
+    age:        get('age') || '30s',
+    experience: beginnerMode ? 'none' : (get('experience') || ''),
+    skill:      beginnerMode ? 'beginner' : get('skill'),
+    goal:       beginnerMode ? (get('bgoal') || 'fun') : get('goal'),
+    location:   get('location') || 'range',
     weaknesses,
-    freq:       get('freq'),
-    duration:   get('duration'),
-    equip:      get('equip'),
-    bag:        (document.getElementById('q-bag').value || '').trim(),
-    lessons:    get('lessons'),
-    physical:   get('physical'),
+    freq:       get('freq') || 'weekly',
+    duration:   get('duration') || 'medium',
+    equip:      beginnerMode ? (get('bequip') || 'full') : (get('equip') || 'full'),
+    bag:        (document.getElementById('q-bag')?.value || '').trim(),
+    lessons:    get('lessons') || 'none',
+    physical:   get('physical') || 'none',
     theme:      get('theme') || 'forest',
     hasFamily:  get('family') === 'yes',
     members
@@ -1590,6 +1681,7 @@ function generateGuide() {
     les: a.lessons || '',
     p: a.physical,
     t: a.theme || 'forest',
+    ...(beginnerMode ? { beg: '1' } : {}),
     ...(fm ? { fm } : {}),
     ...(dist.replace(/,/g,'') ? { dist } : {})
   });
