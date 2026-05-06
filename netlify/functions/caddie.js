@@ -1,5 +1,6 @@
 // ── CADDIE FUNCTION ──
-// Proxies voice caddie requests to Claude Haiku.
+// Proxies caddie requests to Claude Haiku.
+// Supports both the guide (single message) and the PWA (multi-turn history).
 // API key stays server-side; origin check prevents third-party abuse.
 
 const https = require('https');
@@ -7,6 +8,8 @@ const https = require('https');
 const ALLOWED_ORIGINS = [
   'https://golf.spinvibes.com',
   'https://www.golf.spinvibes.com',
+  'https://spinvibes.com',
+  'https://www.spinvibes.com',
   'http://localhost:8888',  // netlify dev
   'http://localhost:3000',
 ];
@@ -42,12 +45,31 @@ exports.handler = async (event) => {
     return { statusCode: 400, body: 'Bad Request: invalid JSON' };
   }
 
-  const { message, systemPrompt } = body;
-  if (!message || typeof message !== 'string' || message.length > 500) {
-    return { statusCode: 400, body: 'Bad Request: message missing or too long' };
-  }
+  const { message, messages, systemPrompt } = body;
+
   if (!systemPrompt || typeof systemPrompt !== 'string') {
     return { statusCode: 400, body: 'Bad Request: systemPrompt missing' };
+  }
+
+  // Support both formats:
+  //   guide: { message: "string", systemPrompt }  → single-turn
+  //   PWA:   { messages: [...], systemPrompt }     → multi-turn history
+  let messageArray;
+  if (Array.isArray(messages) && messages.length > 0) {
+    // Validate multi-turn: each item must have role + content string
+    const valid = messages.every(m =>
+      (m.role === 'user' || m.role === 'assistant') &&
+      typeof m.content === 'string' &&
+      m.content.length <= 2000
+    );
+    if (!valid || messages.length > 20) {
+      return { statusCode: 400, body: 'Bad Request: invalid messages array' };
+    }
+    messageArray = messages;
+  } else if (message && typeof message === 'string' && message.length <= 500) {
+    messageArray = [{ role: 'user', content: message }];
+  } else {
+    return { statusCode: 400, body: 'Bad Request: message or messages required' };
   }
 
   // ── API key ──
@@ -60,9 +82,9 @@ exports.handler = async (event) => {
   // ── Call Claude Haiku ──
   const requestBody = JSON.stringify({
     model: 'claude-haiku-4-5-20251001',
-    max_tokens: 80,
+    max_tokens: 120,
     system: systemPrompt,
-    messages: [{ role: 'user', content: message }],
+    messages: messageArray,
   });
 
   return new Promise((resolve) => {
