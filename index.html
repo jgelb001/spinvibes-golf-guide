@@ -1302,10 +1302,10 @@ function goalLabel(g) {
   return {fun:'Enjoy the Game',break120:'Break 120',break100:'Break 100',break90:'Break 90',break80:'Break 80'}[g] || 'Enjoy the Game';
 }
 function goalNum(g) {
-  return {fun:'😄',break120:'120',break100:'100',break90:'90',break80:'80'}[g] || '😄';
+  return {fun:'FUN',break120:'120',break100:'100',break90:'90',break80:'80'}[g] || 'FUN';
 }
 function handLabel(h) { return h === 'left' ? 'Lefty' : 'Righty'; }
-function handEmoji(h) { return h === 'left' ? '🤚' : '✋'; }
+function handEmoji(h) { return h === 'left' ? 'L' : 'R'; }
 
 function sessionBalls(duration, skill) {
   if (duration === 'short')  return 30;
@@ -1329,10 +1329,10 @@ function weaknessLabel(w) {
 }
 
 function physicalNote(p, hand) {
-  if (p === 'back')      return '⚠️ <strong>Back note:</strong> Keep your base wide, limit over-rotation at the top. Swing to 75% — distance comes from contact, not effort.';
-  if (p === 'shoulder')  return '⚠️ <strong>Shoulder note:</strong> Shorten your backswing if needed. A 3/4 swing with great contact beats a full swing that hurts.';
-  if (p === 'knee')      return '⚠️ <strong>Knee/hip note:</strong> Feel free to let your ' + (hand === 'left' ? 'right' : 'left') + ' heel rise on the backswing — takes pressure off the joint.';
-  if (p === 'returning') return '🌱 <strong>Returning player:</strong> Your body needs 2–3 sessions to remember. Go easy the first week — muscle memory comes back fast.';
+  if (p === 'back')      return '<strong>Back note:</strong> Keep your base wide, limit over-rotation at the top. Swing to 75% — distance comes from contact, not effort.';
+  if (p === 'shoulder')  return '<strong>Shoulder note:</strong> Shorten your backswing if needed. A 3/4 swing with great contact beats a full swing that hurts.';
+  if (p === 'knee')      return '<strong>Knee/hip note:</strong> Feel free to let your ' + (hand === 'left' ? 'right' : 'left') + ' heel rise on the backswing — takes pressure off the joint.';
+  if (p === 'returning') return '<strong>Returning player:</strong> Your body needs 2–3 sessions to remember. Go easy the first week — muscle memory comes back fast.';
   return '';
 }
 
@@ -1346,10 +1346,10 @@ function freqNote(freq) {
 
 function lessonRec(lessons) {
   if (lessons === 'none' || lessons === 'video')
-    return '📌 <strong>Pro tip:</strong> Even one lesson with a local pro can unlock a breakthrough. Book one when you\'re ready — it\'s worth it.';
+    return '<strong>Pro tip:</strong> Even one lesson with a local pro can unlock a breakthrough. Book one when you\'re ready — it\'s worth it.';
   if (lessons === 'few')
-    return '📌 <strong>Pro tip:</strong> Your lesson foundation is a great start. Return every 4–6 weeks to check your swing is staying on track.';
-  return '📌 <strong>Pro tip:</strong> Keep working with your instructor. Use this guide between lessons to reinforce what you\'re learning.';
+    return '<strong>Pro tip:</strong> Your lesson foundation is a great start. Return every 4–6 weeks to check your swing is staying on track.';
+  return '<strong>Pro tip:</strong> Keep working with your instructor. Use this guide between lessons to reinforce what you\'re learning.';
 }
 
 function bagSection(equip, bag, hand) {
@@ -1359,17 +1359,17 @@ function bagSection(equip, bag, hand) {
       <div class="card-title">Equipment Recommendations</div>
       <div class="card-body">
         <strong>Great starter sets (${handLabel(hand)}):</strong><br><br>
-        🏌️ <strong>Callaway Strata</strong> — Best all-round beginner set<br>
-        🏌️ <strong>Wilson Profile SGI</strong> — Ultra forgiving, great value<br>
-        🏌️ <strong>Cleveland Launcher HB</strong> — Step up with more tech<br><br>
+        <strong>Callaway Strata</strong> — Best all-round beginner set<br>
+        <strong>Wilson Profile SGI</strong> — Ultra forgiving, great value<br>
+        <strong>Cleveland Launcher HB</strong> — Step up with more tech<br><br>
         Search "${handLabel(hand).toLowerCase()} golf set" + any of these brands. Budget $150–350 for a solid starter.
       </div></div>`;
   }
   return `<div class="card">
     <div class="card-title">My Bag — ${bagName} (${handLabel(hand)})</div>
     <div class="card-body">
-      ${equip === 'starter' ? '🎒 Starter set — focus on <strong>contact quality</strong> over distance. The clubs will do their job when you hit them flush.' : ''}
-      ${equip === 'full'    ? '🏌️ Full set — you have everything you need. Focus on learning which club to use <strong>when</strong>, not just how far each one goes.' : ''}
+      ${equip === 'starter' ? 'Starter set — focus on <strong>contact quality</strong> over distance. The clubs will do their job when you hit them flush.' : ''}
+      ${equip === 'full'    ? 'Full set — you have everything you need. Focus on learning which club to use <strong>when</strong>, not just how far each one goes.' : ''}
       ${equip === 'custom'  ? '⭐ Custom-fitted clubs — you\'re set up for success. Trust your fitting, swing within yourself, and let the clubs work.' : ''}
     </div></div>`;
 }
@@ -1381,7 +1381,7 @@ function rangePhaseHTML(phase, title, clubs, balls, focus, cue, isWeakness) {
     <div class="card-title">${title}</div>
     <div class="pill-row">${clubs.map(c => `<span class="pill">${c}</span>`).join('')}<span class="pill">${balls} balls</span></div>
     <div class="card-body">${focus}</div>
-    <div class="cue-box">💬 ${cue}</div>
+    <div class="cue-box">${cue}</div>
   </div>`;
 }
 
@@ -1464,17 +1464,17 @@ function buildStretchSection(a) {
   const isReturn = a.physical === 'returning';
 
   const stretches = [
-    {icon:'🔄', name:'Hip Rotations', desc:'Hands on hips, rotate in slow circles. 10× each direction.', time:'1 min'},
-    {icon:'🙆', name:'Arm Circles', desc:'Big slow circles forward and back. Loosens the shoulder girdle.', time:'45 sec'},
-    {icon:'🤸', name:'Trunk Twists', desc: isBack ? 'Gentle only — hold a club across your chest, rotate slowly left and right. Stop at any discomfort.' : 'Club across shoulders, rotate left and right. Hold 2 seconds at each end.', time:'1 min'},
-    {icon:'🦵', name:'Quad Stretch', desc:'Hold one foot behind you, hold a club for balance if needed. 20 sec each leg.', time:'45 sec'},
-    {icon:'👐', name:'Wrist Circles', desc:'Extend arms, circle wrists both ways. Keeps those wrists loose through impact.', time:'30 sec'},
-    {icon:'🏌️', name:'Practice Swings', desc: isSenior || isReturn ? 'Slow half-swings only. 10 swings. Feel the club — don\'t try to hit anything.' : 'Slow full swings without a ball. Feel the whole arc. 10 swings.', time:'2 min'},
+    {icon:'ti-refresh', name:'Hip Rotations', desc:'Hands on hips, rotate in slow circles. 10× each direction.', time:'1 min'},
+    {icon:'ti-rotate-clockwise', name:'Arm Circles', desc:'Big slow circles forward and back. Loosens the shoulder girdle.', time:'45 sec'},
+    {icon:'ti-arrows-left-right', name:'Trunk Twists', desc: isBack ? 'Gentle only — hold a club across your chest, rotate slowly left and right. Stop at any discomfort.' : 'Club across shoulders, rotate left and right. Hold 2 seconds at each end.', time:'1 min'},
+    {icon:'ti-yoga', name:'Quad Stretch', desc:'Hold one foot behind you, hold a club for balance if needed. 20 sec each leg.', time:'45 sec'},
+    {icon:'ti-hand-stop', name:'Wrist Circles', desc:'Extend arms, circle wrists both ways. Keeps those wrists loose through impact.', time:'30 sec'},
+    {icon:'ti-flag-2', name:'Practice Swings', desc: isSenior || isReturn ? 'Slow half-swings only. 10 swings. Feel the club — don\'t try to hit anything.' : 'Slow full swings without a ball. Feel the whole arc. 10 swings.', time:'2 min'},
   ];
 
   return stretches.map(s => `<div class="card">
     <div style="display:flex;align-items:center;gap:14px;">
-      <div style="font-size:2rem;">${s.icon}</div>
+      <div style="width:40px;height:40px;border-radius:10px;background:rgba(201,168,76,0.1);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="ti ${s.icon}" style="font-size:1.3rem;color:var(--gold);"></i></div>
       <div style="flex:1;">
         <div class="card-title">${s.name} <span style="color:var(--muted);font-size:0.75rem;font-weight:400;">· ${s.time}</span></div>
         <div class="card-body" style="margin-top:4px;">${s.desc}</div>
@@ -1499,7 +1499,7 @@ function buildShortGameSection(a) {
       <strong>The move:</strong> Shoulders rock like a putting stroke. No wrist flip. Let the loft do the work.<br><br>
       <strong>Drill:</strong> Land 10 chips on a towel 3 feet onto the green. Count your hits.
     </div>
-    <div class="cue-box">💬 Think "putt with a lofted club"</div>
+    <div class="cue-box">Think "putt with a lofted club"</div>
   </div>`;
 
   // Putting
@@ -1512,7 +1512,7 @@ function buildShortGameSection(a) {
       <strong>Distance drill:</strong> From 30 feet, try to stop 3 balls within 3 feet of the hole. Repeat until you nail 3 in a row.<br><br>
       <strong>Rule:</strong> Never 3-putt from inside 6 feet. Lag everything from outside 20.
     </div>
-    <div class="cue-box">💬 Eyes over ball, rock the shoulders, quiet hands</div>
+    <div class="cue-box">Eyes over ball, rock the shoulders, quiet hands</div>
   </div>`;
 
   // Sand (if full equip)
@@ -1524,7 +1524,7 @@ function buildShortGameSection(a) {
         Open your stance, open the clubface. Hit 2 inches <em>behind</em> the ball — you're splashing sand, not the ball.<br><br>
         <strong>Drill:</strong> Draw a line in the sand. Practice hitting the line consistently before worrying about the ball.
       </div>
-      <div class="cue-box">💬 Splash the sand — the ball goes along for the ride</div>
+      <div class="cue-box">Splash the sand — the ball goes along for the ride</div>
     </div>`;
   }
 
@@ -1542,46 +1542,46 @@ function buildFamilyMemberSection(member) {
   if (isKid) {
     theme = 'rgba(236,72,153,0.15)'; emoji = '⭐';
     tagline = `${handStr} · Age ${member.age} · Fun First`;
-    goalLine = 'Make contact. Laugh out loud. Come back next time. 🌈';
+    goalLine = 'Make contact. Laugh out loud. Come back next time.';
     tips = [
-      '⏱ <strong>10–15 minutes max</strong> — attention spans are short, that\'s totally fine',
-      '🎯 <strong>One thing at a time</strong> — one thought, one club, one goal per trip',
-      '🌈 <strong>Follow their lead</strong> — if they want to putt all day, putt all day',
-      '🏆 <strong>Celebrate everything</strong> — any contact = amazing, any attempt = brave',
-      '🚫 <strong>No swing fixes mid-swing</strong> — keep it positive only',
+      '<strong>10–15 minutes max</strong> — attention spans are short, that\'s totally fine',
+      '<strong>One thing at a time</strong> — one thought, one club, one goal per trip',
+      '<strong>Follow their lead</strong> — if they want to putt all day, putt all day',
+      '<strong>Celebrate everything</strong> — any contact = amazing, any attempt = brave',
+      '<strong>No swing fixes mid-swing</strong> — keep it positive only',
     ];
   } else if (isJunior) {
-    theme = 'rgba(59,130,246,0.15)'; emoji = '🏆';
+    theme = 'rgba(59,130,246,0.15)'; emoji = '★';
     tagline = `${handStr} · Age ${member.age} · Junior`;
     goalLine = member.goal === 'compete' ? 'Train smart. Play hard. Compete.' : 'Have Fun. Learn Right. Get Good.';
     tips = [
-      '💥 <strong>Swing your hardest on the range</strong> — no holding back',
-      '😂 <strong>Miss one? Shake it off</strong> — even pros hit bad shots',
-      '🎯 <strong>One swing thought max</strong> per session — pick it and commit',
-      '🧠 <strong>Start with 7-iron</strong> before trying driver every session',
-      '🏆 <strong>Track personal bests</strong> — longest drive, closest to pin',
+      '<strong>Swing your hardest on the range</strong> — no holding back',
+      '<strong>Miss one? Shake it off</strong> — even pros hit bad shots',
+      '<strong>One swing thought max</strong> per session — pick it and commit',
+      '<strong>Start with 7-iron</strong> before trying driver every session',
+      '<strong>Track personal bests</strong> — longest drive, closest to pin',
     ];
   } else if (isSenior || member.goal === 'return') {
-    theme = 'rgba(212,175,112,0.15)'; emoji = '💜';
+    theme = 'rgba(212,175,112,0.15)'; emoji = '★';
     tagline = `${handStr} · Welcome Back`;
     goalLine = 'Move gently. Enjoy every swing. Welcome golf back into your life.';
     tips = [
-      '⏱ <strong>15–20 minutes is plenty</strong> — quality over quantity',
-      '🌿 <strong>Start with your most forgiving club</strong> — hybrid or 7-iron',
-      '🎵 <strong>Tempo is everything</strong> — nice and easy, no need to rush',
-      '🤲 <strong>Light grip pressure</strong> — hold the club like you\'re holding a flower',
-      '🏆 <strong>Celebrate every solid hit</strong> — that\'s what this is all about',
+      '<strong>15–20 minutes is plenty</strong> — quality over quantity',
+      '<strong>Start with your most forgiving club</strong> — hybrid or 7-iron',
+      '<strong>Tempo is everything</strong> — nice and easy, no need to rush',
+      '<strong>Light grip pressure</strong> — hold the club like you\'re holding a flower',
+      '<strong>Celebrate every solid hit</strong> — that\'s what this is all about',
     ];
   } else {
-    theme = 'rgba(45,106,63,0.2)'; emoji = '⛳';
+    theme = 'rgba(45,106,63,0.2)'; emoji = '★';
     tagline = `${handStr} · ${member.goal === 'fun' ? 'Playing for fun' : member.goal === 'learn' ? 'Learning the game' : 'Building their game'}`;
     goalLine = member.goal === 'compete' ? 'Train with purpose. Track scores. Improve each round.' : 'Build consistency. Have fun. Keep improving.';
     tips = [
-      '🎯 <strong>One swing thought per session</strong> — never change mid-session',
-      '📈 <strong>Track one stat per round</strong> — fairways, GIR, or putts',
-      '🏌️ <strong>Warmup before every session</strong> — 5 minutes saves your score',
-      '🧠 <strong>Play the shot in front of you</strong> — not the last one',
-      '🎉 <strong>End every session on a good shot</strong> — finish positive',
+      '<strong>One swing thought per session</strong> — never change mid-session',
+      '<strong>Track one stat per round</strong> — fairways, GIR, or putts',
+      '<strong>Warmup before every session</strong> — 5 minutes saves your score',
+      '<strong>Play the shot in front of you</strong> — not the last one',
+      '<strong>End every session on a good shot</strong> — finish positive',
     ];
   }
 
@@ -1641,7 +1641,7 @@ function buildStrikeSequence(a) {
       <div style="flex:1;">
         <div class="card-title">${s.title}</div>
         <div class="card-body">${s.body}</div>
-        <div class="cue-box">💬 ${s.cue}</div>
+        <div class="cue-box">${s.cue}</div>
       </div>
     </div></div>`).join('');
 }
@@ -1652,17 +1652,17 @@ function buildStrategySection(a) {
   const hasMental = a.weaknesses.includes('mental');
 
   const stratTips = {
-    fun:      ['🌳 Play the easier tee box — there is zero shame in this', '⛳ Pick one target per shot and commit fully', '😄 Celebrate every par — they\'re harder than they look'],
-    break120: ['🎯 Tee it up on every par 3 — it\'s legal and helpful', '🔄 Take more club than you think — most beginners come up short', '📍 Aim for the fat part of every green, not the flag'],
-    break100: ['🚫 Never try the hero shot — chip out sideways to save bogey', '📐 Course management > swing improvement right now', '🎯 Two-putt every hole and you\'ll break 100 automatically'],
-    break90:  ['📊 Track your stats: fairways hit, GIR, putts per round', '🧠 Play for position, not distance — where does the miss hurt least?', '⛳ Lag putting from outside 20 feet eliminates 3-putts'],
-    break80:  ['📍 Know your exact carry distances for every club', '🗺️ Play backwards from the hole — pick your ideal approach angle', '🧊 Stay in the present — one shot at a time, no scoreboard math'],
+    fun:      ['Play the easier tee box — there is zero shame in this', 'Pick one target per shot and commit fully', 'Celebrate every par — they\'re harder than they look'],
+    break120: ['Tee it up on every par 3 — it\'s legal and helpful', 'Take more club than you think — most beginners come up short', 'Aim for the fat part of every green, not the flag'],
+    break100: ['Never try the hero shot — chip out sideways to save bogey', 'Course management > swing improvement right now', 'Two-putt every hole and you\'ll break 100 automatically'],
+    break90:  ['Track your stats: fairways hit, GIR, putts per round', 'Play for position, not distance — where does the miss hurt least?', 'Lag putting from outside 20 feet eliminates 3-putts'],
+    break80:  ['Know your exact carry distances for every club', 'Play backwards from the hole — pick your ideal approach angle', 'Stay in the present — one shot at a time, no scoreboard math'],
   };
 
   const mentalTips = [
-    '🧘 <strong>Pre-shot routine:</strong> Same 3 steps before every shot. Pick target → visualize the shot → pull the trigger. Takes 10 seconds.',
-    '🔄 <strong>Bad shot reset:</strong> Allow yourself 10 seconds to be annoyed. Then take one deep breath and it\'s gone. Never carry a shot to the next tee.',
-    '💬 <strong>One thought only:</strong> Pick one swing cue before you start ("turn and fire", "hips first"). Stick to it the whole round — no changing mid-round.',
+    '<strong>Pre-shot routine:</strong> Same 3 steps before every shot. Pick target → visualize the shot → pull the trigger. Takes 10 seconds.',
+    '<strong>Bad shot reset:</strong> Allow yourself 10 seconds to be annoyed. Then take one deep breath and it\'s gone. Never carry a shot to the next tee.',
+    '<strong>One thought only:</strong> Pick one swing cue before you start ("turn and fire", "hips first"). Stick to it the whole round — no changing mid-round.',
   ];
 
   let html = '';
@@ -1682,16 +1682,16 @@ function buildStrategySection(a) {
       <div class="card-body">
         ${mentalTips.map(t => `<div class="check-row"><span>${t}</span></div>`).join('')}
       </div>
-      <div class="cue-box">💬 Golf is 90% mental once you can make contact. Your brain is either your biggest asset or your biggest liability.</div>
+      <div class="cue-box">Golf is 90% mental once you can make contact. Your brain is either your biggest asset or your biggest liability.</div>
     </div>`;
   }
 
   html += `<div class="card">
     <div class="card-title">The 3 Rules That Save Shots</div>
     <div class="card-body">
-      <div class="check-row"><span>🚫 <strong>Never go for a shot you've never practiced.</strong> On the course is not the place to try it for the first time.</span></div>
-      <div class="check-row"><span>📍 <strong>Miss to the right side of danger.</strong> Plan your misses — know where the safe miss is before you swing.</span></div>
-      <div class="check-row"><span>⏱ <strong>Take your time on the first tee, last hole, and any shot over water.</strong> Those are where amateurs throw strokes away.</span></div>
+      <div class="check-row"><span><strong>Never go for a shot you've never practiced.</strong> On the course is not the place to try it for the first time.</span></div>
+      <div class="check-row"><span><strong>Miss to the right side of danger.</strong> Plan your misses — know where the safe miss is before you swing.</span></div>
+      <div class="check-row"><span><strong>Take your time on the first tee, last hole, and any shot over water.</strong> Those are where amateurs throw strokes away.</span></div>
     </div></div>`;
 
   return html;
