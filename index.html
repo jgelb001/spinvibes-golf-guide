@@ -480,6 +480,15 @@
     .tp-rose .theme-name{color:#f0a0b8;}
     .tp-rose .theme-desc{color:#a07088;}
     .tp-rose .d1{background:#f0a0b8;} .tp-rose .d2{background:#fdf0f4;} .tp-rose .d3{background:#1e0f17;}
+
+    /* ── REVIEW STEP ── */
+    .review-row{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:8px;cursor:pointer;transition:border-color .15s,background .15s;user-select:none;}
+    .review-row:hover{border-color:var(--gold);}
+    .review-row:active{background:var(--surface2);transform:scale(0.99);}
+    .review-label{font-size:0.62rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:2px;}
+    .review-value{font-size:0.9rem;color:var(--cream);font-weight:600;line-height:1.3;}
+    .review-edit{color:var(--muted);font-size:1rem;flex-shrink:0;padding-left:10px;}
+    .review-intro{background:var(--surface2);border-radius:14px;padding:14px 16px;margin-bottom:16px;font-size:0.82rem;color:var(--muted);line-height:1.5;}
   </style>
 </head>
 <body>
@@ -1018,6 +1027,18 @@
     </div>
   </div>
 
+  <!-- ══ STEP REVIEW: REVIEW YOUR ANSWERS ══ -->
+  <div class="step" id="step-review">
+    <div class="step-q">Almost there.</div>
+    <div class="step-sub">Review your answers below. Tap any row to change it — then come back and generate.</div>
+    <div class="review-intro"><i class="ti ti-info-circle" style="color:var(--gold);vertical-align:-1px;"></i> Every answer shapes your guide. If something looks off, fix it now before we build your guide.</div>
+    <div id="review-content"></div>
+    <div class="wiz-nav" style="margin-top:16px;">
+      <button class="btn-back" onclick="goBack()"><i class="ti ti-chevron-left" style="vertical-align:-1px;"></i> Back</button>
+      <button class="btn-next" onclick="goNext()">Looks Good <i class="ti ti-check" style="vertical-align:-1px;"></i></button>
+    </div>
+  </div>
+
   <!-- ══ STEP 14: GENERATE ══ -->
   <div class="step" id="step-14">
     <div class="done-wrap">
@@ -1052,16 +1073,16 @@
 // Display order: 1→3→5→6→7→9→11→12→14
 // ════════════════════════════════════════
 let currentStep = 0;
-let TOTAL_STEPS = 13;
-let STEP_SEQ = [1,2,3,4,5,6,7,8,9,10,11,15,12,14]; // actual step IDs in order
-const BEGINNER_STEP_SEQ = [1,'b2','b3',15,14];
+let TOTAL_STEPS = 14;
+let STEP_SEQ = [1,2,3,4,5,6,7,8,9,10,11,15,12,'review',14]; // actual step IDs in order
+const BEGINNER_STEP_SEQ = [1,'b2','b3',15,'review',14];
 let beginnerMode = false;
 let familyCount = 0;
 
 function activateBeginnerMode() {
   beginnerMode = true;
   STEP_SEQ = BEGINNER_STEP_SEQ;
-  TOTAL_STEPS = 5;
+  TOTAL_STEPS = 6;
   // Replace the button with a confirmation badge — stay on step 1 so they enter name + gender
   const btn = document.getElementById('beginner-toggle');
   btn.style.background = 'rgba(34,197,94,0.18)';
@@ -1087,6 +1108,7 @@ function goTo(n) {
   const el = document.getElementById('step-' + n);
   if (el) el.classList.add('active');
   currentStep = n;
+  if (n === 'review') buildReviewStep();
   updateProgress();
   validateStep();
   window.scrollTo(0,0);
@@ -1155,6 +1177,8 @@ function validateStep() {
     valid = !!document.querySelector('input[name="bgoal"]:checked');
   } else if (currentStep === 'b3') {
     valid = !!document.querySelector('input[name="bequip"]:checked');
+  } else if (currentStep === 'review') {
+    valid = true;
   } else {
     const radios = document.querySelectorAll(`input[name="${getFieldName(currentStep)}"]:checked`);
     valid = radios.length > 0;
@@ -1671,6 +1695,72 @@ function buildStrategySection(a) {
     </div></div>`;
 
   return html;
+}
+
+// ════════════════════════════════════════
+// REVIEW STEP
+// ════════════════════════════════════════
+function buildReviewStep() {
+  const a = getAnswers();
+  const rows = [];
+
+  // Name + hand
+  const handLabel = a.hand === 'left' ? 'Left-Handed' : 'Right-Handed';
+  const genderLabel = {m:'Man',f:'Woman',x:'—'}[a.gender] || '';
+  if (a.name) rows.push({label:'Name & Basics', value:`${a.name} · ${handLabel}${genderLabel ? ' · ' + genderLabel : ''}`, step:1});
+
+  if (!beginnerMode) {
+    const expMap = {new:'Under 1 year','1yr':'1–3 years','3yr':'3–10 years','10yr':'10+ years'};
+    if (a.experience) rows.push({label:'Experience', value:expMap[a.experience]||a.experience, step:2});
+    const ageMap = {junior:'Under 18','young-adult':'18–35',adult:'36–55',senior:'56+'};
+    const skillMap = {beginner:'Total Beginner',high:'110+','mid-high':'100–110',mid:'90–100','low-mid':'80–90',low:'Under 80'};
+    rows.push({label:'Age & Skill Level', value:`${ageMap[a.age]||a.age} · ${skillMap[a.skill]||a.skill}`, step:3});
+    const locMap = {range:'Driving Range',sim:'Golf Simulator',yard:'Backyard / Home',mix:'Mix of Places'};
+    if (a.location) rows.push({label:'Practice Location', value:locMap[a.location]||a.location, step:4});
+  }
+
+  const goalMap = {fun:'Just Have Fun',break120:'Break 120',break100:'Break 100',break90:'Break 90',break80:'Break 80'};
+  if (a.goal) rows.push({label:'Goal', value:goalMap[a.goal]||a.goal, step: beginnerMode ? 'b2' : 5});
+
+  if (!beginnerMode) {
+    const wkMap = {driving:'Driving',irons:'Iron Play',shortgame:'Short Game',putting:'Putting',course:'Course Mgmt',mental:'Mental Game'};
+    if (a.weaknesses.length) rows.push({label:'Biggest Weaknesses', value:a.weaknesses.map(w=>wkMap[w]||w).join(' · '), step:6});
+    const freqMap = {rare:'A Few Times/Month',weekly:'Once a Week',multi:'2–3× a Week',daily:'Almost Daily'};
+    const durMap = {short:'15–30 min',medium:'30–45 min',long:'45–60 min',full:'60–90 min'};
+    if (a.freq) rows.push({label:'Practice Window', value:`${freqMap[a.freq]||a.freq} · ${durMap[a.duration]||a.duration}`, step:7});
+    const lesMap = {none:'No Lessons',few:'A Few Lessons',regular:'Regular Lessons',video:'Self-Taught (Video)'};
+    if (a.lessons) rows.push({label:'Lesson History', value:lesMap[a.lessons]||a.lessons, step:8});
+    const eqMap = {none:'No Clubs Yet',starter:'Starter Set',full:'Full Set',custom:'Custom-Fitted'};
+    const eqVal = `${eqMap[a.equip]||a.equip}${a.bag ? ' · ' + a.bag : ''}`;
+    rows.push({label:'Equipment', value:eqVal, step:9});
+    const phyMap = {none:'No Issues',back:'Back / Spine',shoulder:'Shoulder',knee:'Knee / Hip',returning:'Returning from Break'};
+    if (a.physical) rows.push({label:'Physical Considerations', value:phyMap[a.physical]||a.physical, step:11});
+  } else {
+    const beqMap = {full:'Full Set',partial:'A Few Clubs',borrow:'Borrowing / Renting',none:"Don't Have Any Yet"};
+    const beq = document.querySelector('input[name="bequip"]:checked');
+    if (beq) rows.push({label:'Club Situation', value:beqMap[beq.value]||beq.value, step:'b3'});
+  }
+
+  const themeMap = {forest:'Forest (Dark Green)',classic:'Classic (Cream)',ocean:'Ocean (Navy)',rose:'Rose (Plum)'};
+  if (a.theme) rows.push({label:'Guide Theme', value:themeMap[a.theme]||a.theme, step:15});
+
+  if (!beginnerMode) {
+    const famVal = a.hasFamily ? `Yes · ${a.members.length} family member${a.members.length !== 1 ? 's' : ''} added` : 'Just me';
+    rows.push({label:'Family Members', value:famVal, step:12});
+  }
+
+  const html = rows.map(r =>
+    `<div class="review-row" onclick="goTo(${typeof r.step === 'string' ? "'"+r.step+"'" : r.step})">
+      <div style="flex:1;">
+        <div class="review-label">${r.label}</div>
+        <div class="review-value">${r.value}</div>
+      </div>
+      <div class="review-edit"><i class="ti ti-pencil"></i></div>
+    </div>`
+  ).join('');
+
+  const container = document.getElementById('review-content');
+  if (container) container.innerHTML = html || '<div class="card"><div class="cb" style="text-align:center;color:var(--muted);">No answers collected yet.</div></div>';
 }
 
 // ════════════════════════════════════════

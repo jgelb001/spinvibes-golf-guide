@@ -151,6 +151,17 @@
     .dist-save-btn{width:100%;margin-top:20px;background:var(--green);border:1px solid var(--green-b);border-radius:12px;padding:14px;color:#e8f5ec;font-family:'Outfit',sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer;letter-spacing:.3px;}
     .dist-edit-btn{background:none;border:none;color:var(--muted);font-size:0.75rem;cursor:pointer;padding:2px 6px;border-radius:6px;transition:color .15s;}
     .dist-edit-btn:hover{color:var(--gold);}
+    /* ── COACH BRIEF ── */
+    .coach-brief{margin:14px 18px 0;background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:0 14px 14px 0;padding:16px 18px;}
+    .cb-head{font-size:0.62rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+    .profile-pill{display:inline-block;background:rgba(138,96,16,0.1);border:1px solid rgba(138,96,16,0.25);border-radius:20px;padding:3px 10px;font-size:0.68rem;font-weight:600;color:var(--gold);margin-right:4px;margin-bottom:6px;}
+    body.theme-forest .profile-pill{background:rgba(201,168,76,0.1);border-color:rgba(201,168,76,0.25);color:var(--gold);}
+    .focus-pill{display:inline-block;background:rgba(251,146,60,0.1);border:1px solid rgba(251,146,60,0.25);border-radius:20px;padding:3px 10px;font-size:0.68rem;font-weight:600;color:#fb923c;margin-right:4px;margin-bottom:6px;}
+    /* ── STRAVA-STYLE STAT ROW ── */
+    .stat-row{display:flex;gap:7px;padding:14px 18px;flex-wrap:wrap;}
+    .stat{flex:1;min-width:55px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 8px;text-align:center;}
+    .sn{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--gold);line-height:1;}
+    .sl{font-size:0.58rem;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-top:3px;}
   </style>
 </head>
 <body class="dark">
@@ -291,6 +302,58 @@ const wk    = () => a.weaknesses.map(w => wLabel[w]||w).join(' & ');
 const balls = () => ({short:28,medium:45,long:60,full:80}[a.duration]||50);
 const phases= () => ({short:2,medium:3,long:4,full:4}[a.duration]||3);
 
+// ── COACH BRIEF ──
+function buildCoachBrief() {
+  const w1 = a.weaknesses[0];
+  const w2 = a.weaknesses[1];
+  const goal = a.goal;
+
+  const diagMap = {
+    driving:   'Off the tee is where rounds unravel — wayward drives force recovery shots that chain into doubles.',
+    irons:     'Iron inconsistency is the quiet score-killer. Solid contact from 100–160 yards separates your current level from the next one.',
+    shortgame: 'The short game is where your scorecard lives. 60% of shots happen inside 100 yards — own this and the strokes follow.',
+    putting:   '3-putts are silent round-killers. Distance control from outside 20 feet and confidence inside 8 feet can cut 3–4 strokes per round.',
+    course:    'Course management is your fastest path to lower scores. You have the swing — you need a smarter plan before each shot.',
+    mental:    'You\'re dropping shots between your ears. One bad hole becomes two. A reset routine is worth as much as any physical fix.'
+  };
+  const fixMap = {
+    driving:   'Fix: pick a tighter target, swing at 80%, and always play for the safe miss side. Fairway first.',
+    irons:     '"Ball first, then ground" — one cue, every session. The fastest path to consistent iron play.',
+    shortgame: 'Land it 3 feet onto the green and let it release. One cue that cuts chipping errors in half.',
+    putting:   'Lag everything outside 20 feet within 3 feet. Eliminate 3-putts almost overnight.',
+    course:    'Before each shot: ask "where does the miss hurt most?" — then aim away from danger.',
+    mental:    '10-second rule: allow yourself 10 seconds to react to a bad shot. After that, it\'s gone. Never carry it to the next tee.'
+  };
+  const goalIntro = {
+    fun:      `${a.name}, your guide is set up to keep golf fun and stress-free — no score pressure, pure enjoyment`,
+    break120: `${a.name}, your path to 120 is simple: make contact, keep the ball moving forward, and enjoy every swing`,
+    break100: `${a.name}, breaking 100 comes down to eliminating disasters — not shooting birdies. Bogeys win`,
+    break90:  `${a.name}, the gap between 95 and 89 isn't talent — it's course management and short game consistency`,
+    break80:  `${a.name}, breaking 80 is a precision game. Every dropped stroke has a cause, and this guide is built around finding yours`
+  };
+  const freqInsight = {
+    rare:   'You have limited range time — make every session purposeful. No mindless ball-bashing. Follow the structured range plan in the Practice tab.',
+    weekly: 'One focused session per week is enough to build real momentum. Same structure every time — the routine is what compounds.',
+    multi:  '3× a week is the sweet spot for rapid improvement. Alternate: full swing → short game → sim or on-course.',
+    daily:  'Daily practice is powerful only if you vary the focus. Rotate: full swing / short game / putting / mental game.'
+  }[a.freq] || '';
+
+  let brief = `<div style="font-size:0.87rem;color:var(--cream);line-height:1.72;">`;
+  const intro = goalIntro[goal] || `${a.name}, your guide is built around your game`;
+  brief += `<strong>${intro}.</strong>`;
+  if (w1) {
+    brief += `<br><br>${diagMap[w1] || ''}${w2 && diagMap[w2] && w2 !== w1 ? ' ' + diagMap[w2] : ''}`;
+    brief += `<br><br>${fixMap[w1] || ''}${w2 && fixMap[w2] && w2 !== w1 ? ' ' + fixMap[w2] : ''}`;
+  }
+  if (freqInsight) brief += `<br><br>${freqInsight}`;
+  brief += `</div>`;
+
+  return `<div class="coach-brief">
+    <div class="cb-head"><i class="ti ti-message-circle" style="vertical-align:-1px;font-size:0.9rem;"></i> Coach's Brief</div>
+    ${brief}
+  </div>`;
+}
+
 // ── RENDER BEGINNER HOME ──
 function renderBeginnerHome() {
   const bGoalLabel = {fun:'Enjoy the Game',fitness:'Get Active Outside',social:'Fit In on the Course',compete:'Build Real Skills'};
@@ -349,15 +412,20 @@ function renderHome(profile) {
     if (a.beg === '1') return renderBeginnerHome();
     return `
     <div class="hero">
-      <div class="hg">Welcome back, ${a.name}</div>
-      <div class="ht">Your Golf<br><span>Pocket Guide</span></div>
-      <div class="hgoal">
-        <div class="hgn">${gNum[a.goal]||'–'}</div>
-        <div>
-          <div style="font-weight:700;font-size:0.83rem;color:var(--cream);">${gLabel[a.goal]||a.goal}</div>
-          <div style="font-size:0.72rem;color:var(--muted);">${hl(a.hand)} · ${sLabel[a.skill]||a.skill} · Focus: ${wk()}</div>
-        </div>
+      <div class="hg">${a.name.toUpperCase()}'S GAME PLAN</div>
+      <div class="ht" style="font-size:2.2rem;margin-bottom:10px;"><span>${gLabel[a.goal]||a.goal}</span></div>
+      <div>
+        <span class="profile-pill">${hl(a.hand)}</span>
+        <span class="profile-pill">${sLabel[a.skill]||a.skill}</span>
+        ${a.weaknesses.map(w=>`<span class="focus-pill">${wLabel[w]||w}</span>`).join('')}
       </div>
+    </div>
+    ${buildCoachBrief()}
+    <div class="stat-row">
+      <div class="stat"><div class="sn">${gNum[a.goal]||'–'}</div><div class="sl">Target</div></div>
+      <div class="stat"><div class="sn">${{short:'30',medium:'45',long:'60',full:'90'}[a.duration]||'45'}</div><div class="sl">Min/Sesh</div></div>
+      <div class="stat"><div class="sn">${{rare:'2×/mo',weekly:'1×/wk',multi:'3×/wk',daily:'Daily'}[a.freq]||'1×/wk'}</div><div class="sl">Frequency</div></div>
+      <div class="stat"><div class="sn">${a.weaknesses.length||1}</div><div class="sl">Focus Areas</div></div>
     </div>
     <div class="grid">
       <a class="gc" onclick="go('range')"><span class="gi"><i class="ti ti-run" style="font-size:1.5rem;color:var(--gold);"></i></span><div class="gt">Practice Session</div><div class="gs">Range · Sim · Home</div></a>
@@ -370,12 +438,12 @@ function renderHome(profile) {
       ${renderYardageChart()}
       <div class="sect-title" style="margin-top:4px;">Swing Thoughts — ${sLabel[a.skill]||a.skill}</div>
       ${renderSwingThoughts()}
-      <div class="sect-title" style="margin-top:4px;">Quick Reminders</div>
+      <div class="sect-title" style="margin-top:4px;">Session Notes</div>
       <div class="card">
         <div class="cb">
-          <i class="ti ti-target" style="color:var(--gold);vertical-align:-1px;"></i> <strong>One swing thought per session</strong> — never switch mid-session<br><br>
-          ${freqNote()}<br><br>
-          <i class="ti ti-map-pin" style="color:var(--gold);vertical-align:-1px;"></i> ${lessonNote()}
+          <i class="ti ti-target" style="color:var(--gold);vertical-align:-1px;"></i> <strong>One swing thought per session</strong> — pick it before you start, never switch mid-round<br><br>
+          <i class="ti ti-clock" style="color:var(--gold);vertical-align:-1px;"></i> ${freqNote()}<br><br>
+          <i class="ti ti-school" style="color:var(--gold);vertical-align:-1px;"></i> ${lessonNote()}
           ${physNote() ? '<br><br>' + physNote() : ''}
         </div>
       </div>
@@ -409,15 +477,13 @@ function renderMemberHome(m) {
     ? ['<i class="ti ti-clock"></i> <strong>15–20 min is plenty</strong> — quality over quantity','<i class="ti ti-leaf"></i> <strong>Start with your most forgiving club</strong>','<i class="ti ti-music"></i> <strong>Tempo is everything</strong> — smooth and easy','<i class="ti ti-hand-stop"></i> <strong>Light grip pressure</strong> — hold the club like a flower']
     : ['<i class="ti ti-target"></i> <strong>One swing thought per session</strong>','<i class="ti ti-chart-line"></i> <strong>Track one stat per round</strong> — fairways, GIR, or putts','<i class="ti ti-run"></i> <strong>Warmup before every session</strong>','<i class="ti ti-confetti"></i> <strong>End on a good shot</strong> — finish positive'];
   return `
-    <div class="hero" style="background:linear-gradient(160deg,rgba(138,96,16,0.12) 0%,var(--bg) 100%);">
-      <div class="hg">${tagline}</div>
-      <div class="ht">${m.name}'s<br><span>Golf Guide</span></div>
-      <div class="hgoal" style="border-color:rgba(138,96,16,0.3);">
-        <div class="hgn" style="color:${color};">${emoji}</div>
-        <div>
-          <div style="font-weight:700;font-size:0.83rem;color:var(--cream);">The Goal</div>
-          <div style="font-size:0.72rem;color:var(--muted);">${goalLine}</div>
-        </div>
+    <div class="hero" style="background:linear-gradient(160deg,rgba(138,96,16,0.1) 0%,var(--bg) 100%);">
+      <div class="hg">${m.name.toUpperCase()}'S GUIDE</div>
+      <div class="ht" style="font-size:2.2rem;margin-bottom:10px;"><span>${goalLine.split('.')[0]}</span></div>
+      <div>
+        <span class="profile-pill">${hl(m.hand)}</span>
+        ${m.age < 18 ? `<span class="profile-pill">Age ${m.age}</span>` : ''}
+        <span class="focus-pill" style="color:${color};background:rgba(138,96,16,0.08);border-color:rgba(138,96,16,0.2);">${emoji} ${isKid ? 'Fun First' : isJunior ? 'Junior' : isSenior ? 'Welcome Back' : 'Improving'}</span>
       </div>
     </div>
     <div class="sect">
