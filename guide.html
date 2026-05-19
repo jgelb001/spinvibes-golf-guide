@@ -1196,7 +1196,7 @@ async function askCaddie(text) {
   if (status) status.textContent = 'Consulting your caddie…';
 
   try {
-    const res = await fetch('/.netlify/functions/caddie', {
+    const res = await fetch('https://spinvibes-golf.netlify.app/.netlify/functions/caddie', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ message: text, systemPrompt: buildCaddieSystemPrompt() }),
