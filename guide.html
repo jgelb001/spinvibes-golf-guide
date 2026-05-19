@@ -7,6 +7,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Golf Guide</title>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
   <style>
     :root{--bg:#f4efe3;--surface:#fff;--surface2:#ebe5d4;--surface3:#ddd6c2;--green:#2d6a3f;--green-b:#3d8a52;--gold:#8a6010;--gold-l:#6b4a0c;--cream:#1c2018;--muted:#6a7a68;--border:rgba(0,0,0,0.1);--nav-h:64px;--safe-b:env(safe-area-inset-bottom,0px);}
     body.dark{--bg:#0a1a0e;--surface:#111f15;--surface2:#1a2f1e;--surface3:#223828;--gold:#c9a84c;--gold-l:#e8cc7a;--cream:#f0ead8;--muted:#6a8a6e;--border:rgba(255,255,255,0.08);}
@@ -123,7 +124,7 @@
     @media(min-width:600px){#app{max-width:500px;margin:0 auto;box-shadow:0 0 60px rgba(0,0,0,.12);}body.dark #app{box-shadow:0 0 80px rgba(0,0,0,.7);}#landing{align-items:center;}#landing>*{width:100%;max-width:480px;}.ld-cards{max-width:440px;}}
     /* ── CADDIE ── */
     .mic-wrap{display:flex;flex-direction:column;align-items:center;padding:20px 0 10px;}
-    .mic-btn{width:76px;height:76px;border-radius:50%;border:none;background:linear-gradient(135deg,var(--green),#1e4d2b);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.9rem;box-shadow:0 4px 22px rgba(45,106,63,0.45);transition:transform .15s,box-shadow .15s;}
+    .mic-btn{width:76px;height:76px;border-radius:50%;border:none;background:var(--green);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.9rem;box-shadow:0 4px 22px rgba(45,106,63,0.35);transition:transform .15s,box-shadow .15s;}
     .mic-btn:active{transform:scale(0.93);}
     .mic-btn.listening{background:linear-gradient(135deg,#b91c1c,#7f1d1d);animation:caddie-pulse 1.4s ease-in-out infinite;}
     @keyframes caddie-pulse{0%,100%{box-shadow:0 4px 22px rgba(185,28,28,0.4);}50%{box-shadow:0 4px 44px rgba(185,28,28,0.75),0 0 0 12px rgba(185,28,28,0.12);}}
@@ -147,7 +148,7 @@
     .dist-input{width:76px;background:var(--surface2);border:1.5px solid var(--border);border-radius:9px;padding:7px 10px;color:var(--cream);font-family:'Outfit',sans-serif;font-size:0.9rem;font-weight:600;text-align:center;outline:none;transition:border-color .15s;}
     .dist-input:focus{border-color:var(--gold);}
     .dist-input::placeholder{color:var(--muted);font-weight:400;}
-    .dist-save-btn{width:100%;margin-top:20px;background:linear-gradient(135deg,var(--green),#1e4d2b);border:1px solid var(--green-b);border-radius:12px;padding:14px;color:#e8cc7a;font-family:'Outfit',sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer;letter-spacing:.3px;}
+    .dist-save-btn{width:100%;margin-top:20px;background:var(--green);border:1px solid var(--green-b);border-radius:12px;padding:14px;color:#e8f5ec;font-family:'Outfit',sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer;letter-spacing:.3px;}
     .dist-edit-btn{background:none;border:none;color:var(--muted);font-size:0.75rem;cursor:pointer;padding:2px 6px;border-radius:6px;transition:color .15s;}
     .dist-edit-btn:hover{color:var(--gold);}
   </style>
@@ -155,7 +156,7 @@
 <body class="dark">
 
 <div id="landing">
-  <div class="ld-logo">⛳ Golf<span>Guide</span></div>
+  <div class="ld-logo"><i class="ti ti-flag-2" style="font-size:1.6rem;vertical-align:-2px;"></i> Golf<span>Guide</span></div>
   <div class="ld-sub" id="ld-sub">Your family pocket caddie</div>
   <div class="ld-q">Who's playing today?</div>
   <div class="ld-cards" id="ld-cards">
@@ -166,11 +167,11 @@
 <div id="app">
   <div id="topbar">
     <div onclick="toLanding()" style="cursor:pointer;">
-      <div class="tb-logo">⛳ Golf<span>Guide</span></div>
+      <div class="tb-logo"><i class="ti ti-flag-2" style="font-size:1rem;vertical-align:-1px;"></i> Golf<span>Guide</span></div>
       <div class="tb-sub" id="tb-sub"></div>
     </div>
     <div id="pills"></div>
-    <button class="tb-btn" onclick="toggleDark()" id="darkBtn">☀️</button>
+    <button class="tb-btn" onclick="toggleDark()" id="darkBtn"><i class="ti ti-sun"></i></button>
   </div>
   <div id="pages">
     <div class="page on" id="pg-home"></div>
@@ -206,7 +207,7 @@
 <div class="dist-sheet-overlay" id="distOverlay" onclick="closeDistSheet()"></div>
 <div class="dist-sheet" id="distSheet">
   <div class="dist-sheet-handle"></div>
-  <div class="dist-sheet-title">✏️ My Distances</div>
+  <div class="dist-sheet-title"><i class="ti ti-ruler-2" style="vertical-align:-2px;"></i> My Distances</div>
   <div class="dist-sheet-sub">Enter your average carry in yards. Leave blank to use estimated ranges.</div>
   <div id="distSheetRows"></div>
   <button class="dist-save-btn" onclick="saveDistSheet()">Save My Distances</button>
@@ -256,7 +257,7 @@ function parseFM(s) {
 // ── PARSE DISTANCES ──
 const distKeys = ['driver','3w','hybrid','7i','9i','pw','sw'];
 const distNames = {driver:'Driver','3w':'3-Wood',hybrid:'Hybrid / 5-Iron','7i':'7-Iron','9i':'9-Iron',pw:'Pitching Wedge',sw:'Sand Wedge'};
-const distEmoji = {driver:'🚀','3w':'🌲',hybrid:'🔄','7i':'🎯','9i':'⛳',pw:'🏌️',sw:'🏖️'};
+const distEmoji = {driver:'',  '3w':'', hybrid:'', '7i':'', '9i':'', pw:'', sw:''};
 const DIST_EDIT_KEY = 'dist_edits_' + (P.get('n') || 'golfer') + '_' + (P.get('s') || 'mid');
 const distances = {};
 (P.get('dist')||'').split(',').forEach((v,i) => { if (v && distKeys[i]) distances[distKeys[i]] = parseInt(v); });
@@ -280,7 +281,7 @@ function clubLabelFor(yards) {
 
 // ── HELPERS ──
 const gLabel = {fun:'Enjoy the Game',break120:'Break 120',break100:'Break 100',break90:'Break 90',break80:'Break 80'};
-const gNum   = {fun:'😄',break120:'120',break100:'100',break90:'90',break80:'80'};
+const gNum   = {fun:'FUN',break120:'120',break100:'100',break90:'90',break80:'80'};
 const wLabel = {driving:'Driving',irons:'Iron Play',shortgame:'Short Game',putting:'Putting',course:'Course Mgmt',mental:'Mental Game'};
 const sLabel = {beginner:'Beginner',high:'110+','mid-high':'100–110',mid:'90–100','low-mid':'80–90',low:'Under 80'};
 const hl = h => h === 'left' ? 'Lefty' : 'Righty';
@@ -310,10 +311,10 @@ function renderBeginnerHome() {
   const bgoal = a.goal || 'fun';
   return `
   <div class="hero">
-    <div class="hg">Welcome, ${a.name}! 🌱</div>
+    <div class="hg">Welcome, ${a.name}!</div>
     <div class="ht">Your Beginner<br><span>Golf Guide</span></div>
     <div class="hgoal">
-      <div class="hgn">🌱</div>
+      <div class="hgn"><i class="ti ti-leaf" style="font-size:1.8rem;color:var(--gold);"></i></div>
       <div>
         <div style="font-weight:700;font-size:0.83rem;color:var(--cream);">${bGoalLabel[bgoal]||'Enjoy the Game'}</div>
         <div style="font-size:0.72rem;color:var(--muted);">${bEquipLabel[equip]||equip} · Just Getting Started</div>
@@ -321,22 +322,22 @@ function renderBeginnerHome() {
     </div>
   </div>
   <div class="grid">
-    <a class="gc" onclick="go('range')"><span class="gi">🏌️</span><div class="gt">First Swings</div><div class="gs">Grip · Stance · Contact</div></a>
-    <a class="gc" onclick="go('swing')"><span class="gi">📖</span><div class="gt">Golf Basics</div><div class="gs">Rules · Scoring · Etiquette</div></a>
-    <a class="gc" onclick="go('short')"><span class="gi">🎯</span><div class="gt">The Clubs</div><div class="gs">What each one does</div></a>
-    <a class="gc" onclick="go('progress')"><span class="gi">📈</span><div class="gt">My Progress</div><div class="gs">Log & track</div></a>
+    <a class="gc" onclick="go('range')"><span class="gi"><i class="ti ti-run" style="font-size:1.5rem;color:var(--gold);"></i></span><div class="gt">First Swings</div><div class="gs">Grip · Stance · Contact</div></a>
+    <a class="gc" onclick="go('swing')"><span class="gi"><i class="ti ti-book" style="font-size:1.5rem;color:var(--gold);"></i></span><div class="gt">Golf Basics</div><div class="gs">Rules · Scoring · Etiquette</div></a>
+    <a class="gc" onclick="go('short')"><span class="gi"><i class="ti ti-flag-2" style="font-size:1.5rem;color:var(--gold);"></i></span><div class="gt">The Clubs</div><div class="gs">What each one does</div></a>
+    <a class="gc" onclick="go('progress')"><span class="gi"><i class="ti ti-chart-line" style="font-size:1.5rem;color:var(--gold);"></i></span><div class="gt">My Progress</div><div class="gs">Log & track</div></a>
   </div>
   <div class="sect">
     <div class="sect-title">Your Goal</div>
-    <div class="card"><div class="cb">🎯 ${goalTip[bgoal]||goalTip.fun}</div></div>
+    <div class="card"><div class="cb"><i class="ti ti-target" style="color:var(--gold);vertical-align:-1px;"></i> ${goalTip[bgoal]||goalTip.fun}</div></div>
     <div class="sect-title" style="margin-top:4px;">Your Clubs</div>
-    <div class="card"><div class="cb">🎒 ${equipTip[equip]||equipTip.full}</div></div>
+    <div class="card"><div class="cb"><i class="ti ti-backpack" style="color:var(--gold);vertical-align:-1px;"></i> ${equipTip[equip]||equipTip.full}</div></div>
     <div class="sect-title" style="margin-top:4px;">First Things First</div>
     <div class="card"><div class="cb">
-      ✅ <strong>Learn to make contact</strong> — hit the ball forward, that's a win<br><br>
-      ✅ <strong>Know the basic rules</strong> — see the Golf Basics tab<br><br>
-      ✅ <strong>Practice your grip</strong> — it's the one thing you can do anywhere<br><br>
-      ✅ <strong>Be patient</strong> — every golfer started exactly where you are
+      <i class="ti ti-check" style="color:var(--green);vertical-align:-1px;"></i> <strong>Learn to make contact</strong> — hit the ball forward, that's a win<br><br>
+      <i class="ti ti-check" style="color:var(--green);vertical-align:-1px;"></i> <strong>Know the basic rules</strong> — see the Golf Basics tab<br><br>
+      <i class="ti ti-check" style="color:var(--green);vertical-align:-1px;"></i> <strong>Practice your grip</strong> — it's the one thing you can do anywhere<br><br>
+      <i class="ti ti-check" style="color:var(--green);vertical-align:-1px;"></i> <strong>Be patient</strong> — every golfer started exactly where you are
     </div></div>
   </div>`;
 }
@@ -351,7 +352,7 @@ function renderHome(profile) {
       <div class="hg">Welcome back, ${a.name}</div>
       <div class="ht">Your Golf<br><span>Pocket Guide</span></div>
       <div class="hgoal">
-        <div class="hgn">${gNum[a.goal]||'⛳'}</div>
+        <div class="hgn">${gNum[a.goal]||'–'}</div>
         <div>
           <div style="font-weight:700;font-size:0.83rem;color:var(--cream);">${gLabel[a.goal]||a.goal}</div>
           <div style="font-size:0.72rem;color:var(--muted);">${hl(a.hand)} · ${sLabel[a.skill]||a.skill} · Focus: ${wk()}</div>
@@ -359,10 +360,10 @@ function renderHome(profile) {
       </div>
     </div>
     <div class="grid">
-      <a class="gc" onclick="go('range')"><span class="gi">🏌️</span><div class="gt">Practice Session</div><div class="gs">Range · Sim · Home</div></a>
-      <a class="gc" onclick="go('swing')"><span class="gi">⚡</span><div class="gt">Swing Sequence</div><div class="gs">7 steps · warmup inside</div></a>
-      <a class="gc" onclick="go('short')"><span class="gi">🎯</span><div class="gt">Short Game</div><div class="gs">Chipping · Putting · Strategy</div></a>
-      <a class="gc" onclick="go('progress')"><span class="gi">📈</span><div class="gt">My Progress</div><div class="gs">Log & track</div></a>
+      <a class="gc" onclick="go('range')"><span class="gi"><i class="ti ti-run" style="font-size:1.5rem;color:var(--gold);"></i></span><div class="gt">Practice Session</div><div class="gs">Range · Sim · Home</div></a>
+      <a class="gc" onclick="go('swing')"><span class="gi"><i class="ti ti-bolt" style="font-size:1.5rem;color:var(--gold);"></i></span><div class="gt">Swing Sequence</div><div class="gs">7 steps · warmup inside</div></a>
+      <a class="gc" onclick="go('short')"><span class="gi"><i class="ti ti-target" style="font-size:1.5rem;color:var(--gold);"></i></span><div class="gt">Short Game</div><div class="gs">Chipping · Putting · Strategy</div></a>
+      <a class="gc" onclick="go('progress')"><span class="gi"><i class="ti ti-chart-line" style="font-size:1.5rem;color:var(--gold);"></i></span><div class="gt">My Progress</div><div class="gs">Log & track</div></a>
     </div>
     <div class="sect">
       ${bagSection()}
@@ -372,9 +373,9 @@ function renderHome(profile) {
       <div class="sect-title" style="margin-top:4px;">Quick Reminders</div>
       <div class="card">
         <div class="cb">
-          🎯 <strong>One swing thought per session</strong> — never switch mid-session<br><br>
+          <i class="ti ti-target" style="color:var(--gold);vertical-align:-1px;"></i> <strong>One swing thought per session</strong> — never switch mid-session<br><br>
           ${freqNote()}<br><br>
-          📌 ${lessonNote()}
+          <i class="ti ti-map-pin" style="color:var(--gold);vertical-align:-1px;"></i> ${lessonNote()}
           ${physNote() ? '<br><br>' + physNote() : ''}
         </div>
       </div>
@@ -390,23 +391,23 @@ function renderMemberHome(m) {
   const isKid    = m.age < 13;
   const isJunior = m.age >= 13 && m.age < 18;
   const isSenior = m.age >= 65 || m.goal === 'return';
-  const emoji    = isKid ? '⭐' : isJunior ? '🏆' : isSenior ? '💜' : '⛳';
+  const emoji    = isKid ? '<i class="ti ti-star" style="font-size:1.6rem;"></i>' : isJunior ? '<i class="ti ti-trophy" style="font-size:1.6rem;"></i>' : isSenior ? '<i class="ti ti-leaf" style="font-size:1.6rem;"></i>' : '<i class="ti ti-flag-2" style="font-size:1.6rem;"></i>';
   const color    = isKid ? '#ec4899' : isJunior ? '#3b82f6' : isSenior ? '#d4af70' : 'var(--gold)';
   const tagline  = isKid ? `${hl(m.hand)} · Age ${m.age} · Fun First`
                  : isJunior ? `${hl(m.hand)} · Age ${m.age} · Junior`
                  : isSenior ? `${hl(m.hand)} · Welcome Back`
                  : `${hl(m.hand)} · ${m.goal === 'fun' ? 'Playing for fun' : 'Building their game'}`;
-  const goalLine = isKid    ? 'Make contact. Laugh out loud. Come back next time. 🌈'
+  const goalLine = isKid    ? 'Make contact. Laugh out loud. Come back next time.'
                  : isJunior ? 'Have Fun. Learn Right. Get Good.'
                  : isSenior ? 'Move gently. Enjoy every swing. Welcome golf back into your life.'
                  : 'Build consistency. Have fun. Keep improving.';
   const tips     = isKid
-    ? ['⏱ <strong>10–15 min max</strong> — short sessions are perfect','🌈 <strong>Follow their lead</strong> — if they want to putt, putt all day','🏆 <strong>Celebrate everything</strong> — any contact = amazing','🚫 <strong>No swing fixes mid-swing</strong> — keep it positive only']
+    ? ['<i class="ti ti-clock"></i> <strong>10–15 min max</strong> — short sessions are perfect','<i class="ti ti-mood-smile"></i> <strong>Follow their lead</strong> — if they want to putt, putt all day','<i class="ti ti-trophy"></i> <strong>Celebrate everything</strong> — any contact = amazing','<i class="ti ti-ban"></i> <strong>No swing fixes mid-swing</strong> — keep it positive only']
     : isJunior
-    ? ['💥 <strong>Swing hard on the range</strong> — no holding back','😂 <strong>Miss one? Shake it off</strong> — pros hit bad shots too','🎯 <strong>One swing thought per session</strong>','🧠 <strong>Start with 7-iron</strong> before driver every time']
+    ? ['<i class="ti ti-bolt"></i> <strong>Swing hard on the range</strong> — no holding back','<i class="ti ti-mood-laugh"></i> <strong>Miss one? Shake it off</strong> — pros hit bad shots too','<i class="ti ti-target"></i> <strong>One swing thought per session</strong>','<i class="ti ti-brain"></i> <strong>Start with 7-iron</strong> before driver every time']
     : isSenior
-    ? ['⏱ <strong>15–20 min is plenty</strong> — quality over quantity','🌿 <strong>Start with your most forgiving club</strong>','🎵 <strong>Tempo is everything</strong> — smooth and easy','🤲 <strong>Light grip pressure</strong> — hold the club like a flower']
-    : ['🎯 <strong>One swing thought per session</strong>','📈 <strong>Track one stat per round</strong> — fairways, GIR, or putts','🏌️ <strong>Warmup before every session</strong>','🎉 <strong>End on a good shot</strong> — finish positive'];
+    ? ['<i class="ti ti-clock"></i> <strong>15–20 min is plenty</strong> — quality over quantity','<i class="ti ti-leaf"></i> <strong>Start with your most forgiving club</strong>','<i class="ti ti-music"></i> <strong>Tempo is everything</strong> — smooth and easy','<i class="ti ti-hand-stop"></i> <strong>Light grip pressure</strong> — hold the club like a flower']
+    : ['<i class="ti ti-target"></i> <strong>One swing thought per session</strong>','<i class="ti ti-chart-line"></i> <strong>Track one stat per round</strong> — fairways, GIR, or putts','<i class="ti ti-run"></i> <strong>Warmup before every session</strong>','<i class="ti ti-confetti"></i> <strong>End on a good shot</strong> — finish positive'];
   return `
     <div class="hero" style="background:linear-gradient(160deg,rgba(138,96,16,0.12) 0%,var(--bg) 100%);">
       <div class="hg">${tagline}</div>
@@ -449,11 +450,11 @@ function renderYardageChart() {
   const gen = distTable[a.skill] || distTable.mid;
   const label = isGeneric ? `Estimated Yardages — ${sLabel[a.skill]||'Your Level'}` : 'My Yardage Chart';
   const genderLabel = a.gender === 'f' ? 'women' : 'men';
-  const note  = isGeneric ? `<div style="font-size:0.7rem;color:var(--muted);padding-top:8px;">📌 Typical ranges for ${genderLabel} at your skill level. <span style="color:var(--gold);cursor:pointer;" onclick="openDistSheet()">Tap ✏️ Edit to add yours.</span></div>` : '';
+  const note  = isGeneric ? `<div style="font-size:0.7rem;color:var(--muted);padding-top:8px;"><i class="ti ti-map-pin" style="vertical-align:-1px;"></i> Typical ranges for ${genderLabel} at your skill level. <span style="color:var(--gold);cursor:pointer;" onclick="openDistSheet()">Tap Edit to add yours.</span></div>` : '';
   const rows = distKeys.map(k => {
     const val  = distances[k] ? `${distances[k]} <span style="font-size:0.62rem;color:var(--muted);font-family:'Outfit',sans-serif;font-weight:400;">yds</span>` : `<span style="font-size:0.82rem;color:var(--muted);">${gen[k]} yds</span>`;
     return `<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);">
-      <div style="font-size:0.88rem;color:var(--cream);">${distEmoji[k]} ${distNames[k]}</div>
+      <div style="font-size:0.88rem;color:var(--cream);">${distNames[k]}</div>
       <div style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:${distances[k]?'var(--gold)':'var(--muted)'};">${val}</div>
     </div>`;
   }).join('');
@@ -461,12 +462,12 @@ function renderYardageChart() {
   const callouts = !isGeneric ? [200,175,150,125,100].map(y => {
     const c = clubFor(y); if (!c) return null;
     if (Math.abs(distances[c] - y) > 20) return null;
-    return `<span style="margin-right:8px;">📍 ${y}y → ${distNames[c]}</span>`;
+    return `<span style="margin-right:8px;"><i class="ti ti-map-pin" style="vertical-align:-1px;font-size:0.8rem;"></i> ${y}y → ${distNames[c]}</span>`;
   }).filter(Boolean) : [];
   return `
     <div style="display:flex;align-items:center;justify-content:space-between;margin-top:4px;margin-bottom:10px;">
       <div class="sect-title" style="margin:0;">${label}</div>
-      <button class="dist-edit-btn" onclick="openDistSheet()">✏️ Edit</button>
+      <button class="dist-edit-btn" onclick="openDistSheet()"><i class="ti ti-pencil" style="vertical-align:-1px;"></i> Edit</button>
     </div>
     <div class="card">
       ${rows}
@@ -479,48 +480,48 @@ function renderYardageChart() {
 function renderSwingThoughts() {
   const bySkill = {
     beginner: [
-      '🎯 <strong>Ball first, then ground</strong> — brush the grass just past where the ball was',
-      '🔄 <strong>Finish your swing</strong> — hold the pose until the ball lands. Can\'t hold it? You rushed it.',
-      '⚖️ <strong>Weight forward at impact</strong> — feel your belt buckle facing the target at the finish',
-      '✋ <strong>Grip pressure: 5 out of 10</strong> — tension kills the swing'
+      '<i class="ti ti-target"></i> <strong>Ball first, then ground</strong> — brush the grass just past where the ball was',
+      '<i class="ti ti-refresh"></i> <strong>Finish your swing</strong> — hold the pose until the ball lands. Can\'t hold it? You rushed it.',
+      '<i class="ti ti-scale"></i> <strong>Weight forward at impact</strong> — feel your belt buckle facing the target at the finish',
+      '<i class="ti ti-hand-stop"></i> <strong>Grip pressure: 5 out of 10</strong> — tension kills the swing'
     ],
     high: [
-      '🔄 <strong>Slow takeaway</strong> — the backswing has no speed limit. Save it all for the downswing.',
-      '⚖️ <strong>Turn your shoulders, not just your arms</strong> — your chest should face away from the target at the top',
-      '🎯 <strong>One thought per session</strong> — pick it before you start, never change mid-round',
-      '📍 <strong>Divot target: just past the ball</strong> — if your divot starts before the ball, fix this first'
+      '<i class="ti ti-refresh"></i> <strong>Slow takeaway</strong> — the backswing has no speed limit. Save it all for the downswing.',
+      '<i class="ti ti-scale"></i> <strong>Turn your shoulders, not just your arms</strong> — your chest should face away from the target at the top',
+      '<i class="ti ti-target"></i> <strong>One thought per session</strong> — pick it before you start, never change mid-round',
+      '<i class="ti ti-map-pin"></i> <strong>Divot target: just past the ball</strong> — if your divot starts before the ball, fix this first'
     ],
     'mid-high': [
-      '🏌️ <strong>Hip bump starts the downswing</strong> — left hip shifts toward target before arms move',
-      '💬 <strong>Smooth transition</strong> — there\'s a pause at the top. Don\'t rush from backswing to downswing.',
-      '🎯 <strong>Eyes on the back of the ball</strong> — not the top, the back. Watch contact happen.',
-      '✋ <strong>Grip pressure stays constant</strong> — don\'t tighten at impact. It\'s already happening too fast.'
+      '<i class="ti ti-run"></i> <strong>Hip bump starts the downswing</strong> — left hip shifts toward target before arms move',
+      '<i class="ti ti-message"></i> <strong>Smooth transition</strong> — there\'s a pause at the top. Don\'t rush from backswing to downswing.',
+      '<i class="ti ti-target"></i> <strong>Eyes on the back of the ball</strong> — not the top, the back. Watch contact happen.',
+      '<i class="ti ti-hand-stop"></i> <strong>Grip pressure stays constant</strong> — don\'t tighten at impact. It\'s already happening too fast.'
     ],
     mid: [
-      '⚡ <strong>Lag — feel the clubhead drop</strong> — delay the release as long as possible. Hear the whoosh at the bottom.',
-      '🏌️ <strong>Hips open before the arms come down</strong> — if you\'re flipping, your hips stopped first',
-      '📐 <strong>Shaft lean at impact</strong> — hands ahead of the ball. This is what compression feels like.',
-      '🧠 <strong>Pick your shot shape</strong> — commit to a target and shape before you step in'
+      '<i class="ti ti-bolt"></i> <strong>Lag — feel the clubhead drop</strong> — delay the release as long as possible. Hear the whoosh at the bottom.',
+      '<i class="ti ti-run"></i> <strong>Hips open before the arms come down</strong> — if you\'re flipping, your hips stopped first',
+      '<i class="ti ti-ruler-2"></i> <strong>Shaft lean at impact</strong> — hands ahead of the ball. This is what compression feels like.',
+      '<i class="ti ti-brain"></i> <strong>Pick your shot shape</strong> — commit to a target and shape before you step in'
     ],
     'low-mid': [
-      '📐 <strong>Pressure shift is the swing</strong> — lead foot loads during transition, not after',
-      '🎯 <strong>Control your miss</strong> — know which way you miss under pressure and aim to compensate',
-      '⚡ <strong>Maintain spine angle to the finish</strong> — early extension kills consistency for your level',
-      '🧠 <strong>Swing thought: one shape, all day</strong> — pick draw or fade for the round and commit'
+      '<i class="ti ti-ruler-2"></i> <strong>Pressure shift is the swing</strong> — lead foot loads during transition, not after',
+      '<i class="ti ti-target"></i> <strong>Control your miss</strong> — know which way you miss under pressure and aim to compensate',
+      '<i class="ti ti-bolt"></i> <strong>Maintain spine angle to the finish</strong> — early extension kills consistency for your level',
+      '<i class="ti ti-brain"></i> <strong>Swing thought: one shape, all day</strong> — pick draw or fade for the round and commit'
     ],
     low: [
-      '📍 <strong>Right elbow slots in — always</strong> — on the downswing the trail elbow finds your hip pocket',
-      '⚖️ <strong>Pressure leads the swing</strong> — ground force up through the lead side before the arms fire',
-      '🎯 <strong>Face control at impact</strong> — feel the face angle, don\'t just swing the path',
-      '🧠 <strong>Process over outcome</strong> — commit to the routine, let the result happen'
+      '<i class="ti ti-map-pin"></i> <strong>Right elbow slots in — always</strong> — on the downswing the trail elbow finds your hip pocket',
+      '<i class="ti ti-scale"></i> <strong>Pressure leads the swing</strong> — ground force up through the lead side before the arms fire',
+      '<i class="ti ti-target"></i> <strong>Face control at impact</strong> — feel the face angle, don\'t just swing the path',
+      '<i class="ti ti-brain"></i> <strong>Process over outcome</strong> — commit to the routine, let the result happen'
     ]
   };
   const goalAddons = {
-    fun:      '😄 <strong>Have fun first</strong> — tension is the enemy. Laugh off the bad ones.',
-    break120: '🌱 <strong>Make contact and keep moving</strong> — don\'t stop mid-round to fix your swing',
-    break100: '🚫 <strong>One mistake at a time</strong> — bogeys are fine, doubles kill your score',
-    break90:  '🎯 <strong>Commit before you swing</strong> — indecision is the most common double bogey',
-    break80:  '🏆 <strong>Trust your routine</strong> — you have the swing. Trust it.'
+    fun:      '<i class="ti ti-mood-smile"></i> <strong>Have fun first</strong> — tension is the enemy. Laugh off the bad ones.',
+    break120: '<i class="ti ti-leaf"></i> <strong>Make contact and keep moving</strong> — don\'t stop mid-round to fix your swing',
+    break100: '<i class="ti ti-ban"></i> <strong>One mistake at a time</strong> — bogeys are fine, doubles kill your score',
+    break90:  '<i class="ti ti-target"></i> <strong>Commit before you swing</strong> — indecision is the most common double bogey',
+    break80:  '<i class="ti ti-trophy"></i> <strong>Trust your routine</strong> — you have the swing. Trust it.'
   };
   const thoughts = bySkill[a.skill] || bySkill.mid;
   const goalLine = goalAddons[a.goal] || '';
@@ -533,11 +534,11 @@ function renderSwingThoughts() {
 // ── CONTENT BUILDERS ──
 function bagSection() {
   const name = a.bag || (a.equip==='none'?'Getting Started':a.equip==='starter'?'Starter Set':a.equip==='full'?'Full Set':'Custom Set');
-  if (a.equip === 'none') return `<div class="card"><div class="ct">Equipment Recommendations</div><div class="cb"><strong>Great starter sets (${hl(a.hand)}):</strong><br><br>🏌️ <strong>Callaway Strata</strong> — Best all-round beginner set<br>🏌️ <strong>Wilson Profile SGI</strong> — Ultra forgiving, great value<br>🏌️ <strong>Cleveland Launcher HB</strong> — Step up option<br><br>Budget $150–350. Search "${hl(a.hand).toLowerCase()} golf set" + any of these.</div></div>`;
+  if (a.equip === 'none') return `<div class="card"><div class="ct">Equipment Recommendations</div><div class="cb"><strong>Great starter sets (${hl(a.hand)}):</strong><br><br><i class="ti ti-flag-2" style="color:var(--gold);vertical-align:-1px;"></i> <strong>Callaway Strata</strong> — Best all-round beginner set<br><i class="ti ti-flag-2" style="color:var(--gold);vertical-align:-1px;"></i> <strong>Wilson Profile SGI</strong> — Ultra forgiving, great value<br><i class="ti ti-flag-2" style="color:var(--gold);vertical-align:-1px;"></i> <strong>Cleveland Launcher HB</strong> — Step up option<br><br>Budget $150–350. Search "${hl(a.hand).toLowerCase()} golf set" + any of these.</div></div>`;
   return `<div class="card"><div class="ct">My Bag — ${name} (${hl(a.hand)})</div><div class="cb">${
-    a.equip==='starter'?'🎒 Starter set — focus on <strong>contact quality</strong> over distance. The clubs will do their job when you hit them flush.':
-    a.equip==='full'?'🏌️ Full set — you have everything you need. Focus on <em>which</em> club to use, not just how far each one goes.':
-    '⭐ Custom-fitted clubs — trust your fitting, swing within yourself, and let the clubs work.'
+    a.equip==='starter'?'<i class="ti ti-backpack" style="color:var(--gold);vertical-align:-1px;"></i> Starter set — focus on <strong>contact quality</strong> over distance. The clubs will do their job when you hit them flush.':
+    a.equip==='full'?'<i class="ti ti-flag-2" style="color:var(--gold);vertical-align:-1px;"></i> Full set — you have everything you need. Focus on <em>which</em> club to use, not just how far each one goes.':
+    '<i class="ti ti-star" style="color:var(--gold);vertical-align:-1px;"></i> Custom-fitted clubs — trust your fitting, swing within yourself, and let the clubs work.'
   }</div></div>`;
 }
 
@@ -552,22 +553,22 @@ function freqNote() {
 
 function physNote() {
   return {
-    back:      '⚠️ <strong>Back note:</strong> Keep your base wide, limit over-rotation at the top. Swing to 75% — distance comes from contact, not effort.',
-    shoulder:  '⚠️ <strong>Shoulder note:</strong> Shorten your backswing if needed. A 3/4 swing with great contact beats a full swing that hurts.',
-    knee:      `⚠️ <strong>Knee/hip note:</strong> Let your ${trail()} heel rise on the backswing — takes pressure off the joint.`,
-    returning: '🌱 <strong>Returning player:</strong> Go easy the first 2–3 sessions — muscle memory comes back fast.'
+    back:      '<i class="ti ti-alert-triangle" style="color:#f59e0b;vertical-align:-1px;"></i> <strong>Back note:</strong> Keep your base wide, limit over-rotation at the top. Swing to 75% — distance comes from contact, not effort.',
+    shoulder:  '<i class="ti ti-alert-triangle" style="color:#f59e0b;vertical-align:-1px;"></i> <strong>Shoulder note:</strong> Shorten your backswing if needed. A 3/4 swing with great contact beats a full swing that hurts.',
+    knee:      `<i class="ti ti-alert-triangle" style="color:#f59e0b;vertical-align:-1px;"></i> <strong>Knee/hip note:</strong> Let your ${trail()} heel rise on the backswing — takes pressure off the joint.`,
+    returning: '<i class="ti ti-leaf" style="color:var(--green);vertical-align:-1px;"></i> <strong>Returning player:</strong> Go easy the first 2–3 sessions — muscle memory comes back fast.'
   }[a.physical] || '';
 }
 
 function lessonNote() {
   const exp = a.experience;
   const les = a.lessons;
-  if (les === 'regular') return '✅ <strong>You\'re taking regular lessons</strong> — use this guide to reinforce what your pro teaches. If anything here conflicts with your pro\'s advice, always follow your pro.';
-  if (les === 'few')     return '📚 <strong>You\'ve had a few lessons</strong> — your fundamentals are set. Book a check-up lesson every 6–8 weeks to keep the patterns grooved.';
-  if (les === 'video')   return '📱 <strong>You\'re self-coaching with video</strong> — great habit. Add one in-person lesson every 2–3 months to catch things video can\'t. A trained eye spots what a camera misses.';
+  if (les === 'regular') return '<i class="ti ti-check" style="color:var(--green);vertical-align:-1px;"></i> <strong>You\'re taking regular lessons</strong> — use this guide to reinforce what your pro teaches. If anything here conflicts with your pro\'s advice, always follow your pro.';
+  if (les === 'few')     return '<i class="ti ti-book" style="color:var(--gold);vertical-align:-1px;"></i> <strong>You\'ve had a few lessons</strong> — your fundamentals are set. Book a check-up lesson every 6–8 weeks to keep the patterns grooved.';
+  if (les === 'video')   return '<i class="ti ti-device-mobile" style="color:var(--gold);vertical-align:-1px;"></i> <strong>You\'re self-coaching with video</strong> — great habit. Add one in-person lesson every 2–3 months to catch things video can\'t. A trained eye spots what a camera misses.';
   // none
-  if (exp === 'none' || exp === 'some') return '🎓 <strong>No formal lessons yet</strong> — one lesson with a local pro is the single best investment you can make. Even one session sets you on the right track and prevents bad habits from locking in.';
-  return '🎓 <strong>Consider a check-up lesson</strong> — even experienced players benefit from a fresh set of eyes every few months.';
+  if (exp === 'none' || exp === 'some') return '<i class="ti ti-school" style="color:var(--gold);vertical-align:-1px;"></i> <strong>No formal lessons yet</strong> — one lesson with a local pro is the single best investment you can make. Even one session sets you on the right track and prevents bad habits from locking in.';
+  return '<i class="ti ti-school" style="color:var(--gold);vertical-align:-1px;"></i> <strong>Consider a check-up lesson</strong> — even experienced players benefit from a fresh set of eyes every few months.';
 }
 
 function experienceBadge() {
@@ -583,25 +584,25 @@ function renderRangeWarmup() {
   const isBack   = a.physical === 'back';
   const isSenior = a.age === 'senior';
   const items = [
-    {e:'🔄', t:'Hip Rotations', d:'Hands on hips, slow circles. 10× each direction. Gets the lower body moving before any loading.'},
-    {e:'🙆', t:'Arm Circles', d:'Big slow circles forward then back. 10× each way. Loosens the shoulder girdle before you swing.'},
-    {e:'🤸', t:'Trunk Twists', d: isBack ? 'Gentle only — hold a club across your chest, rotate slowly each way. Stop at any discomfort.' : 'Club across your shoulders, rotate left and right. Hold 2 seconds at each end. 10 reps.'},
-    {e:'👐', t:'Wrist Circles', d:'Arms extended, circle wrists both ways. 10× each. Keeps the wrists loose through impact.'},
-    {e:'🏌️', t:'10 Pump Swings — No Ball', d: isSenior ? 'Half-swings only. Feel the arc, don\'t try to hit anything. Rhythm over range.' : 'Full practice swings without a ball. Feel the whole arc. Slow and smooth — this is not the time to rip it.'},
-    {e:'👣', t:'Feet Together Drill — 5 Balls', d:'First 5 balls with feet touching. Forces balance automatically. If you fall over, you\'re swinging too hard.'},
+    {e:'<i class="ti ti-rotate-clockwise" style="font-size:1.3rem;color:var(--gold);"></i>', t:'Hip Rotations', d:'Hands on hips, slow circles. 10× each direction. Gets the lower body moving before any loading.'},
+    {e:'<i class="ti ti-rotate" style="font-size:1.3rem;color:var(--gold);"></i>', t:'Arm Circles', d:'Big slow circles forward then back. 10× each way. Loosens the shoulder girdle before you swing.'},
+    {e:'<i class="ti ti-arrows-transfer-up" style="font-size:1.3rem;color:var(--gold);"></i>', t:'Trunk Twists', d: isBack ? 'Gentle only — hold a club across your chest, rotate slowly each way. Stop at any discomfort.' : 'Club across your shoulders, rotate left and right. Hold 2 seconds at each end. 10 reps.'},
+    {e:'<i class="ti ti-hand-stop" style="font-size:1.3rem;color:var(--gold);"></i>', t:'Wrist Circles', d:'Arms extended, circle wrists both ways. 10× each. Keeps the wrists loose through impact.'},
+    {e:'<i class="ti ti-run" style="font-size:1.3rem;color:var(--gold);"></i>', t:'10 Pump Swings — No Ball', d: isSenior ? 'Half-swings only. Feel the arc, don\'t try to hit anything. Rhythm over range.' : 'Full practice swings without a ball. Feel the whole arc. Slow and smooth — this is not the time to rip it.'},
+    {e:'<i class="ti ti-player-play" style="font-size:1.3rem;color:var(--gold);"></i>', t:'Feet Together Drill — 5 Balls', d:'First 5 balls with feet touching. Forces balance automatically. If you fall over, you\'re swinging too hard.'},
   ];
   return `<div class="card">
     ${items.map(i=>`<div style="display:flex;align-items:flex-start;gap:12px;padding:9px 0;border-bottom:1px solid var(--border);">
-      <div style="font-size:1.5rem;flex-shrink:0;">${i.e}</div>
+      <div style="flex-shrink:0;width:28px;text-align:center;">${i.e}</div>
       <div><div class="ct" style="font-size:0.85rem;">${i.t}</div><div class="cb">${i.d}</div></div>
     </div>`).join('')}
-    <div class="cue" style="margin-top:6px;">💡 5 min warmup = 10 fewer penalty shots. Never skip it.</div>
+    <div class="cue" style="margin-top:6px;"><i class="ti ti-bulb" style="vertical-align:-1px;"></i> 5 min warmup = 10 fewer penalty shots. Never skip it.</div>
   </div>`;
 }
 
 function renderBeginnerPractice() {
   return `
-  <div class="card"><div class="ct">🏌️ Your First Range Session (30 min)</div>
+  <div class="card"><div class="ct"><i class="ti ti-run" style="color:var(--gold);vertical-align:-1px;"></i> Your First Range Session (30 min)</div>
     <div class="pills-row"><span class="ptag">7-Iron</span><span class="ptag">Putter</span><span class="ptag">~30 balls</span></div>
     <div class="cb">
       <strong>Phase 1 — Grip &amp; Setup (5 min, no hitting)</strong><br>
@@ -613,16 +614,16 @@ function renderBeginnerPractice() {
       <strong>Phase 4 — Putting (5 min)</strong><br>
       Find the practice green. Drop 3 balls and putt from 6 feet. Just try to roll it in the hole.
     </div>
-    <div class="cue">💬 One session a week is enough to see real improvement as a beginner</div>
+    <div class="cue">One session a week is enough to see real improvement as a beginner</div>
   </div>
-  <div class="card"><div class="ct">🎯 What to Focus On (in order)</div><div class="cb">
-    <div class="cr"><span>1️⃣ <strong>Grip</strong> — practice holding the club correctly every time</span></div>
-    <div class="cr"><span>2️⃣ <strong>Contact</strong> — hitting the ball solidly, not distance</span></div>
-    <div class="cr"><span>3️⃣ <strong>Direction</strong> — getting the ball going roughly where you aimed</span></div>
-    <div class="cr"><span>4️⃣ <strong>Putting</strong> — you use this every hole, so don't ignore it</span></div>
-    <div class="cr"><span>5️⃣ <strong>Everything else</strong> — once you have 1–4, the rest will come</span></div>
+  <div class="card"><div class="ct"><i class="ti ti-target" style="color:var(--gold);vertical-align:-1px;"></i> What to Focus On (in order)</div><div class="cb">
+    <div class="cr"><span>1. <strong>Grip</strong> — practice holding the club correctly every time</span></div>
+    <div class="cr"><span>2. <strong>Contact</strong> — hitting the ball solidly, not distance</span></div>
+    <div class="cr"><span>3. <strong>Direction</strong> — getting the ball going roughly where you aimed</span></div>
+    <div class="cr"><span>4. <strong>Putting</strong> — you use this every hole, so don't ignore it</span></div>
+    <div class="cr"><span>5. <strong>Everything else</strong> — once you have 1–4, the rest will come</span></div>
   </div></div>
-  <div class="card"><div class="ct">💡 Beginner Tips</div><div class="cb">
+  <div class="card"><div class="ct"><i class="ti ti-bulb" style="color:var(--gold);vertical-align:-1px;"></i> Beginner Tips</div><div class="cb">
     Don't try to hit the ball far. The harder you swing, the worse it usually goes. Focus on a smooth, balanced swing — distance comes naturally as your technique improves.<br><br>
     <strong>One tip per session.</strong> Pick one thing to work on and ignore everything else. Trying to fix 5 things at once fixes nothing.
   </div></div>`;
@@ -643,14 +644,14 @@ function renderRange() {
       <div class="ct">${title}</div>
       <div class="pills-row">${clubs.map(c=>`<span class="ptag">${c}</span>`).join('')}<span class="ptag">${balls} balls</span></div>
       <div class="cb">${body}</div>
-      <div class="cue">💬 ${cue}</div>
+      <div class="cue">${cue}</div>
     </div>`;
 
   let html = `<div class="stat-row">
     <div class="stat"><div class="sn">${b}</div><div class="sl">Balls</div></div>
     <div class="stat"><div class="sn">${ph}</div><div class="sl">Phases</div></div>
     <div class="stat"><div class="sn">${{short:'15–30',medium:'30–45',long:'45–60',full:'60–90'}[a.duration]||'45–60'}</div><div class="sl">Minutes</div></div>
-    <div class="stat"><div class="sn">${gNum[a.goal]||'⛳'}</div><div class="sl">Goal</div></div>
+    <div class="stat"><div class="sn">${gNum[a.goal]||'–'}</div><div class="sl">Goal</div></div>
   </div>`;
 
   // Warmup
@@ -661,7 +662,7 @@ function renderRange() {
       <strong>Feet Together</strong> · 5 shots — forces balance. Fall over? You swung too hard.<br><br>
       <strong>Half Swings</strong> · 5 shots — club to 9 o'clock back, 3 o'clock through. Clean contact before full speed.
     </div>
-    <div class="cue">💬 Warmup is non-negotiable — cold muscles build bad habits</div></div>`;
+    <div class="cue">Warmup is non-negotiable — cold muscles build bad habits</div></div>`;
 
   // Phase 1
   html += phaseCard(1,'tg-gld','Short Irons — Contact Quality',['9-iron','PW','GW'],b1,
@@ -703,21 +704,21 @@ function renderBackyardPlan() {
         <div><div class="ct">${title}</div><div style="font-size:0.72rem;color:var(--muted);">${sub}</div></div>
       </div>
       <div class="cb">${body}</div>
-      ${cue?`<div class="cue">💬 ${cue}</div>`:''}
+      ${cue?`<div class="cue">${cue}</div>`:''}
     </div>`;
 
   let html = `<div class="stat-row">
     <div class="stat"><div class="sn">${minutes}</div><div class="sl">Minutes</div></div>
     <div class="stat"><div class="sn">0</div><div class="sl">Balls Needed</div></div>
-    <div class="stat"><div class="sn">🏠</div><div class="sl">No Range</div></div>
-    <div class="stat"><div class="sn">${gNum[a.goal]||'⛳'}</div><div class="sl">Goal</div></div>
+    <div class="stat"><div class="sn">HOME</div><div class="sl">No Range</div></div>
+    <div class="stat"><div class="sn">${gNum[a.goal]||'–'}</div><div class="sl">Goal</div></div>
   </div>
   <div class="card" style="background:rgba(45,106,63,0.08);border-color:rgba(45,106,63,0.3);">
-    <div class="cb" style="font-size:0.78rem;">🏡 <strong>No range needed.</strong> These drills build the same skills as a range session — just at a smaller scale. Grip, tempo, and putting are best practiced at home anyway.</div>
+    <div class="cb" style="font-size:0.78rem;"><i class="ti ti-home" style="color:var(--green);vertical-align:-1px;"></i> <strong>No range needed.</strong> These drills build the same skills as a range session — just at a smaller scale. Grip, tempo, and putting are best practiced at home anyway.</div>
   </div>`;
 
   // Grip & Setup
-  html += drill('🤜','Grip & Setup Rehearsal','5 min · no ball required',
+  html += drill('<i class="ti ti-hand-grab" style="font-size:1.4rem;color:var(--gold);"></i>','Grip & Setup Rehearsal','5 min · no ball required',
     `Pick up your club 10 times and regrip from scratch each time. Check: <br>
     <strong>1.</strong> Clubface square before your hands go on<br>
     <strong>2.</strong> Light pressure — toothpaste test<br>
@@ -726,7 +727,7 @@ function renderBackyardPlan() {
     'Grip is the only contact with the club — get it right first', false);
 
   // Mirror work
-  html += drill('🪞','Mirror Work — Swing Check','5 min · use any mirror or window',
+  html += drill('<i class="ti ti-eye" style="font-size:1.4rem;color:var(--gold);"></i>','Mirror Work — Swing Check','5 min · use any mirror or window',
     `Stand side-on to a mirror (hallway mirror, bathroom, glass door). Take slow practice swings and check:<br>
     <strong>Takeaway:</strong> club should track outside the hands, not roll inside<br>
     <strong>Top:</strong> ${a.physical==='shoulder'?'Keep it to 3/4 — don\'t force a full turn if the shoulder protests':'club roughly parallel to ground, left arm relatively straight'}<br>
@@ -734,7 +735,7 @@ function renderBackyardPlan() {
     'What you see in the mirror is what the ball sees', false);
 
   // Putting mat or carpet
-  html += drill('🎳',hasPutt?'Putting — YOUR FOCUS AREA':'Putting Practice',
+  html += drill('<i class="ti ti-circle" style="font-size:1.4rem;color:var(--gold);"></i>',hasPutt?'Putting — YOUR FOCUS AREA':'Putting Practice',
     hasPutt?'10 min · high priority':'8 min · mat or smooth carpet',
     `${hasPutt?'<strong>⭐ This is where you drop the most strokes. 10 minutes here is worth 20 at the range.</strong><br><br>':''}
     <strong>3-foot circle drill:</strong> Place 4–6 balls in a circle around a target (a coin, a cup, any mark). Make every one before you move out. Start at 3 feet.<br><br>
@@ -744,7 +745,7 @@ function renderBackyardPlan() {
 
   // Chipping net or chip without net
   if (!isShort) {
-    html += drill('🏹',hasChip?'Chipping — YOUR FOCUS AREA':'Chipping Practice',
+    html += drill('<i class="ti ti-target" style="font-size:1.4rem;color:var(--gold);"></i>',hasChip?'Chipping — YOUR FOCUS AREA':'Chipping Practice',
       hasChip?'8 min · chipping net or a towel target':'5 min · chip into a target',
       `${hasChip?'<strong>⭐ Short game is the fastest way to lower your score. Every chip counts.</strong><br><br>':''}
       <strong>No net?</strong> Set a folded towel on the grass or carpet. Try to land the ball on it using a PW or 9-iron.<br><br>
@@ -755,8 +756,8 @@ function renderBackyardPlan() {
 
   // Alignment & Balance
   if (!isShort) {
-    html += drill('⚖️','Balance & Tempo Drill','5 min · slow swings only',
-      `${isBack?'⚠️ Keep these at 50% effort max — no torque on the lower back.<br><br>':''}
+    html += drill('<i class="ti ti-scale" style="font-size:1.4rem;color:var(--gold);"></i>','Balance & Tempo Drill','5 min · slow swings only',
+      `${isBack?'<i class="ti ti-alert-triangle" style="color:#f59e0b;vertical-align:-1px;"></i> Keep these at 50% effort max — no torque on the lower back.<br><br>':''}
       Take 20 full practice swings with your <strong>feet together</strong> (touching). This forces you to swing in balance. If you fall over, you're using too much body and not enough arms.<br><br>
       Then take 10 more with a towel under your ${trail()} armpit. Keep it from falling — this keeps your arms connected to your body through the swing.`,
       'Balance is the foundation — tempo follows', false);
@@ -779,15 +780,15 @@ function renderSimPlan() {
       <div class="ct">${title}</div>
       <div class="pills-row">${clubs.map(c=>`<span class="ptag">${c}</span>`).join('')}</div>
       <div class="cb">${desc}</div>
-      ${dataFocus?`<div style="background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.2);border-radius:10px;padding:10px 13px;margin-top:9px;font-size:0.78rem;color:#60a5fa;">📊 <strong>Data to watch:</strong> ${dataFocus}</div>`:''}
-      <div class="cue">💬 ${cue}</div>
+      ${dataFocus?`<div style="background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.2);border-radius:10px;padding:10px 13px;margin-top:9px;font-size:0.78rem;color:#60a5fa;"><i class="ti ti-chart-bar" style="vertical-align:-1px;"></i> <strong>Data to watch:</strong> ${dataFocus}</div>`:''}
+      <div class="cue">${cue}</div>
     </div>`;
 
   let html = `<div class="stat-row">
     <div class="stat"><div class="sn">${b}</div><div class="sl">Balls</div></div>
     <div class="stat"><div class="sn">${ph}</div><div class="sl">Phases</div></div>
     <div class="stat"><div class="sn">${minutes}</div><div class="sl">Minutes</div></div>
-    <div class="stat"><div class="sn">📡</div><div class="sl">Sim Data</div></div>
+    <div class="stat"><div class="sn">SIM</div><div class="sl">Data</div></div>
   </div>
   <div class="card" style="background:rgba(59,130,246,0.06);border-color:rgba(59,130,246,0.25);">
     <div class="ct" style="color:#60a5fa;">Using the Sim Data</div>
@@ -798,7 +799,7 @@ function renderSimPlan() {
   html += `<div class="card"><span class="tag tg-pur">Phase 0</span><div class="ct">Warmup Shots — Get Your Baseline</div>
     <div class="pills-row"><span class="ptag">PW or 9-iron</span><span class="ptag">10 balls</span><span class="ptag">50–60% effort</span></div>
     <div class="cb">Hit 10 balls at partial effort. Don't look at anything yet. Let your body find its rhythm. On balls 6–10, start glancing at <strong>carry distance</strong> — this is your baseline for today.</div>
-    <div class="cue">💬 Don't chase numbers on warmup shots — just warm up</div></div>`;
+    <div class="cue">Don't chase numbers on warmup shots — just warm up</div></div>`;
 
   // Phase 1: Face Angle Work
   html += phaseCard(1,'tg-gld','Face Angle — The #1 Cause of Miss',
@@ -847,7 +848,7 @@ function switchLoc(loc) {
 
 function renderBeginnerBasics() {
   return `
-  <div class="card"><div class="ct">📖 How Golf Is Scored</div><div class="cb">
+  <div class="card"><div class="ct"><i class="ti ti-book" style="color:var(--gold);vertical-align:-1px;"></i> How Golf Is Scored</div><div class="cb">
     Each hole has a <strong>par</strong> — the number of shots a good player should take.<br><br>
     <strong>Par 3</strong> = short hole, 3 shots expected<br>
     <strong>Par 4</strong> = medium hole, 4 shots expected<br>
@@ -856,55 +857,55 @@ function renderBeginnerBasics() {
     A <strong>bogey</strong> = 1 over par. That's totally fine as a beginner!<br>
     Most beginners shoot 100–120 for 18 holes — and that's great.
   </div></div>
-  <div class="card"><div class="ct">📋 Basic Rules to Know</div><div class="cb">
-    <div class="cr"><span>⛳ <strong>Tee up</strong> on the first shot of every hole — it makes it easier</span></div>
-    <div class="cr"><span>🚶 <strong>Play it as it lies</strong> — don't move your ball (unless your group agrees otherwise)</span></div>
-    <div class="cr"><span>⏱️ <strong>Keep pace</strong> — be ready to hit when it's your turn</span></div>
-    <div class="cr"><span>🔇 <strong>Stay quiet</strong> while others are hitting</span></div>
-    <div class="cr"><span>🏴 <strong>Rake the bunker</strong> after you play from the sand</span></div>
-    <div class="cr"><span>🌿 <strong>Fix your ball marks</strong> on the green with the repair tool</span></div>
+  <div class="card"><div class="ct"><i class="ti ti-list" style="color:var(--gold);vertical-align:-1px;"></i> Basic Rules to Know</div><div class="cb">
+    <div class="cr"><span><i class="ti ti-flag-2" style="color:var(--gold);vertical-align:-1px;"></i> <strong>Tee up</strong> on the first shot of every hole — it makes it easier</span></div>
+    <div class="cr"><span><i class="ti ti-walk" style="color:var(--muted);vertical-align:-1px;"></i> <strong>Play it as it lies</strong> — don't move your ball (unless your group agrees otherwise)</span></div>
+    <div class="cr"><span><i class="ti ti-clock" style="color:var(--muted);vertical-align:-1px;"></i> <strong>Keep pace</strong> — be ready to hit when it's your turn</span></div>
+    <div class="cr"><span><i class="ti ti-volume-off" style="color:var(--muted);vertical-align:-1px;"></i> <strong>Stay quiet</strong> while others are hitting</span></div>
+    <div class="cr"><span><i class="ti ti-tool" style="color:var(--muted);vertical-align:-1px;"></i> <strong>Rake the bunker</strong> after you play from the sand</span></div>
+    <div class="cr"><span><i class="ti ti-leaf" style="color:var(--green);vertical-align:-1px;"></i> <strong>Fix your ball marks</strong> on the green with the repair tool</span></div>
   </div></div>
-  <div class="card"><div class="ct">🤝 Golf Etiquette</div><div class="cb">
+  <div class="card"><div class="ct"><i class="ti ti-users" style="color:var(--gold);vertical-align:-1px;"></i> Golf Etiquette</div><div class="cb">
     Golf has unwritten rules that matter as much as the actual rules.<br><br>
     <strong>Pace of play</strong> is the #1 thing — keep up with the group ahead of you, not just ahead of the group behind you.<br><br>
     <strong>Tip:</strong> Pick up your ball if you've taken 2× par on a hole. A 10 on a par 5 slows everyone down — just move on. Nobody minds.
   </div></div>
-  <div class="card"><div class="ct">💡 Your First Round Tips</div><div class="cb">
-    <div class="cr"><span>✅ Don't keep score your first time out — just focus on having fun</span></div>
-    <div class="cr"><span>✅ Let faster groups play through — just wave them ahead</span></div>
-    <div class="cr"><span>✅ Play from the forward tees — no shame, it's the smart move</span></div>
-    <div class="cr"><span>✅ Bring snacks, water, and sunscreen</span></div>
-    <div class="cr"><span>✅ Ask questions — other golfers love helping beginners</span></div>
+  <div class="card"><div class="ct"><i class="ti ti-bulb" style="color:var(--gold);vertical-align:-1px;"></i> Your First Round Tips</div><div class="cb">
+    <div class="cr"><span><i class="ti ti-check" style="color:var(--green);vertical-align:-1px;"></i> Don't keep score your first time out — just focus on having fun</span></div>
+    <div class="cr"><span><i class="ti ti-check" style="color:var(--green);vertical-align:-1px;"></i> Let faster groups play through — just wave them ahead</span></div>
+    <div class="cr"><span><i class="ti ti-check" style="color:var(--green);vertical-align:-1px;"></i> Play from the forward tees — no shame, it's the smart move</span></div>
+    <div class="cr"><span><i class="ti ti-check" style="color:var(--green);vertical-align:-1px;"></i> Bring snacks, water, and sunscreen</span></div>
+    <div class="cr"><span><i class="ti ti-check" style="color:var(--green);vertical-align:-1px;"></i> Ask questions — other golfers love helping beginners</span></div>
   </div></div>`;
 }
 
 function renderBeginnerClubs() {
   return `
-  <div class="card"><div class="ct">🎒 The Clubs Explained</div><div class="cb">
+  <div class="card"><div class="ct"><i class="ti ti-backpack" style="color:var(--gold);vertical-align:-1px;"></i> The Clubs Explained</div><div class="cb">
     You don't need to know all 14 clubs. Start with these 4:<br><br>
-    <strong>🏌️ Driver</strong> — your longest club, used off the tee on par 4s and 5s. Hardest to hit. Skip it at first and use a 3-wood or 5-iron instead.<br><br>
-    <strong>⛳ 7-Iron</strong> — the most forgiving mid-range club. This is your best friend. Learn this one first.<br><br>
-    <strong>🎯 Pitching Wedge</strong> — for short shots near the green, chipping, and getting out of rough.<br><br>
-    <strong>🟢 Putter</strong> — used only on the green to roll the ball into the hole. You'll use this on every single hole.
+    <strong><i class="ti ti-arrow-big-up-lines" style="color:var(--gold);vertical-align:-1px;"></i> Driver</strong> — your longest club, used off the tee on par 4s and 5s. Hardest to hit. Skip it at first and use a 3-wood or 5-iron instead.<br><br>
+    <strong><i class="ti ti-flag-2" style="color:var(--gold);vertical-align:-1px;"></i> 7-Iron</strong> — the most forgiving mid-range club. This is your best friend. Learn this one first.<br><br>
+    <strong><i class="ti ti-target" style="color:var(--gold);vertical-align:-1px;"></i> Pitching Wedge</strong> — for short shots near the green, chipping, and getting out of rough.<br><br>
+    <strong><i class="ti ti-circle" style="color:var(--green);vertical-align:-1px;"></i> Putter</strong> — used only on the green to roll the ball into the hole. You'll use this on every single hole.
   </div></div>
-  <div class="card"><div class="ct">✋ The Grip</div><div class="cb">
+  <div class="card"><div class="ct"><i class="ti ti-hand-stop" style="color:var(--gold);vertical-align:-1px;"></i> The Grip</div><div class="cb">
     The grip is the only thing connecting you to the club — get this right first.<br><br>
     1. Hold the club in your fingers, not your palm<br>
     2. Your ${a.hand === 'l' ? 'right' : 'left'} hand goes on top, ${a.hand === 'l' ? 'left' : 'right'} hand below<br>
     3. Squeeze at about <strong>5 out of 10</strong> — firm but relaxed<br>
     4. Both thumbs point straight down the shaft<br><br>
-    <div class="cue">💬 Practice your grip while watching TV — it only takes a few days to make it feel natural</div>
+    <div class="cue">Practice your grip while watching TV — it only takes a few days to make it feel natural</div>
   </div></div>
-  <div class="card"><div class="ct">🦶 Stance & Setup</div><div class="cb">
+  <div class="card"><div class="ct"><i class="ti ti-run" style="color:var(--gold);vertical-align:-1px;"></i> Stance & Setup</div><div class="cb">
     Before you think about swinging, get your setup right:<br><br>
     • Feet about shoulder-width apart<br>
     • Ball roughly in the center of your stance<br>
     • Slight bend in your knees<br>
     • Lean forward from your hips (not your waist)<br>
     • Arms hanging naturally — don't reach<br><br>
-    <div class="cue">💬 If your setup feels awkward, the swing will feel awkward. Spend 5 minutes on setup before every practice session.</div>
+    <div class="cue">If your setup feels awkward, the swing will feel awkward. Spend 5 minutes on setup before every practice session.</div>
   </div></div>
-  <div class="card"><div class="ct">🎯 Your First Swing Goal</div><div class="cb">
+  <div class="card"><div class="ct"><i class="ti ti-target" style="color:var(--gold);vertical-align:-1px;"></i> Your First Swing Goal</div><div class="cb">
     Forget distance. Forget form. Just focus on one thing:<br><br>
     <strong>Make contact with the ball.</strong><br><br>
     That's it. A ball that rolls 30 yards forward is a success. Once you can make consistent contact, everything else follows naturally.
@@ -922,19 +923,19 @@ function renderSwing() {
     {n:6,title:'Impact — Hands Ahead',body:`Hands slightly ahead of the ball at impact. Weight shifted to ${lead()} side (80–90%). Shaft leans toward target. This is what creates that crisp "click."`,cue:'Ball first, ground second'},
     {n:7,title:'Follow Through & Finish',body:`Belt buckle faces the target. ${trail()} foot up on its toe. Club finishes high over your ${lead()} shoulder. A full finish means a full swing.`,cue:'Hold the finish — if you can\'t pose it, you rushed it'},
   ];
-  return steps.map(s=>`<div class="sw-step"><div class="sw-num">${s.n}</div><div style="flex:1;"><div class="ct">${s.title}</div><div class="cb">${s.body}</div><div class="cue">💬 ${s.cue}</div></div></div>`).join('');
+  return steps.map(s=>`<div class="sw-step"><div class="sw-num">${s.n}</div><div style="flex:1;"><div class="ct">${s.title}</div><div class="cb">${s.body}</div><div class="cue">${s.cue}</div></div></div>`).join('');
 }
 
 function renderWarmup() {
   const stretches = [
-    {e:'🔄',n:'Hip Rotations',d:'Hands on hips, slow circles. 10× each direction.',t:'1 min'},
-    {e:'🙆',n:'Arm Circles',d:'Big slow circles forward and back. Loosens the shoulder girdle.',t:'45 sec'},
-    {e:'🤸',n:'Trunk Twists',d:a.physical==='back'?'Gentle only — hold a club across your chest, rotate slowly. Stop at any discomfort.':'Club across shoulders, rotate left and right. Hold 2 seconds at each end.',t:'1 min'},
-    {e:'🦵',n:'Quad Stretch',d:'Hold one foot behind you, use a club for balance. 20 sec each leg.',t:'45 sec'},
-    {e:'👐',n:'Wrist Circles',d:'Extend arms, circle wrists both ways. Keeps wrists loose through impact.',t:'30 sec'},
-    {e:'🏌️',n:'Slow Practice Swings',d:a.age==='senior'||a.physical==='returning'?'Half-swings only — feel the arc, don\'t try to hit anything. 10 swings.':'Full swings without a ball. Feel the whole arc. 10 swings.',t:'2 min'},
+    {e:'<i class="ti ti-rotate-clockwise" style="font-size:1.6rem;color:var(--gold);"></i>',n:'Hip Rotations',d:'Hands on hips, slow circles. 10× each direction.',t:'1 min'},
+    {e:'<i class="ti ti-rotate" style="font-size:1.6rem;color:var(--gold);"></i>',n:'Arm Circles',d:'Big slow circles forward and back. Loosens the shoulder girdle.',t:'45 sec'},
+    {e:'<i class="ti ti-arrows-transfer-up" style="font-size:1.6rem;color:var(--gold);"></i>',n:'Trunk Twists',d:a.physical==='back'?'Gentle only — hold a club across your chest, rotate slowly. Stop at any discomfort.':'Club across shoulders, rotate left and right. Hold 2 seconds at each end.',t:'1 min'},
+    {e:'<i class="ti ti-run" style="font-size:1.6rem;color:var(--gold);"></i>',n:'Quad Stretch',d:'Hold one foot behind you, use a club for balance. 20 sec each leg.',t:'45 sec'},
+    {e:'<i class="ti ti-hand-stop" style="font-size:1.6rem;color:var(--gold);"></i>',n:'Wrist Circles',d:'Extend arms, circle wrists both ways. Keeps wrists loose through impact.',t:'30 sec'},
+    {e:'<i class="ti ti-flag-2" style="font-size:1.6rem;color:var(--gold);"></i>',n:'Slow Practice Swings',d:a.age==='senior'||a.physical==='returning'?'Half-swings only — feel the arc, don\'t try to hit anything. 10 swings.':'Full swings without a ball. Feel the whole arc. 10 swings.',t:'2 min'},
   ];
-  return stretches.map(s=>`<div class="card"><div style="display:flex;align-items:center;gap:12px;"><div style="font-size:1.8rem;">${s.e}</div><div style="flex:1;"><div class="ct">${s.n} <span style="color:var(--muted);font-size:0.72rem;font-weight:400;">· ${s.t}</span></div><div class="cb">${s.d}</div></div></div></div>`).join('');
+  return stretches.map(s=>`<div class="card"><div style="display:flex;align-items:center;gap:12px;"><div style="width:32px;text-align:center;flex-shrink:0;">${s.e}</div><div style="flex:1;"><div class="ct">${s.n} <span style="color:var(--muted);font-size:0.72rem;font-weight:400;">· ${s.t}</span></div><div class="cb">${s.d}</div></div></div></div>`).join('');
 }
 
 function renderShort() {
@@ -945,7 +946,7 @@ function renderShort() {
   const hasMental = a.weaknesses.includes('mental');
 
   let h = '';
-  if (isSG || isPutt) h += `<div class="nb-box">⭐ <strong>This is your priority area.</strong> 60% of all shots happen inside 100 yards. Owning this section drops more strokes than anything else in your bag.</div>`;
+  if (isSG || isPutt) h += `<div class="nb-box"><i class="ti ti-star" style="color:var(--gold);vertical-align:-1px;"></i> <strong>This is your priority area.</strong> 60% of all shots happen inside 100 yards. Owning this section drops more strokes than anything else in your bag.</div>`;
 
   // Chipping
   h += `<div class="card" ${isSG?'style="border-color:rgba(138,96,16,0.5);"':''}>
@@ -955,7 +956,7 @@ function renderShort() {
     <div class="cb"><strong>Setup:</strong> Ball back in stance, weight on your ${lead()} side, hands ahead of the ball.<br><br>
     <strong>The move:</strong> Shoulders rock like a putting stroke. No wrist flip — let the loft do the work.<br><br>
     <strong>Drill:</strong> Place a towel 3 feet onto the green. Land 10 chips on it. Count your hits.</div>
-    <div class="cue">💬 Think "putt with a lofted club"</div></div>`;
+    <div class="cue">Think "putt with a lofted club"</div></div>`;
 
   // Putting
   h += `<div class="card" ${isPutt?'style="border-color:rgba(138,96,16,0.5);"':''}>
@@ -965,22 +966,22 @@ function renderShort() {
     <div class="cb"><strong>Gate drill:</strong> Two tees 1 inch wider than your putter. Roll 20 putts through the gate from 6 feet.<br><br>
     <strong>Lag drill:</strong> From 30 feet, stop 3 balls within 3 feet of the hole. Keep going until you nail 3 in a row.<br><br>
     <strong>Rule:</strong> Never 3-putt from inside 6 feet. Lag everything outside 20.</div>
-    <div class="cue">💬 Eyes over ball, rock the shoulders, quiet hands</div></div>`;
+    <div class="cue">Eyes over ball, rock the shoulders, quiet hands</div></div>`;
 
   // Sand
   if (a.equip !== 'none') h += `<div class="card"><div class="ct">Sand / Bunker Basics</div>
     <div class="pills-row"><span class="ptag">Sand Wedge</span></div>
     <div class="cb">Open your stance, open the clubface. Hit 2 inches <em>behind</em> the ball — you're splashing sand, not hitting the ball.<br><br>
     <strong>Drill:</strong> Draw a line in the sand. Practice hitting the line consistently before adding a ball.</div>
-    <div class="cue">💬 Splash the sand — the ball rides along for free</div></div>`;
+    <div class="cue">Splash the sand — the ball rides along for free</div></div>`;
 
   // Strategy
   const stratTips = {
-    fun:      ['🌳 Play the easier tee box — zero shame, maximum fun','⛳ Pick one target per shot and commit fully','😄 Celebrate every par — they\'re harder than they look'],
-    break120: ['🎯 Tee it up on every par 3 — it\'s legal and it helps','🔄 Take more club than you think — most beginners come up short','📍 Aim for the center of every green, not the flag'],
-    break100: ['🚫 Never go for the hero shot — chip sideways and save bogey','📐 Course management beats swing improvement right now','🎯 Two-putt every hole and you\'ll break 100 automatically'],
-    break90:  ['📊 Track your stats: fairways, GIR, putts per round','🧠 Play for position — where does the miss hurt least?','⛳ Lag putt from outside 20 feet to eliminate 3-putts'],
-    break80:  ['📍 Know your exact carry distances for every club','🗺️ Play backwards from the hole — pick your ideal approach angle','🧊 Stay present — one shot at a time, no scoreboard math'],
+    fun:      ['<i class="ti ti-tree"></i> Play the easier tee box — zero shame, maximum fun','<i class="ti ti-flag-2"></i> Pick one target per shot and commit fully','<i class="ti ti-mood-smile"></i> Celebrate every par — they\'re harder than they look'],
+    break120: ['<i class="ti ti-target"></i> Tee it up on every par 3 — it\'s legal and it helps','<i class="ti ti-refresh"></i> Take more club than you think — most beginners come up short','<i class="ti ti-map-pin"></i> Aim for the center of every green, not the flag'],
+    break100: ['<i class="ti ti-ban"></i> Never go for the hero shot — chip sideways and save bogey','<i class="ti ti-ruler-2"></i> Course management beats swing improvement right now','<i class="ti ti-target"></i> Two-putt every hole and you\'ll break 100 automatically'],
+    break90:  ['<i class="ti ti-chart-bar"></i> Track your stats: fairways, GIR, putts per round','<i class="ti ti-brain"></i> Play for position — where does the miss hurt least?','<i class="ti ti-flag-2"></i> Lag putt from outside 20 feet to eliminate 3-putts'],
+    break80:  ['<i class="ti ti-map-pin"></i> Know your exact carry distances for every club','<i class="ti ti-map"></i> Play backwards from the hole — pick your ideal approach angle','<i class="ti ti-focus-2"></i> Stay present — one shot at a time, no scoreboard math'],
   };
   const tips = stratTips[a.goal] || stratTips.fun;
   h += `<div class="sect-title" style="margin-top:6px;">Course Strategy</div>`;
@@ -994,17 +995,17 @@ function renderShort() {
       ${hasMental?'<span class="tag tg-gld">⭐ YOUR FOCUS</span>':''}
       <div class="ct">Mental Game</div>
       <div class="cb">
-        <div class="cr"><span>🧘 <strong>Pre-shot routine:</strong> Pick target → visualize → pull trigger. Same 3 steps every time. Takes 10 seconds.</span></div>
-        <div class="cr"><span>🔄 <strong>Bad shot reset:</strong> 10 seconds to be annoyed. One deep breath. Then it's gone — never carry a shot to the next tee.</span></div>
-        <div class="cr"><span>💬 <strong>One thought only:</strong> Pick one swing cue before you start and stick to it the whole round.</span></div>
+        <div class="cr"><span><i class="ti ti-focus-2" style="color:var(--gold);vertical-align:-1px;"></i> <strong>Pre-shot routine:</strong> Pick target → visualize → pull trigger. Same 3 steps every time. Takes 10 seconds.</span></div>
+        <div class="cr"><span><i class="ti ti-refresh" style="color:var(--gold);vertical-align:-1px;"></i> <strong>Bad shot reset:</strong> 10 seconds to be annoyed. One deep breath. Then it's gone — never carry a shot to the next tee.</span></div>
+        <div class="cr"><span><i class="ti ti-message" style="color:var(--gold);vertical-align:-1px;"></i> <strong>One thought only:</strong> Pick one swing cue before you start and stick to it the whole round.</span></div>
       </div>
-      <div class="cue">💬 Golf is 90% mental once you can make contact</div></div>`;
+      <div class="cue">Golf is 90% mental once you can make contact</div></div>`;
   }
 
   h += `<div class="card"><div class="ct">The 3 Rules That Save Shots</div><div class="cb">
-    <div class="cr"><span>🚫 <strong>Never attempt a shot you haven't practiced.</strong> On the course is not the place to try it for the first time.</span></div>
-    <div class="cr"><span>📍 <strong>Miss to the safe side.</strong> Plan your misses — know where trouble is before you swing.</span></div>
-    <div class="cr"><span>⏱ <strong>Slow down on the first tee, last hole, and any shot over water.</strong> That's where amateurs throw strokes away.</span></div>
+    <div class="cr"><span><i class="ti ti-ban" style="color:var(--gold);vertical-align:-1px;"></i> <strong>Never attempt a shot you haven't practiced.</strong> On the course is not the place to try it for the first time.</span></div>
+    <div class="cr"><span><i class="ti ti-map-pin" style="color:var(--gold);vertical-align:-1px;"></i> <strong>Miss to the safe side.</strong> Plan your misses — know where trouble is before you swing.</span></div>
+    <div class="cr"><span><i class="ti ti-clock" style="color:var(--gold);vertical-align:-1px;"></i> <strong>Slow down on the first tee, last hole, and any shot over water.</strong> That's where amateurs throw strokes away.</span></div>
   </div></div>`;
 
   return h;
@@ -1046,31 +1047,31 @@ function renderCaddie() {
     : 'Using estimated distances — add yours in the wizard for more precision.';
 
   return `
-  <div class="ph" data-icon="🎙️">
-    <div class="ph-tag">⛳ AI-Powered</div>
+  <div class="ph">
+    <div class="ph-tag"><i class="ti ti-microphone" style="vertical-align:-1px;"></i> AI-Powered</div>
     <div class="ph-title">Voice Caddie</div>
     <div class="ph-sub">Ask about your next shot</div>
   </div>
   <div class="sect">
     <div class="mic-wrap">
-      <button class="mic-btn" id="micBtn" onclick="toggleListening()">🎙️</button>
+      <button class="mic-btn" id="micBtn" onclick="toggleListening()"><i class="ti ti-microphone" style="font-size:1.9rem;color:#fff;"></i></button>
       <div class="mic-status" id="caddieStatus">Tap to ask your caddie</div>
     </div>
     <div class="caddie-bubble" id="caddieBubble">
       <span style="color:var(--muted);font-size:0.83rem;">Your caddie is ready. Ask about distance, club selection, wind, or strategy.</span>
     </div>
     <div class="sect-title" style="margin-top:4px;">Try asking…</div>
-    <button class="example-q" onclick="askCaddie('I have 165 yards to the pin, slight downhill, no wind.')">📍 165 yards, slight downhill — what club?</button>
-    <button class="example-q" onclick="askCaddie('150 yards to the flag, into a 10 mph headwind.')">💨 150 yards into headwind</button>
-    <button class="example-q" onclick="askCaddie('I am in a greenside bunker, ball is sitting cleanly, 15 yards to the pin.')">🏖️ Greenside bunker, clean lie, 15 yards</button>
-    <button class="example-q" onclick="askCaddie('Tight lie 30 yards from the green, flag is front-left, need to land it short.')">🎯 30 yards out, tight lie, front pin</button>
-    <button class="example-q" onclick="askCaddie('Should I lay up or go for the green? 210 yards over water, I am hitting well today.')">🌊 210 yards over water — lay up or go?</button>
+    <button class="example-q" onclick="askCaddie('I have 165 yards to the pin, slight downhill, no wind.')"><i class="ti ti-map-pin" style="vertical-align:-1px;"></i> 165 yards, slight downhill — what club?</button>
+    <button class="example-q" onclick="askCaddie('150 yards to the flag, into a 10 mph headwind.')"><i class="ti ti-wind" style="vertical-align:-1px;"></i> 150 yards into headwind</button>
+    <button class="example-q" onclick="askCaddie('I am in a greenside bunker, ball is sitting cleanly, 15 yards to the pin.')"><i class="ti ti-wave-sine" style="vertical-align:-1px;"></i> Greenside bunker, clean lie, 15 yards</button>
+    <button class="example-q" onclick="askCaddie('Tight lie 30 yards from the green, flag is front-left, need to land it short.')"><i class="ti ti-target" style="vertical-align:-1px;"></i> 30 yards out, tight lie, front pin</button>
+    <button class="example-q" onclick="askCaddie('Should I lay up or go for the green? 210 yards over water, I am hitting well today.')"><i class="ti ti-droplet" style="vertical-align:-1px;"></i> 210 yards over water — lay up or go?</button>
   </div>
   <div class="sect">
     <div class="sect-title">My Distances (used by caddie)</div>
     <div class="card">
       <div class="caddie-dists">${distNote}<br><br>
-        ${distKeys.map(k => `<span>${distEmoji[k]} <strong>${distNames[k]}</strong> ${d[k]}y</span>`).join(' ')}
+        ${distKeys.map(k => `<span><strong>${distNames[k]}</strong> ${d[k]}y</span>`).join(' ')}
       </div>
     </div>
   </div>`;
@@ -1125,7 +1126,7 @@ async function askCaddie(text) {
   lastCaddieCall = now;
   startCaddieCountdown();
 
-  bubble.innerHTML = '<span style="color:var(--muted);">🤔 Thinking…</span>';
+  bubble.innerHTML = '<span style="color:var(--muted);"><i class="ti ti-loader-2" style="vertical-align:-1px;"></i> Thinking…</span>';
   if (status) status.textContent = 'Consulting your caddie…';
 
   try {
@@ -1144,7 +1145,7 @@ async function askCaddie(text) {
     const reply = data.reply || "Let me think about that one.";
 
     // Highlight club recommendation [in brackets]
-    const display = reply.replace(/\[([^\]]+)\]/g, '<span class="caddie-club">🏌️ $1</span>');
+    const display = reply.replace(/\[([^\]]+)\]/g, '<span class="caddie-club"><i class="ti ti-flag-2" style="font-size:1rem;vertical-align:-1px;"></i> $1</span>');
     bubble.innerHTML = `<div>${display}</div>`;
 
     // Speak the reply (strip brackets for TTS)
@@ -1153,8 +1154,8 @@ async function askCaddie(text) {
   } catch (err) {
     console.error('Caddie error:', err);
     const msg = err.message.includes('Caddie not configured')
-      ? '⚙️ Caddie is being set up — check back soon.'
-      : '📡 Can\'t reach caddie right now. Check your connection.';
+      ? 'Caddie is being set up — check back soon.'
+      : 'Can\'t reach caddie right now. Check your connection.';
     bubble.innerHTML = `<span style="color:#f87171;font-size:0.85rem;">${msg}</span>`;
   }
 }
@@ -1203,7 +1204,7 @@ function startListening() {
     caddieListening = true;
     const btn = document.getElementById('micBtn');
     const status = document.getElementById('caddieStatus');
-    if (btn) { btn.classList.add('listening'); btn.textContent = '⏹️'; }
+    if (btn) { btn.classList.add('listening'); btn.innerHTML = '<i class="ti ti-player-stop-filled" style="font-size:1.9rem;color:#fff;"></i>'; }
     if (status) status.textContent = 'Listening…';
     const bubble = document.getElementById('caddieBubble');
     if (bubble) bubble.innerHTML = '<span style="color:var(--muted);font-style:italic;">Say your shot details…</span>';
@@ -1223,7 +1224,7 @@ function startListening() {
     stopListening();
     const s = document.getElementById('caddieStatus');
     if (s) s.textContent = e.error === 'not-allowed'
-      ? 'Mic blocked — tap the 🔒 in your browser to allow it'
+      ? 'Mic blocked — tap the lock icon in your browser to allow it'
       : 'Didn\'t catch that — tap to try again';
   };
 
@@ -1239,7 +1240,7 @@ function stopListening() {
   }
   const btn = document.getElementById('micBtn');
   const status = document.getElementById('caddieStatus');
-  if (btn) { btn.classList.remove('listening'); btn.textContent = '🎙️'; }
+  if (btn) { btn.classList.remove('listening'); btn.innerHTML = '<i class="ti ti-microphone" style="font-size:1.9rem;color:#fff;"></i>'; }
   if (status && status.textContent === 'Listening…') {
     status.textContent = 'Tap to ask your caddie';
   }
@@ -1274,14 +1275,14 @@ function go(id) {
 
 function toggleDark() {
   const dark = document.body.classList.toggle('dark');
-  document.getElementById('darkBtn').textContent = dark ? '☀️' : '🌙';
+  document.getElementById('darkBtn').innerHTML = dark ? '<i class="ti ti-sun"></i>' : '<i class="ti ti-moon"></i>';
 }
 
 // ── DISTANCE EDITOR ──
 function openDistSheet() {
   const rows = distKeys.map(k => `
     <div class="dist-row">
-      <div class="dist-row-label">${distEmoji[k]} ${distNames[k]}</div>
+      <div class="dist-row-label">${distNames[k]}</div>
       <input class="dist-input" id="de-${k}" type="number" min="10" max="400"
         placeholder="yds" value="${distances[k] || ''}">
     </div>`).join('');
@@ -1327,9 +1328,9 @@ function buildLanding() {
   document.getElementById('ld-sub').textContent = a.name + "'s Family Pocket Caddie";
   document.getElementById('ld-cards').innerHTML = allProfiles.map(p => `
     <div class="ld-card" onclick="enterProfile('${p.key}')">
-      <div class="ld-av">${p.key==='main'?(a.age==='senior'?'🧓':a.age==='junior'?'🏌️':'👤'):'👤'}</div>
+      <div class="ld-av" style="width:44px;height:44px;background:rgba(138,96,16,0.12);border:1.5px solid rgba(138,96,16,0.25);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Bebas Neue',sans-serif;font-size:1.4rem;color:var(--gold);">${p.name[0].toUpperCase()}</div>
       <div style="flex:1;"><div class="ld-name">${p.name}</div><div class="ld-desc">${p.desc}</div></div>
-      <div class="ld-arr">›</div>
+      <div class="ld-arr"><i class="ti ti-chevron-right" style="font-size:1.1rem;"></i></div>
     </div>`).join('');
   if (allProfiles.length === 1) enterProfile('main'); // skip landing if solo
 }
@@ -1377,11 +1378,11 @@ function renderAllPages() {
   renderHome_page(currentProfile);
   const defaultLoc = a.location || 'range';
   document.getElementById('pg-range').innerHTML = `
-    <div class="ph" data-icon="🏌️"><div class="ph-tag">⛳ Tailored to your game</div><div class="ph-title">Practice Session</div><div class="ph-sub">Where are you today?</div></div>
+    <div class="ph"><div class="ph-tag">Tailored to your game</div><div class="ph-title">Practice Session</div><div class="ph-sub">Where are you today?</div></div>
     <div class="loc-switcher">
-      <button class="loc-btn${defaultLoc==='range'?' active':''}" data-loc="range" onclick="switchLoc('range')">🏌️ Range</button>
-      <button class="loc-btn${defaultLoc==='sim'?' active':''}" data-loc="sim" onclick="switchLoc('sim')">📡 Simulator</button>
-      <button class="loc-btn${defaultLoc==='backyard'||defaultLoc==='mix'?' active':''}" data-loc="backyard" onclick="switchLoc('backyard')">🏡 Backyard / Home</button>
+      <button class="loc-btn${defaultLoc==='range'?' active':''}" data-loc="range" onclick="switchLoc('range')"><i class="ti ti-run" style="vertical-align:-1px;"></i> Range</button>
+      <button class="loc-btn${defaultLoc==='sim'?' active':''}" data-loc="sim" onclick="switchLoc('sim')"><i class="ti ti-device-tv-old" style="vertical-align:-1px;"></i> Simulator</button>
+      <button class="loc-btn${defaultLoc==='backyard'||defaultLoc==='mix'?' active':''}" data-loc="backyard" onclick="switchLoc('backyard')"><i class="ti ti-home" style="vertical-align:-1px;"></i> Backyard / Home</button>
     </div>
     <div class="loc-panel${defaultLoc==='range'?' on':''}" data-loc="range">
       <div class="sect"><div class="sect-title">Before You Hit a Ball — Warmup</div>${renderRangeWarmup()}</div>
@@ -1394,14 +1395,14 @@ function renderAllPages() {
       <div class="sect"><div class="sect-title">Backyard / Home Session</div>${renderBackyardPlan()}</div>
     </div>`;
   document.getElementById('pg-swing').innerHTML = `
-    <div class="ph" data-icon="⚡"><div class="ph-tag">Build it once · repeat forever</div><div class="ph-title">Swing Sequence</div><div class="ph-sub">7 checkpoints · same order every time</div></div>
+    <div class="ph"><div class="ph-tag">Build it once · repeat forever</div><div class="ph-title">Swing Sequence</div><div class="ph-sub">7 checkpoints · same order every time</div></div>
     <div class="sect">${renderSwing()}</div>
-    <div class="sect"><div class="sect-title">Pre-Round Warmup</div>${renderWarmup()}<div class="card"><div class="cue" style="margin:0;">💡 5 min warmup = 10 strokes saved. Never skip it.</div></div></div>`;
+    <div class="sect"><div class="sect-title">Pre-Round Warmup</div>${renderWarmup()}<div class="card"><div class="cue" style="margin:0;"><i class="ti ti-bulb" style="vertical-align:-1px;"></i> 5 min warmup = 10 strokes saved. Never skip it.</div></div></div>`;
   document.getElementById('pg-short').innerHTML = `
-    <div class="ph" data-icon="🎯"><div class="ph-tag">Where rounds are won</div><div class="ph-title">Short Game</div><div class="ph-sub">Chipping · Putting · Sand · Strategy</div></div>
+    <div class="ph"><div class="ph-tag">Where rounds are won</div><div class="ph-title">Short Game</div><div class="ph-sub">Chipping · Putting · Sand · Strategy</div></div>
     <div class="sect">${renderShort()}</div>`;
   document.getElementById('pg-progress').innerHTML = `
-    <div class="ph" data-icon="📈"><div class="ph-tag">Track your journey</div><div class="ph-title">My Progress</div><div class="ph-sub">Log sessions · notes · goal tracker</div></div>
+    <div class="ph"><div class="ph-tag">Track your journey</div><div class="ph-title">My Progress</div><div class="ph-sub">Log sessions · notes · goal tracker</div></div>
     ${renderProgress()}`;
   document.getElementById('pg-caddie').innerHTML = renderCaddie();
 }
@@ -1430,7 +1431,7 @@ function renderProgList() {
   const saved = JSON.parse(localStorage.getItem(PKEY)||'[]');
   el.innerHTML = saved.length
     ? saved.map((s,i)=>`<div class="prog-entry"><div class="pe-date">${s.date}</div><div class="pe-note">${s.note}</div><button class="pe-del" onclick="deleteSession(${i})">✕</button></div>`).join('')
-    : '<div class="card"><div class="cb" style="text-align:center;padding:10px 0;">No sessions logged yet. Hit the range and come back! 🏌️</div></div>';
+    : '<div class="card"><div class="cb" style="text-align:center;padding:10px 0;">No sessions logged yet. Hit the range and come back!</div></div>';
 }
 
 // ── INIT ──

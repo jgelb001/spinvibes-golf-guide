@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Build Your Golf Guide</title>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
   <style>
     :root {
       --bg:      #f4efe3;
@@ -79,7 +80,7 @@
     .progress-wrap {
       background: var(--surface2);
       padding: 14px 24px 12px;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
+      border-bottom: 1px solid var(--border);
     }
     .progress-bar-track {
       background: var(--surface3);
@@ -203,7 +204,7 @@
     .opt-check {
       width: 20px; height: 20px;
       border-radius: 50%;
-      border: 2px solid rgba(255,255,255,0.2);
+      border: 2px solid var(--border);
       flex-shrink: 0;
       transition: all 0.18s;
       display: flex; align-items: center; justify-content: center;
@@ -309,7 +310,7 @@
     }
     .btn-back {
       background: var(--surface2);
-      border: 1px solid rgba(255,255,255,0.1);
+      border: 1px solid var(--border);
       border-radius: 14px;
       padding: 14px 22px;
       color: var(--muted);
@@ -323,11 +324,11 @@
     .btn-back:hover { color: var(--cream); border-color: rgba(255,255,255,0.2); }
     .btn-next {
       flex: 1;
-      background: linear-gradient(135deg, var(--green), #1e4d2b);
+      background: var(--green);
       border: 1px solid var(--green-b);
       border-radius: 14px;
       padding: 14px 22px;
-      color: #e8cc7a;
+      color: #e8f5ec;
       font-family: 'Outfit', sans-serif;
       font-size: 0.95rem;
       font-weight: 700;
@@ -335,22 +336,22 @@
       transition: all 0.18s;
       letter-spacing: 0.5px;
     }
-    .btn-next:hover { background: linear-gradient(135deg, #3d8a52, #2a6040); }
+    .btn-next:hover { background: var(--green-b); }
     .btn-next:disabled { opacity: 0.4; cursor: not-allowed; }
     .btn-generate {
       flex: 1;
-      background: linear-gradient(135deg, #8a6a1e, #c9a84c);
+      background: var(--gold);
       border: 1px solid var(--gold-l);
       border-radius: 14px;
       padding: 16px 22px;
-      color: #0a1a0e;
+      color: #fff;
       font-family: 'Bebas Neue', sans-serif;
       font-size: 1.2rem;
       letter-spacing: 2px;
       cursor: pointer;
       transition: all 0.18s;
     }
-    .btn-generate:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(201,168,76,0.3); }
+    .btn-generate:hover { filter: brightness(1.1); box-shadow: 0 6px 20px rgba(138,96,16,0.25); }
 
     /* ── STEP: INTRO / DONE ── */
     .intro-hero {
@@ -486,10 +487,10 @@
 <div class="wiz-header">
   <div style="width:44px;"></div>
   <div class="wiz-header-center">
-    <div class="wiz-logo">⛳ Golf<span>Guide</span> Builder</div>
+    <div class="wiz-logo"><i class="ti ti-flag-2" style="font-size:1.2rem;vertical-align:-1px;"></i> Golf<span>Guide</span> Builder</div>
     <div class="wiz-tagline">Personalized pocket caddie · 3 minutes</div>
   </div>
-  <button class="mode-toggle" onclick="toggleMode()" id="modeBtn" title="Toggle light/dark">🌙</button>
+  <button class="mode-toggle" onclick="toggleMode()" id="modeBtn" title="Toggle light/dark"><i class="ti ti-moon" id="modeBtnIcon"></i></button>
 </div>
 
 <div class="progress-wrap" id="progressWrap" style="display:none;">
@@ -507,25 +508,27 @@
   <!-- ══ STEP 0: INTRO ══ -->
   <div class="step active" id="step-0">
     <div class="intro-hero">
-      <div class="intro-emoji">🏌️</div>
+      <div style="width:80px;height:80px;margin:0 auto 20px;background:rgba(138,96,16,0.08);border:1.5px solid rgba(138,96,16,0.2);border-radius:20px;display:flex;align-items:center;justify-content:center;">
+        <i class="ti ti-flag-2" style="font-size:2.6rem;color:var(--gold);"></i>
+      </div>
       <div class="intro-title">Build Your<br><span>Golf Guide</span></div>
       <div class="intro-sub">Answer 8 quick questions and we'll generate a fully personalized golf app — tailored to your game, your goals, and your family. Opens instantly on iPhone, works offline forever.</div>
     </div>
     <div class="intro-bullets">
-      <div class="intro-bullet"><span class="intro-bullet-icon">🎯</span> Personalized range sessions built around your skill &amp; goals</div>
-      <div class="intro-bullet"><span class="intro-bullet-icon">📋</span> Drills that target YOUR biggest weaknesses</div>
-      <div class="intro-bullet"><span class="intro-bullet-icon">👨‍👧‍👦</span> Separate profiles for every family member</div>
-      <div class="intro-bullet"><span class="intro-bullet-icon">📱</span> Works offline · Save to home screen like an app</div>
-      <div class="intro-bullet"><span class="intro-bullet-icon">🔒</span> Stays on your device · No accounts · No data collected</div>
+      <div class="intro-bullet"><span class="intro-bullet-icon"><i class="ti ti-target"></i></span> Personalized range sessions built around your skill &amp; goals</div>
+      <div class="intro-bullet"><span class="intro-bullet-icon"><i class="ti ti-clipboard-list"></i></span> Drills that target YOUR biggest weaknesses</div>
+      <div class="intro-bullet"><span class="intro-bullet-icon"><i class="ti ti-users"></i></span> Separate profiles for every family member</div>
+      <div class="intro-bullet"><span class="intro-bullet-icon"><i class="ti ti-device-mobile"></i></span> Works offline · Save to home screen like an app</div>
+      <div class="intro-bullet"><span class="intro-bullet-icon"><i class="ti ti-lock"></i></span> Stays on your device · No accounts · No data collected</div>
     </div>
-    <button class="btn-next" style="width:100%;font-size:1.1rem;padding:18px;" onclick="startWizard()">Let's Build My Guide →</button>
+    <button class="btn-next" style="width:100%;font-size:1.1rem;padding:18px;" onclick="startWizard()">Let's Build My Guide <i class="ti ti-arrow-right" style="vertical-align:-1px;"></i></button>
     <div class="footer-note">Generated file is yours. No crossover with anyone else's guide.</div>
   </div>
 
   <!-- ══ STEP 1: NAME + HAND + GENDER (combined) ══ -->
   <div class="step" id="step-1">
     <button onclick="activateBeginnerMode()" id="beginner-toggle" style="display:block;width:100%;background:rgba(34,197,94,0.1);border:2px solid rgba(34,197,94,0.35);border-radius:14px;padding:14px 16px;margin-bottom:20px;cursor:pointer;text-align:left;">
-      <div style="font-size:1rem;font-weight:700;color:#22c55e;margin-bottom:3px;">🌱 Brand new to golf?</div>
+      <div style="font-size:1rem;font-weight:700;color:#22c55e;margin-bottom:3px;"><i class="ti ti-leaf" style="vertical-align:-1px;"></i> Brand new to golf?</div>
       <div style="font-size:0.8rem;color:var(--muted);line-height:1.4;">Tap here for a beginner-friendly version — just 3 quick questions, no jargon.</div>
     </button>
     <div class="step-q">Already playing?</div>
@@ -536,13 +539,13 @@
       <label class="opt">
         <input type="radio" name="hand" value="left" onchange="validateStep()">
         <div class="opt-card" style="flex-direction:column;align-items:center;text-align:center;padding:20px 12px;gap:8px;">
-          <div class="opt-icon">🤚</div><div class="opt-label">Left-Handed</div><div class="opt-check"></div>
+          <div class="opt-icon"><i class="ti ti-hand-finger" style="transform:scaleX(-1);display:inline-block;"></i></div><div class="opt-label">Left-Handed</div><div class="opt-check"></div>
         </div>
       </label>
       <label class="opt">
         <input type="radio" name="hand" value="right" onchange="validateStep()">
         <div class="opt-card" style="flex-direction:column;align-items:center;text-align:center;padding:20px 12px;gap:8px;">
-          <div class="opt-icon">✋</div><div class="opt-label">Right-Handed</div><div class="opt-check"></div>
+          <div class="opt-icon"><i class="ti ti-hand-finger"></i></div><div class="opt-label">Right-Handed</div><div class="opt-check"></div>
         </div>
       </label>
     </div>
@@ -551,13 +554,13 @@
       <label class="opt" style="flex:1;">
         <input type="radio" name="gender" value="m" onchange="validateStep()">
         <div class="opt-card" style="flex-direction:column;align-items:center;text-align:center;padding:16px 8px;gap:6px;">
-          <div class="opt-icon">♂️</div><div class="opt-label">Man</div><div class="opt-check"></div>
+          <div class="opt-icon"><i class="ti ti-user"></i></div><div class="opt-label">Man</div><div class="opt-check"></div>
         </div>
       </label>
       <label class="opt" style="flex:1;">
         <input type="radio" name="gender" value="f" onchange="validateStep()">
         <div class="opt-card" style="flex-direction:column;align-items:center;text-align:center;padding:16px 8px;gap:6px;">
-          <div class="opt-icon">♀️</div><div class="opt-label">Woman</div><div class="opt-check"></div>
+          <div class="opt-icon"><i class="ti ti-user"></i></div><div class="opt-label">Woman</div><div class="opt-check"></div>
         </div>
       </label>
       <label class="opt" style="flex:1;">
@@ -568,82 +571,82 @@
       </label>
     </div>
     <div class="wiz-nav">
-      <button class="btn-back" onclick="goBack()">← Back</button>
-      <button class="btn-next" id="btn-next-1" onclick="goNext()" disabled>Continue →</button>
+      <button class="btn-back" onclick="goBack()"><i class="ti ti-chevron-left" style="vertical-align:-1px;"></i> Back</button>
+      <button class="btn-next" id="btn-next-1" onclick="goNext()" disabled>Continue <i class="ti ti-arrow-right" style="vertical-align:-1px;"></i></button>
     </div>
   </div>
 
   <!-- ══ STEP B2: WHY PLAY (beginner) ══ -->
   <div class="step" id="step-b2">
-    <div style="display:inline-block;background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.3);border-radius:20px;padding:4px 14px;font-size:0.7rem;color:#22c55e;letter-spacing:1px;margin-bottom:14px;">🌱 BEGINNER MODE</div>
+    <div style="display:inline-block;background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.3);border-radius:20px;padding:4px 14px;font-size:0.7rem;color:#22c55e;letter-spacing:1px;margin-bottom:14px;"><i class="ti ti-leaf" style="vertical-align:-1px;"></i> BEGINNER MODE</div>
     <div class="step-q">Why do you want to play golf?</div>
     <div class="step-sub">No wrong answer — this shapes what your guide focuses on.</div>
     <div class="opt-grid two-col">
       <label class="opt"><input type="radio" name="bgoal" value="fun" onchange="validateStep()">
         <div class="opt-card" style="flex-direction:column;align-items:center;text-align:center;padding:20px 12px;gap:8px;">
-          <div class="opt-icon">🎉</div><div class="opt-label">Fun &amp; Family</div>
+          <div class="opt-icon"><i class="ti ti-mood-smile"></i></div><div class="opt-label">Fun &amp; Family</div>
           <div style="font-size:0.7rem;color:var(--muted);">Enjoy the game, play with people you like</div><div class="opt-check"></div>
         </div>
       </label>
       <label class="opt"><input type="radio" name="bgoal" value="fitness" onchange="validateStep()">
         <div class="opt-card" style="flex-direction:column;align-items:center;text-align:center;padding:20px 12px;gap:8px;">
-          <div class="opt-icon">💪</div><div class="opt-label">Fitness &amp; Outdoors</div>
+          <div class="opt-icon"><i class="ti ti-run"></i></div><div class="opt-label">Fitness &amp; Outdoors</div>
           <div style="font-size:0.7rem;color:var(--muted);">Walk the course, get fresh air, stay active</div><div class="opt-check"></div>
         </div>
       </label>
       <label class="opt"><input type="radio" name="bgoal" value="social" onchange="validateStep()">
         <div class="opt-card" style="flex-direction:column;align-items:center;text-align:center;padding:20px 12px;gap:8px;">
-          <div class="opt-icon">🤝</div><div class="opt-label">Social &amp; Work</div>
+          <div class="opt-icon"><i class="ti ti-users"></i></div><div class="opt-label">Social &amp; Work</div>
           <div style="font-size:0.7rem;color:var(--muted);">Client rounds, outings, networking</div><div class="opt-check"></div>
         </div>
       </label>
       <label class="opt"><input type="radio" name="bgoal" value="compete" onchange="validateStep()">
         <div class="opt-card" style="flex-direction:column;align-items:center;text-align:center;padding:20px 12px;gap:8px;">
-          <div class="opt-icon">🏆</div><div class="opt-label">Get Competitive</div>
+          <div class="opt-icon"><i class="ti ti-trophy"></i></div><div class="opt-label">Get Competitive</div>
           <div style="font-size:0.7rem;color:var(--muted);">Learn the game properly and improve fast</div><div class="opt-check"></div>
         </div>
       </label>
     </div>
     <div class="wiz-nav">
-      <button class="btn-back" onclick="goBack()">← Back</button>
-      <button class="btn-next" id="btn-next-b2" onclick="goNext()" disabled>Continue →</button>
+      <button class="btn-back" onclick="goBack()"><i class="ti ti-chevron-left" style="vertical-align:-1px;"></i> Back</button>
+      <button class="btn-next" id="btn-next-b2" onclick="goNext()" disabled>Continue <i class="ti ti-arrow-right" style="vertical-align:-1px;"></i></button>
     </div>
   </div>
 
   <!-- ══ STEP B3: CLUB SITUATION (beginner) ══ -->
   <div class="step" id="step-b3">
-    <div style="display:inline-block;background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.3);border-radius:20px;padding:4px 14px;font-size:0.7rem;color:#22c55e;letter-spacing:1px;margin-bottom:14px;">🌱 BEGINNER MODE</div>
+    <div style="display:inline-block;background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.3);border-radius:20px;padding:4px 14px;font-size:0.7rem;color:#22c55e;letter-spacing:1px;margin-bottom:14px;"><i class="ti ti-leaf" style="vertical-align:-1px;"></i> BEGINNER MODE</div>
     <div class="step-q">What's your club situation?</div>
     <div class="step-sub">Don't worry if you're just starting out — we'll work with whatever you have.</div>
     <div class="opt-grid two-col">
       <label class="opt"><input type="radio" name="bequip" value="full" onchange="validateStep()">
         <div class="opt-card" style="flex-direction:column;align-items:center;text-align:center;padding:20px 12px;gap:8px;">
-          <div class="opt-icon">🎒</div><div class="opt-label">Full Set</div>
+          <div class="opt-icon"><i class="ti ti-backpack"></i></div><div class="opt-label">Full Set</div>
           <div style="font-size:0.7rem;color:var(--muted);">I have (or am getting) a complete set of clubs</div><div class="opt-check"></div>
         </div>
       </label>
       <label class="opt"><input type="radio" name="bequip" value="partial" onchange="validateStep()">
         <div class="opt-card" style="flex-direction:column;align-items:center;text-align:center;padding:20px 12px;gap:8px;">
-          <div class="opt-icon">⛳</div><div class="opt-label">Just a Few Clubs</div>
+          <div class="opt-icon"><i class="ti ti-flag-2"></i></div><div class="opt-label">Just a Few Clubs</div>
           <div style="font-size:0.7rem;color:var(--muted);">A driver, a couple irons, and a putter</div><div class="opt-check"></div>
         </div>
       </label>
       <label class="opt"><input type="radio" name="bequip" value="borrow" onchange="validateStep()">
         <div class="opt-card" style="flex-direction:column;align-items:center;text-align:center;padding:20px 12px;gap:8px;">
-          <div class="opt-icon">🤲</div><div class="opt-label">Borrowing / Renting</div>
+          <div class="opt-icon"><i class="ti ti-hand-stop"></i></div><div class="opt-label">Borrowing / Renting</div>
           <div style="font-size:0.7rem;color:var(--muted);">Using someone else's clubs or course rentals</div><div class="opt-check"></div>
         </div>
       </label>
       <label class="opt"><input type="radio" name="bequip" value="none" onchange="validateStep()">
         <div class="opt-card" style="flex-direction:column;align-items:center;text-align:center;padding:20px 12px;gap:8px;">
-          <div class="opt-icon">🛍️</div><div class="opt-label">Don't Have Any Yet</div>
+          <div class="opt-icon"><i class="ti ti-shopping-bag"></i></div><div class="opt-label">Don't Have Any Yet</div>
           <div style="font-size:0.7rem;color:var(--muted);">Starting from scratch — guide will help</div><div class="opt-check"></div>
         </div>
       </label>
     </div>
     <div class="wiz-nav">
-      <button class="btn-back" onclick="goBack()">← Back</button>
-      <button class="btn-next" id="btn-next-b3" onclick="goNext()" disabled>Continue →</button>
+      <button class="btn-back" onclick="goBack()"><i class="ti ti-chevron-left" style="vertical-align:-1px;"></i> Back</button>
+      <button class="btn-next" id="btn-next-b3" onclick="goNext()" disabled>Continue <i class="ti ti-arrow-right" style="vertical-align:-1px;"></i></button>
     </div>
   </div>
 
@@ -653,17 +656,17 @@
     <div class="step-sub">This changes how technical we get — building fundamentals vs. refining what you already have are completely different plans.</div>
     <div class="opt-grid">
       <label class="opt"><input type="radio" name="experience" value="new" onchange="validateStep()">
-        <div class="opt-card"><div class="opt-icon">🌱</div><div class="opt-text"><div class="opt-label">Just starting out</div><div class="opt-desc">Under 1 year — still learning the basics</div></div><div class="opt-check"></div></div></label>
+        <div class="opt-card"><div class="opt-icon"><i class="ti ti-leaf"></i></div><div class="opt-text"><div class="opt-label">Just starting out</div><div class="opt-desc">Under 1 year — still learning the basics</div></div><div class="opt-check"></div></div></label>
       <label class="opt"><input type="radio" name="experience" value="1yr" onchange="validateStep()">
-        <div class="opt-card"><div class="opt-icon">📅</div><div class="opt-text"><div class="opt-label">1–3 years</div><div class="opt-desc">Getting consistent — building patterns</div></div><div class="opt-check"></div></div></label>
+        <div class="opt-card"><div class="opt-icon"><i class="ti ti-calendar"></i></div><div class="opt-text"><div class="opt-label">1–3 years</div><div class="opt-desc">Getting consistent — building patterns</div></div><div class="opt-check"></div></div></label>
       <label class="opt"><input type="radio" name="experience" value="3yr" onchange="validateStep()">
-        <div class="opt-card"><div class="opt-icon">🏌️</div><div class="opt-text"><div class="opt-label">3–10 years</div><div class="opt-desc">Established player — may have some ingrained habits</div></div><div class="opt-check"></div></div></label>
+        <div class="opt-card"><div class="opt-icon"><i class="ti ti-flag-2"></i></div><div class="opt-text"><div class="opt-label">3–10 years</div><div class="opt-desc">Established player — may have some ingrained habits</div></div><div class="opt-check"></div></div></label>
       <label class="opt"><input type="radio" name="experience" value="10yr" onchange="validateStep()">
-        <div class="opt-card"><div class="opt-icon">🏆</div><div class="opt-text"><div class="opt-label">10+ years</div><div class="opt-desc">Long-time player — focused on refinement</div></div><div class="opt-check"></div></div></label>
+        <div class="opt-card"><div class="opt-icon"><i class="ti ti-trophy"></i></div><div class="opt-text"><div class="opt-label">10+ years</div><div class="opt-desc">Long-time player — focused on refinement</div></div><div class="opt-check"></div></div></label>
     </div>
     <div class="wiz-nav">
-      <button class="btn-back" onclick="goBack()">← Back</button>
-      <button class="btn-next" id="btn-next-2" onclick="goNext()" disabled>Continue →</button>
+      <button class="btn-back" onclick="goBack()"><i class="ti ti-chevron-left" style="vertical-align:-1px;"></i> Back</button>
+      <button class="btn-next" id="btn-next-2" onclick="goNext()" disabled>Continue <i class="ti ti-arrow-right" style="vertical-align:-1px;"></i></button>
     </div>
   </div>
 
@@ -676,40 +679,40 @@
     <div class="opt-grid two-col" style="margin-bottom:20px;">
       <label class="opt"><input type="radio" name="age" value="junior" onchange="validateStep()">
         <div class="opt-card" style="flex-direction:column;align-items:center;text-align:center;padding:14px 8px;gap:4px;">
-          <div class="opt-icon">🧒</div><div class="opt-label" style="font-size:0.82rem;">Under 18</div><div class="opt-check"></div>
+          <div class="opt-icon"><i class="ti ti-user" style="font-size:1.1rem;"></i></div><div class="opt-label" style="font-size:0.82rem;">Under 18</div><div class="opt-check"></div>
         </div></label>
       <label class="opt"><input type="radio" name="age" value="young-adult" onchange="validateStep()">
         <div class="opt-card" style="flex-direction:column;align-items:center;text-align:center;padding:14px 8px;gap:4px;">
-          <div class="opt-icon">🧑</div><div class="opt-label" style="font-size:0.82rem;">18 – 35</div><div class="opt-check"></div>
+          <div class="opt-icon"><i class="ti ti-user" style="font-size:1.1rem;"></i></div><div class="opt-label" style="font-size:0.82rem;">18 – 35</div><div class="opt-check"></div>
         </div></label>
       <label class="opt"><input type="radio" name="age" value="adult" onchange="validateStep()">
         <div class="opt-card" style="flex-direction:column;align-items:center;text-align:center;padding:14px 8px;gap:4px;">
-          <div class="opt-icon">👨</div><div class="opt-label" style="font-size:0.82rem;">36 – 55</div><div class="opt-check"></div>
+          <div class="opt-icon"><i class="ti ti-user" style="font-size:1.1rem;"></i></div><div class="opt-label" style="font-size:0.82rem;">36 – 55</div><div class="opt-check"></div>
         </div></label>
       <label class="opt"><input type="radio" name="age" value="senior" onchange="validateStep()">
         <div class="opt-card" style="flex-direction:column;align-items:center;text-align:center;padding:14px 8px;gap:4px;">
-          <div class="opt-icon">🧓</div><div class="opt-label" style="font-size:0.82rem;">56 +</div><div class="opt-check"></div>
+          <div class="opt-icon"><i class="ti ti-user" style="font-size:1.1rem;"></i></div><div class="opt-label" style="font-size:0.82rem;">56 +</div><div class="opt-check"></div>
         </div></label>
     </div>
 
     <div class="section-label">Current scoring average</div>
     <div class="opt-grid">
       <label class="opt"><input type="radio" name="skill" value="beginner" onchange="validateStep()">
-        <div class="opt-card"><div class="opt-icon">🌱</div><div class="opt-text"><div class="opt-label">Total Beginner</div><div class="opt-desc">Never played or just starting out</div></div><div class="opt-check"></div></div></label>
+        <div class="opt-card"><div class="opt-icon"><i class="ti ti-leaf"></i></div><div class="opt-text"><div class="opt-label">Total Beginner</div><div class="opt-desc">Never played or just starting out</div></div><div class="opt-check"></div></div></label>
       <label class="opt"><input type="radio" name="skill" value="high" onchange="validateStep()">
-        <div class="opt-card"><div class="opt-icon">🏌️</div><div class="opt-text"><div class="opt-label">110 +</div><div class="opt-desc">Casual player, still building basics</div></div><div class="opt-check"></div></div></label>
+        <div class="opt-card"><div class="opt-icon"><i class="ti ti-flag-2"></i></div><div class="opt-text"><div class="opt-label">110 +</div><div class="opt-desc">Casual player, still building basics</div></div><div class="opt-check"></div></div></label>
       <label class="opt"><input type="radio" name="skill" value="mid-high" onchange="validateStep()">
-        <div class="opt-card"><div class="opt-icon">⛳</div><div class="opt-text"><div class="opt-label">100 – 110</div><div class="opt-desc">Getting more consistent round to round</div></div><div class="opt-check"></div></div></label>
+        <div class="opt-card"><div class="opt-icon"><i class="ti ti-flag-2"></i></div><div class="opt-text"><div class="opt-label">100 – 110</div><div class="opt-desc">Getting more consistent round to round</div></div><div class="opt-check"></div></div></label>
       <label class="opt"><input type="radio" name="skill" value="mid" onchange="validateStep()">
-        <div class="opt-card"><div class="opt-icon">🎯</div><div class="opt-text"><div class="opt-label">90 – 100</div><div class="opt-desc">Developing player, working toward sub-90</div></div><div class="opt-check"></div></div></label>
+        <div class="opt-card"><div class="opt-icon"><i class="ti ti-target"></i></div><div class="opt-text"><div class="opt-label">90 – 100</div><div class="opt-desc">Developing player, working toward sub-90</div></div><div class="opt-check"></div></div></label>
       <label class="opt"><input type="radio" name="skill" value="low-mid" onchange="validateStep()">
-        <div class="opt-card"><div class="opt-icon">🔥</div><div class="opt-text"><div class="opt-label">80 – 90</div><div class="opt-desc">Solid player chasing single digits</div></div><div class="opt-check"></div></div></label>
+        <div class="opt-card"><div class="opt-icon"><i class="ti ti-flame"></i></div><div class="opt-text"><div class="opt-label">80 – 90</div><div class="opt-desc">Solid player chasing single digits</div></div><div class="opt-check"></div></div></label>
       <label class="opt"><input type="radio" name="skill" value="low" onchange="validateStep()">
-        <div class="opt-card"><div class="opt-icon">🏆</div><div class="opt-text"><div class="opt-label">Under 80</div><div class="opt-desc">Low handicap, refining your game</div></div><div class="opt-check"></div></div></label>
+        <div class="opt-card"><div class="opt-icon"><i class="ti ti-trophy"></i></div><div class="opt-text"><div class="opt-label">Under 80</div><div class="opt-desc">Low handicap, refining your game</div></div><div class="opt-check"></div></div></label>
     </div>
     <div class="wiz-nav">
-      <button class="btn-back" onclick="goBack()">← Back</button>
-      <button class="btn-next" id="btn-next-3" onclick="goNext()" disabled>Continue →</button>
+      <button class="btn-back" onclick="goBack()"><i class="ti ti-chevron-left" style="vertical-align:-1px;"></i> Back</button>
+      <button class="btn-next" id="btn-next-3" onclick="goNext()" disabled>Continue <i class="ti ti-arrow-right" style="vertical-align:-1px;"></i></button>
     </div>
   </div>
 
@@ -719,17 +722,17 @@
     <div class="step-sub">Your drills and session plans are built around where you actually practice — not just the range. Every location gets a complete, different plan.</div>
     <div class="opt-grid">
       <label class="opt"><input type="radio" name="location" value="range" onchange="validateStep()">
-        <div class="opt-card"><div class="opt-icon">⛳</div><div class="opt-text"><div class="opt-label">Driving range</div><div class="opt-desc">Access to a full range with all clubs</div></div><div class="opt-check"></div></div></label>
+        <div class="opt-card"><div class="opt-icon"><i class="ti ti-flag-2"></i></div><div class="opt-text"><div class="opt-label">Driving range</div><div class="opt-desc">Access to a full range with all clubs</div></div><div class="opt-check"></div></div></label>
       <label class="opt"><input type="radio" name="location" value="sim" onchange="validateStep()">
-        <div class="opt-card"><div class="opt-icon">📺</div><div class="opt-text"><div class="opt-label">Golf simulator</div><div class="opt-desc">Trackman, Foresight, GC Quad, SkyTrak, etc.</div></div><div class="opt-check"></div></div></label>
+        <div class="opt-card"><div class="opt-icon"><i class="ti ti-device-tv-old"></i></div><div class="opt-text"><div class="opt-label">Golf simulator</div><div class="opt-desc">Trackman, Foresight, GC Quad, SkyTrak, etc.</div></div><div class="opt-check"></div></div></label>
       <label class="opt"><input type="radio" name="location" value="yard" onchange="validateStep()">
-        <div class="opt-card"><div class="opt-icon">🏡</div><div class="opt-text"><div class="opt-label">Backyard / at home</div><div class="opt-desc">Chipping net, putting mat, living room — wherever you've got space</div></div><div class="opt-check"></div></div></label>
+        <div class="opt-card"><div class="opt-icon"><i class="ti ti-home"></i></div><div class="opt-text"><div class="opt-label">Backyard / at home</div><div class="opt-desc">Chipping net, putting mat, living room — wherever you've got space</div></div><div class="opt-check"></div></div></label>
       <label class="opt"><input type="radio" name="location" value="mix" onchange="validateStep()">
-        <div class="opt-card"><div class="opt-icon">🔄</div><div class="opt-text"><div class="opt-label">Mix of places</div><div class="opt-desc">Range sometimes, home or sim other times</div></div><div class="opt-check"></div></div></label>
+        <div class="opt-card"><div class="opt-icon"><i class="ti ti-refresh"></i></div><div class="opt-text"><div class="opt-label">Mix of places</div><div class="opt-desc">Range sometimes, home or sim other times</div></div><div class="opt-check"></div></div></label>
     </div>
     <div class="wiz-nav">
-      <button class="btn-back" onclick="goBack()">← Back</button>
-      <button class="btn-next" id="btn-next-4" onclick="goNext()" disabled>Continue →</button>
+      <button class="btn-back" onclick="goBack()"><i class="ti ti-chevron-left" style="vertical-align:-1px;"></i> Back</button>
+      <button class="btn-next" id="btn-next-4" onclick="goNext()" disabled>Continue <i class="ti ti-arrow-right" style="vertical-align:-1px;"></i></button>
     </div>
   </div>
 
@@ -739,19 +742,19 @@
     <div class="step-sub">This becomes the headline of your guide and shapes every recommendation.</div>
     <div class="opt-grid">
       <label class="opt"><input type="radio" name="goal" value="fun" onchange="validateStep()">
-        <div class="opt-card"><div class="opt-icon">😄</div><div class="opt-text"><div class="opt-label">Just have fun &amp; enjoy the game</div><div class="opt-desc">No score pressure — pure enjoyment</div></div><div class="opt-check"></div></div></label>
+        <div class="opt-card"><div class="opt-icon"><i class="ti ti-mood-smile"></i></div><div class="opt-text"><div class="opt-label">Just have fun &amp; enjoy the game</div><div class="opt-desc">No score pressure — pure enjoyment</div></div><div class="opt-check"></div></div></label>
       <label class="opt"><input type="radio" name="goal" value="break120" onchange="validateStep()">
-        <div class="opt-card"><div class="opt-icon">🌱</div><div class="opt-text"><div class="opt-label">Break 120</div><div class="opt-desc">Building a foundation, one shot at a time</div></div><div class="opt-check"></div></div></label>
+        <div class="opt-card"><div class="opt-icon"><i class="ti ti-leaf"></i></div><div class="opt-text"><div class="opt-label">Break 120</div><div class="opt-desc">Building a foundation, one shot at a time</div></div><div class="opt-check"></div></div></label>
       <label class="opt"><input type="radio" name="goal" value="break100" onchange="validateStep()">
-        <div class="opt-card"><div class="opt-icon">⛳</div><div class="opt-text"><div class="opt-label">Break 100</div><div class="opt-desc">The first big milestone for any golfer</div></div><div class="opt-check"></div></div></label>
+        <div class="opt-card"><div class="opt-icon"><i class="ti ti-flag-2"></i></div><div class="opt-text"><div class="opt-label">Break 100</div><div class="opt-desc">The first big milestone for any golfer</div></div><div class="opt-check"></div></div></label>
       <label class="opt"><input type="radio" name="goal" value="break90" onchange="validateStep()">
-        <div class="opt-card"><div class="opt-icon">🎯</div><div class="opt-text"><div class="opt-label">Break 90</div><div class="opt-desc">Consistency and course management</div></div><div class="opt-check"></div></div></label>
+        <div class="opt-card"><div class="opt-icon"><i class="ti ti-target"></i></div><div class="opt-text"><div class="opt-label">Break 90</div><div class="opt-desc">Consistency and course management</div></div><div class="opt-check"></div></div></label>
       <label class="opt"><input type="radio" name="goal" value="break80" onchange="validateStep()">
-        <div class="opt-card"><div class="opt-icon">🔥</div><div class="opt-text"><div class="opt-label">Break 80</div><div class="opt-desc">Scoring focus, shot shaping, finesse</div></div><div class="opt-check"></div></div></label>
+        <div class="opt-card"><div class="opt-icon"><i class="ti ti-flame"></i></div><div class="opt-text"><div class="opt-label">Break 80</div><div class="opt-desc">Scoring focus, shot shaping, finesse</div></div><div class="opt-check"></div></div></label>
     </div>
     <div class="wiz-nav">
-      <button class="btn-back" onclick="goBack()">← Back</button>
-      <button class="btn-next" id="btn-next-5" onclick="goNext()" disabled>Continue →</button>
+      <button class="btn-back" onclick="goBack()"><i class="ti ti-chevron-left" style="vertical-align:-1px;"></i> Back</button>
+      <button class="btn-next" id="btn-next-5" onclick="goNext()" disabled>Continue <i class="ti ti-arrow-right" style="vertical-align:-1px;"></i></button>
     </div>
   </div>
 
@@ -761,21 +764,21 @@
     <div class="step-sub">Pick your top 2 weaknesses — your guide drills will be built around these.</div>
     <div class="opt-grid" id="weakness-grid">
       <label class="opt opt-sq"><input type="checkbox" name="weakness" value="driving" onchange="validateWeakness()">
-        <div class="opt-card"><div class="opt-icon">💨</div><div class="opt-text"><div class="opt-label">Driving / Off the tee</div><div class="opt-desc">Accuracy, direction, not getting in trouble</div></div><div class="opt-check"></div></div></label>
+        <div class="opt-card"><div class="opt-icon"><i class="ti ti-arrows-right"></i></div><div class="opt-text"><div class="opt-label">Driving / Off the tee</div><div class="opt-desc">Accuracy, direction, not getting in trouble</div></div><div class="opt-check"></div></div></label>
       <label class="opt opt-sq"><input type="checkbox" name="weakness" value="irons" onchange="validateWeakness()">
-        <div class="opt-card"><div class="opt-icon">🏌️</div><div class="opt-text"><div class="opt-label">Iron play</div><div class="opt-desc">Solid contact, consistent distance, direction</div></div><div class="opt-check"></div></div></label>
+        <div class="opt-card"><div class="opt-icon"><i class="ti ti-flag-2"></i></div><div class="opt-text"><div class="opt-label">Iron play</div><div class="opt-desc">Solid contact, consistent distance, direction</div></div><div class="opt-check"></div></div></label>
       <label class="opt opt-sq"><input type="checkbox" name="weakness" value="shortgame" onchange="validateWeakness()">
-        <div class="opt-card"><div class="opt-icon">🎯</div><div class="opt-text"><div class="opt-label">Chipping &amp; pitching</div><div class="opt-desc">Getting up and down around the green</div></div><div class="opt-check"></div></div></label>
+        <div class="opt-card"><div class="opt-icon"><i class="ti ti-target"></i></div><div class="opt-text"><div class="opt-label">Chipping &amp; pitching</div><div class="opt-desc">Getting up and down around the green</div></div><div class="opt-check"></div></div></label>
       <label class="opt opt-sq"><input type="checkbox" name="weakness" value="putting" onchange="validateWeakness()">
-        <div class="opt-card"><div class="opt-icon">⛳</div><div class="opt-text"><div class="opt-label">Putting</div><div class="opt-desc">Too many 3-putts, reading greens, distance control</div></div><div class="opt-check"></div></div></label>
+        <div class="opt-card"><div class="opt-icon"><i class="ti ti-circle"></i></div><div class="opt-text"><div class="opt-label">Putting</div><div class="opt-desc">Too many 3-putts, reading greens, distance control</div></div><div class="opt-check"></div></div></label>
       <label class="opt opt-sq"><input type="checkbox" name="weakness" value="course" onchange="validateWeakness()">
-        <div class="opt-card"><div class="opt-icon">🗺️</div><div class="opt-text"><div class="opt-label">Course management</div><div class="opt-desc">Club selection, risk vs. reward decisions</div></div><div class="opt-check"></div></div></label>
+        <div class="opt-card"><div class="opt-icon"><i class="ti ti-map"></i></div><div class="opt-text"><div class="opt-label">Course management</div><div class="opt-desc">Club selection, risk vs. reward decisions</div></div><div class="opt-check"></div></div></label>
       <label class="opt opt-sq"><input type="checkbox" name="weakness" value="mental" onchange="validateWeakness()">
-        <div class="opt-card"><div class="opt-icon">🧠</div><div class="opt-text"><div class="opt-label">Mental game</div><div class="opt-desc">Staying calm, bouncing back from bad shots</div></div><div class="opt-check"></div></div></label>
+        <div class="opt-card"><div class="opt-icon"><i class="ti ti-brain"></i></div><div class="opt-text"><div class="opt-label">Mental game</div><div class="opt-desc">Staying calm, bouncing back from bad shots</div></div><div class="opt-check"></div></div></label>
     </div>
     <div class="wiz-nav">
-      <button class="btn-back" onclick="goBack()">← Back</button>
-      <button class="btn-next" id="btn-next-6" onclick="goNext()" disabled>Continue →</button>
+      <button class="btn-back" onclick="goBack()"><i class="ti ti-chevron-left" style="vertical-align:-1px;"></i> Back</button>
+      <button class="btn-next" id="btn-next-6" onclick="goNext()" disabled>Continue <i class="ti ti-arrow-right" style="vertical-align:-1px;"></i></button>
     </div>
   </div>
 
@@ -787,37 +790,37 @@
     <div class="section-label">How often can you practice?</div>
     <div class="opt-grid" style="margin-bottom:20px;">
       <label class="opt"><input type="radio" name="freq" value="rare" onchange="validateStep()">
-        <div class="opt-card"><div class="opt-icon">📅</div><div class="opt-text"><div class="opt-label">A few times a month</div><div class="opt-desc">Life is busy — making it count when I can</div></div><div class="opt-check"></div></div></label>
+        <div class="opt-card"><div class="opt-icon"><i class="ti ti-calendar"></i></div><div class="opt-text"><div class="opt-label">A few times a month</div><div class="opt-desc">Life is busy — making it count when I can</div></div><div class="opt-check"></div></div></label>
       <label class="opt"><input type="radio" name="freq" value="weekly" onchange="validateStep()">
-        <div class="opt-card"><div class="opt-icon">🔄</div><div class="opt-text"><div class="opt-label">Once a week</div><div class="opt-desc">Weekend warrior with a regular range session</div></div><div class="opt-check"></div></div></label>
+        <div class="opt-card"><div class="opt-icon"><i class="ti ti-refresh"></i></div><div class="opt-text"><div class="opt-label">Once a week</div><div class="opt-desc">Weekend warrior with a regular range session</div></div><div class="opt-check"></div></div></label>
       <label class="opt"><input type="radio" name="freq" value="multi" onchange="validateStep()">
-        <div class="opt-card"><div class="opt-icon">💪</div><div class="opt-text"><div class="opt-label">2 – 3× per week</div><div class="opt-desc">Committed to improving fast</div></div><div class="opt-check"></div></div></label>
+        <div class="opt-card"><div class="opt-icon"><i class="ti ti-barbell"></i></div><div class="opt-text"><div class="opt-label">2 – 3× per week</div><div class="opt-desc">Committed to improving fast</div></div><div class="opt-check"></div></div></label>
       <label class="opt"><input type="radio" name="freq" value="daily" onchange="validateStep()">
-        <div class="opt-card"><div class="opt-icon">🔥</div><div class="opt-text"><div class="opt-label">Almost daily</div><div class="opt-desc">All in — golf is a priority right now</div></div><div class="opt-check"></div></div></label>
+        <div class="opt-card"><div class="opt-icon"><i class="ti ti-flame"></i></div><div class="opt-text"><div class="opt-label">Almost daily</div><div class="opt-desc">All in — golf is a priority right now</div></div><div class="opt-check"></div></div></label>
     </div>
 
     <div class="section-label">How long is a typical session?</div>
     <div class="opt-grid two-col">
       <label class="opt"><input type="radio" name="duration" value="short" onchange="validateStep()">
         <div class="opt-card" style="flex-direction:column;align-items:center;text-align:center;padding:16px 8px;gap:5px;">
-          <div class="opt-icon">⚡</div><div class="opt-label">15 – 30 min</div><div class="opt-desc" style="font-size:0.7rem;">Quick &amp; focused</div><div class="opt-check"></div>
+          <div class="opt-icon"><i class="ti ti-bolt"></i></div><div class="opt-label">15 – 30 min</div><div class="opt-desc" style="font-size:0.7rem;">Quick &amp; focused</div><div class="opt-check"></div>
         </div></label>
       <label class="opt"><input type="radio" name="duration" value="medium" onchange="validateStep()">
         <div class="opt-card" style="flex-direction:column;align-items:center;text-align:center;padding:16px 8px;gap:5px;">
-          <div class="opt-icon">🕐</div><div class="opt-label">30 – 45 min</div><div class="opt-desc" style="font-size:0.7rem;">Good solid block</div><div class="opt-check"></div>
+          <div class="opt-icon"><i class="ti ti-clock"></i></div><div class="opt-label">30 – 45 min</div><div class="opt-desc" style="font-size:0.7rem;">Good solid block</div><div class="opt-check"></div>
         </div></label>
       <label class="opt"><input type="radio" name="duration" value="long" onchange="validateStep()">
         <div class="opt-card" style="flex-direction:column;align-items:center;text-align:center;padding:16px 8px;gap:5px;">
-          <div class="opt-icon">🕑</div><div class="opt-label">45 – 60 min</div><div class="opt-desc" style="font-size:0.7rem;">Full session</div><div class="opt-check"></div>
+          <div class="opt-icon"><i class="ti ti-clock"></i></div><div class="opt-label">45 – 60 min</div><div class="opt-desc" style="font-size:0.7rem;">Full session</div><div class="opt-check"></div>
         </div></label>
       <label class="opt"><input type="radio" name="duration" value="full" onchange="validateStep()">
         <div class="opt-card" style="flex-direction:column;align-items:center;text-align:center;padding:16px 8px;gap:5px;">
-          <div class="opt-icon">🏆</div><div class="opt-label">60 – 90 min</div><div class="opt-desc" style="font-size:0.7rem;">Range + short game</div><div class="opt-check"></div>
+          <div class="opt-icon"><i class="ti ti-trophy"></i></div><div class="opt-label">60 – 90 min</div><div class="opt-desc" style="font-size:0.7rem;">Range + short game</div><div class="opt-check"></div>
         </div></label>
     </div>
     <div class="wiz-nav">
-      <button class="btn-back" onclick="goBack()">← Back</button>
-      <button class="btn-next" id="btn-next-7" onclick="goNext()" disabled>Continue →</button>
+      <button class="btn-back" onclick="goBack()"><i class="ti ti-chevron-left" style="vertical-align:-1px;"></i> Back</button>
+      <button class="btn-next" id="btn-next-7" onclick="goNext()" disabled>Continue <i class="ti ti-arrow-right" style="vertical-align:-1px;"></i></button>
     </div>
   </div>
 
@@ -827,17 +830,17 @@
     <div class="step-sub">Shapes how technical your coaching notes get — and whether we recommend getting eyes on your swing.</div>
     <div class="opt-grid">
       <label class="opt"><input type="radio" name="lessons" value="none" onchange="validateStep()">
-        <div class="opt-card"><div class="opt-icon">🆕</div><div class="opt-text"><div class="opt-label">Never had a lesson</div><div class="opt-desc">Self-taught or just figuring it out on my own</div></div><div class="opt-check"></div></div></label>
+        <div class="opt-card"><div class="opt-icon"><i class="ti ti-user-plus"></i></div><div class="opt-text"><div class="opt-label">Never had a lesson</div><div class="opt-desc">Self-taught or just figuring it out on my own</div></div><div class="opt-check"></div></div></label>
       <label class="opt"><input type="radio" name="lessons" value="few" onchange="validateStep()">
-        <div class="opt-card"><div class="opt-icon">📖</div><div class="opt-text"><div class="opt-label">A few lessons</div><div class="opt-desc">Had some coaching — built a basic foundation</div></div><div class="opt-check"></div></div></label>
+        <div class="opt-card"><div class="opt-icon"><i class="ti ti-book"></i></div><div class="opt-text"><div class="opt-label">A few lessons</div><div class="opt-desc">Had some coaching — built a basic foundation</div></div><div class="opt-check"></div></div></label>
       <label class="opt"><input type="radio" name="lessons" value="regular" onchange="validateStep()">
-        <div class="opt-card"><div class="opt-icon">🎓</div><div class="opt-text"><div class="opt-label">Regular lessons</div><div class="opt-desc">Working with an instructor consistently right now</div></div><div class="opt-check"></div></div></label>
+        <div class="opt-card"><div class="opt-icon"><i class="ti ti-school"></i></div><div class="opt-text"><div class="opt-label">Regular lessons</div><div class="opt-desc">Working with an instructor consistently right now</div></div><div class="opt-check"></div></div></label>
       <label class="opt"><input type="radio" name="lessons" value="video" onchange="validateStep()">
-        <div class="opt-card"><div class="opt-icon">📱</div><div class="opt-text"><div class="opt-label">Self-taught from videos / apps</div><div class="opt-desc">YouTube, apps, and trial &amp; error</div></div><div class="opt-check"></div></div></label>
+        <div class="opt-card"><div class="opt-icon"><i class="ti ti-device-mobile"></i></div><div class="opt-text"><div class="opt-label">Self-taught from videos / apps</div><div class="opt-desc">YouTube, apps, and trial &amp; error</div></div><div class="opt-check"></div></div></label>
     </div>
     <div class="wiz-nav">
-      <button class="btn-back" onclick="goBack()">← Back</button>
-      <button class="btn-next" id="btn-next-8" onclick="goNext()" disabled>Continue →</button>
+      <button class="btn-back" onclick="goBack()"><i class="ti ti-chevron-left" style="vertical-align:-1px;"></i> Back</button>
+      <button class="btn-next" id="btn-next-8" onclick="goNext()" disabled>Continue <i class="ti ti-arrow-right" style="vertical-align:-1px;"></i></button>
     </div>
   </div>
 
@@ -849,21 +852,21 @@
     <div class="section-label">Equipment status</div>
     <div class="opt-grid" style="margin-bottom:20px;">
       <label class="opt"><input type="radio" name="equip" value="none" onchange="validateStep()">
-        <div class="opt-card"><div class="opt-icon">🛒</div><div class="opt-text"><div class="opt-label">Just getting started</div><div class="opt-desc">No clubs yet — or borrowing for now</div></div><div class="opt-check"></div></div></label>
+        <div class="opt-card"><div class="opt-icon"><i class="ti ti-shopping-cart"></i></div><div class="opt-text"><div class="opt-label">Just getting started</div><div class="opt-desc">No clubs yet — or borrowing for now</div></div><div class="opt-check"></div></div></label>
       <label class="opt"><input type="radio" name="equip" value="starter" onchange="validateStep()">
-        <div class="opt-card"><div class="opt-icon">🎒</div><div class="opt-text"><div class="opt-label">Starter / beginner set</div><div class="opt-desc">Have a basic set, getting comfortable with it</div></div><div class="opt-check"></div></div></label>
+        <div class="opt-card"><div class="opt-icon"><i class="ti ti-backpack"></i></div><div class="opt-text"><div class="opt-label">Starter / beginner set</div><div class="opt-desc">Have a basic set, getting comfortable with it</div></div><div class="opt-check"></div></div></label>
       <label class="opt"><input type="radio" name="equip" value="full" onchange="validateStep()">
-        <div class="opt-card"><div class="opt-icon">🏌️</div><div class="opt-text"><div class="opt-label">Full set</div><div class="opt-desc">Driver through putter, all clubs covered</div></div><div class="opt-check"></div></div></label>
+        <div class="opt-card"><div class="opt-icon"><i class="ti ti-flag-2"></i></div><div class="opt-text"><div class="opt-label">Full set</div><div class="opt-desc">Driver through putter, all clubs covered</div></div><div class="opt-check"></div></div></label>
       <label class="opt"><input type="radio" name="equip" value="custom" onchange="validateStep()">
-        <div class="opt-card"><div class="opt-icon">⭐</div><div class="opt-text"><div class="opt-label">Custom-fitted clubs</div><div class="opt-desc">Fitted to my swing — dialed in</div></div><div class="opt-check"></div></div></label>
+        <div class="opt-card"><div class="opt-icon"><i class="ti ti-star"></i></div><div class="opt-text"><div class="opt-label">Custom-fitted clubs</div><div class="opt-desc">Fitted to my swing — dialed in</div></div><div class="opt-check"></div></div></label>
     </div>
 
     <div class="section-label">Bag / club brand <span style="font-weight:400;opacity:0.6;">(optional)</span></div>
     <input class="text-field" style="margin-bottom:28px;" type="text" id="q-bag" placeholder="e.g. Callaway Strata, TaylorMade RBZ, Ping G430…" maxlength="60">
 
     <div class="wiz-nav">
-      <button class="btn-back" onclick="goBack()">← Back</button>
-      <button class="btn-next" id="btn-next-9" onclick="goNext()" disabled>Continue →</button>
+      <button class="btn-back" onclick="goBack()"><i class="ti ti-chevron-left" style="vertical-align:-1px;"></i> Back</button>
+      <button class="btn-next" id="btn-next-9" onclick="goNext()" disabled>Continue <i class="ti ti-arrow-right" style="vertical-align:-1px;"></i></button>
     </div>
   </div>
 
@@ -873,34 +876,34 @@
     <div class="step-sub">Enter your average carry for each club. Skip anything you're not sure about — we'll still build a great guide. Your guide will include a personal yardage chart and smart club callouts.</div>
 
     <div class="family-block">
-      <div class="family-block-title">📏 My Carry Distances (yards)</div>
+      <div class="family-block-title"><i class="ti ti-ruler-2" style="vertical-align:-2px;"></i> My Carry Distances (yards)</div>
       <div style="display:flex;flex-direction:column;gap:10px;">
         <div style="display:grid;grid-template-columns:1fr 80px;gap:10px;align-items:center;">
-          <div style="font-size:0.88rem;color:var(--cream);font-weight:600;">🚀 Driver</div>
+          <div style="font-size:0.88rem;color:var(--cream);font-weight:600;">Driver</div>
           <input class="family-select" type="number" id="dist-driver" placeholder="yds" min="50" max="400" style="text-align:center;font-size:0.95rem;">
         </div>
         <div style="display:grid;grid-template-columns:1fr 80px;gap:10px;align-items:center;">
-          <div style="font-size:0.88rem;color:var(--cream);font-weight:600;">🌲 3-Wood</div>
+          <div style="font-size:0.88rem;color:var(--cream);font-weight:600;">3-Wood</div>
           <input class="family-select" type="number" id="dist-3w" placeholder="yds" min="50" max="350" style="text-align:center;font-size:0.95rem;">
         </div>
         <div style="display:grid;grid-template-columns:1fr 80px;gap:10px;align-items:center;">
-          <div style="font-size:0.88rem;color:var(--cream);font-weight:600;">🔄 Hybrid / 5-Iron</div>
+          <div style="font-size:0.88rem;color:var(--cream);font-weight:600;">Hybrid / 5-Iron</div>
           <input class="family-select" type="number" id="dist-hybrid" placeholder="yds" min="50" max="300" style="text-align:center;font-size:0.95rem;">
         </div>
         <div style="display:grid;grid-template-columns:1fr 80px;gap:10px;align-items:center;">
-          <div style="font-size:0.88rem;color:var(--cream);font-weight:600;">🎯 7-Iron</div>
+          <div style="font-size:0.88rem;color:var(--cream);font-weight:600;">7-Iron</div>
           <input class="family-select" type="number" id="dist-7i" placeholder="yds" min="50" max="250" style="text-align:center;font-size:0.95rem;">
         </div>
         <div style="display:grid;grid-template-columns:1fr 80px;gap:10px;align-items:center;">
-          <div style="font-size:0.88rem;color:var(--cream);font-weight:600;">⛳ 9-Iron</div>
+          <div style="font-size:0.88rem;color:var(--cream);font-weight:600;">9-Iron</div>
           <input class="family-select" type="number" id="dist-9i" placeholder="yds" min="50" max="200" style="text-align:center;font-size:0.95rem;">
         </div>
         <div style="display:grid;grid-template-columns:1fr 80px;gap:10px;align-items:center;">
-          <div style="font-size:0.88rem;color:var(--cream);font-weight:600;">🏌️ Pitching Wedge</div>
+          <div style="font-size:0.88rem;color:var(--cream);font-weight:600;">Pitching Wedge</div>
           <input class="family-select" type="number" id="dist-pw" placeholder="yds" min="30" max="180" style="text-align:center;font-size:0.95rem;">
         </div>
         <div style="display:grid;grid-template-columns:1fr 80px;gap:10px;align-items:center;">
-          <div style="font-size:0.88rem;color:var(--cream);font-weight:600;">🏖️ Sand Wedge</div>
+          <div style="font-size:0.88rem;color:var(--cream);font-weight:600;">Sand Wedge</div>
           <input class="family-select" type="number" id="dist-sw" placeholder="yds" min="20" max="150" style="text-align:center;font-size:0.95rem;">
         </div>
       </div>
@@ -908,8 +911,8 @@
     <div style="font-size:0.72rem;color:var(--muted);text-align:center;margin:12px 0 20px;">All fields optional — fill in what you know. You can rebuild anytime.</div>
 
     <div class="wiz-nav">
-      <button class="btn-back" onclick="goBack()">← Back</button>
-      <button class="btn-next" id="btn-next-10" onclick="goNext()">Continue →</button>
+      <button class="btn-back" onclick="goBack()"><i class="ti ti-chevron-left" style="vertical-align:-1px;"></i> Back</button>
+      <button class="btn-next" id="btn-next-10" onclick="goNext()">Continue <i class="ti ti-arrow-right" style="vertical-align:-1px;"></i></button>
     </div>
   </div>
 
@@ -919,19 +922,19 @@
     <div class="step-sub">Shapes your warmup routine and swing notes. Completely optional.</div>
     <div class="opt-grid">
       <label class="opt"><input type="radio" name="physical" value="none" onchange="validateStep()">
-        <div class="opt-card"><div class="opt-icon">💪</div><div class="opt-text"><div class="opt-label">None — feeling good</div></div><div class="opt-check"></div></div></label>
+        <div class="opt-card"><div class="opt-icon"><i class="ti ti-barbell"></i></div><div class="opt-text"><div class="opt-label">None — feeling good</div></div><div class="opt-check"></div></div></label>
       <label class="opt"><input type="radio" name="physical" value="back" onchange="validateStep()">
-        <div class="opt-card"><div class="opt-icon">🔄</div><div class="opt-text"><div class="opt-label">Back or spine</div><div class="opt-desc">Need to protect the lower back</div></div><div class="opt-check"></div></div></label>
+        <div class="opt-card"><div class="opt-icon"><i class="ti ti-rotate"></i></div><div class="opt-text"><div class="opt-label">Back or spine</div><div class="opt-desc">Need to protect the lower back</div></div><div class="opt-check"></div></div></label>
       <label class="opt"><input type="radio" name="physical" value="shoulder" onchange="validateStep()">
-        <div class="opt-card"><div class="opt-icon">🤷</div><div class="opt-text"><div class="opt-label">Shoulder / limited turn</div><div class="opt-desc">Restricted rotation or shoulder issue</div></div><div class="opt-check"></div></div></label>
+        <div class="opt-card"><div class="opt-icon"><i class="ti ti-arrows-transfer-up"></i></div><div class="opt-text"><div class="opt-label">Shoulder / limited turn</div><div class="opt-desc">Restricted rotation or shoulder issue</div></div><div class="opt-check"></div></div></label>
       <label class="opt"><input type="radio" name="physical" value="knee" onchange="validateStep()">
-        <div class="opt-card"><div class="opt-icon">🦵</div><div class="opt-text"><div class="opt-label">Knee or hip</div><div class="opt-desc">Weight shift and stance adjustments needed</div></div><div class="opt-check"></div></div></label>
+        <div class="opt-card"><div class="opt-icon"><i class="ti ti-run"></i></div><div class="opt-text"><div class="opt-label">Knee or hip</div><div class="opt-desc">Weight shift and stance adjustments needed</div></div><div class="opt-check"></div></div></label>
       <label class="opt"><input type="radio" name="physical" value="returning" onchange="validateStep()">
-        <div class="opt-card"><div class="opt-icon">🌱</div><div class="opt-text"><div class="opt-label">Returning after a break</div><div class="opt-desc">Haven't played in a while — easing back in</div></div><div class="opt-check"></div></div></label>
+        <div class="opt-card"><div class="opt-icon"><i class="ti ti-leaf"></i></div><div class="opt-text"><div class="opt-label">Returning after a break</div><div class="opt-desc">Haven't played in a while — easing back in</div></div><div class="opt-check"></div></div></label>
     </div>
     <div class="wiz-nav">
-      <button class="btn-back" onclick="goBack()">← Back</button>
-      <button class="btn-next" id="btn-next-11" onclick="goNext()" disabled>Continue →</button>
+      <button class="btn-back" onclick="goBack()"><i class="ti ti-chevron-left" style="vertical-align:-1px;"></i> Back</button>
+      <button class="btn-next" id="btn-next-11" onclick="goNext()" disabled>Continue <i class="ti ti-arrow-right" style="vertical-align:-1px;"></i></button>
     </div>
   </div>
 
@@ -966,8 +969,8 @@
         </div></label>
     </div>
     <div class="wiz-nav">
-      <button class="btn-back" onclick="goBack()">← Back</button>
-      <button class="btn-next" id="btn-next-15" onclick="goNext()">Continue →</button>
+      <button class="btn-back" onclick="goBack()"><i class="ti ti-chevron-left" style="vertical-align:-1px;"></i> Back</button>
+      <button class="btn-next" id="btn-next-15" onclick="goNext()">Continue <i class="ti ti-arrow-right" style="vertical-align:-1px;"></i></button>
     </div>
   </div>
 
@@ -978,11 +981,11 @@
     <div class="opt-grid two-col">
       <label class="opt"><input type="radio" name="family" value="no" onchange="validateStep(); toggleFamilySection(false)">
         <div class="opt-card" style="flex-direction:column;align-items:center;text-align:center;padding:20px 12px;gap:8px;">
-          <div class="opt-icon">👤</div><div class="opt-label">Just me</div><div class="opt-check"></div>
+          <div class="opt-icon"><i class="ti ti-user"></i></div><div class="opt-label">Just me</div><div class="opt-check"></div>
         </div></label>
       <label class="opt"><input type="radio" name="family" value="yes" onchange="validateStep(); toggleFamilySection(true)">
         <div class="opt-card" style="flex-direction:column;align-items:center;text-align:center;padding:20px 12px;gap:8px;">
-          <div class="opt-icon">👨‍👧‍👦</div><div class="opt-label">Yes, add family</div><div class="opt-check"></div>
+          <div class="opt-icon"><i class="ti ti-users"></i></div><div class="opt-label">Yes, add family</div><div class="opt-check"></div>
         </div></label>
     </div>
     <div id="family-section" style="display:none;">
@@ -990,8 +993,8 @@
       <button class="add-member-btn" id="add-member-btn" onclick="addFamilyMember()">+ Add Another Family Member</button>
     </div>
     <div class="wiz-nav">
-      <button class="btn-back" onclick="goBack()">← Back</button>
-      <button class="btn-next" id="btn-next-12" onclick="goNext()" disabled>Continue →</button>
+      <button class="btn-back" onclick="goBack()"><i class="ti ti-chevron-left" style="vertical-align:-1px;"></i> Back</button>
+      <button class="btn-next" id="btn-next-12" onclick="goNext()" disabled>Continue <i class="ti ti-arrow-right" style="vertical-align:-1px;"></i></button>
     </div>
   </div>
 
@@ -1001,38 +1004,40 @@
     <div class="step-sub">Helps calibrate how technical the coaching notes in your guide should be.</div>
     <div class="opt-grid">
       <label class="opt"><input type="radio" name="lessons" value="none" onchange="validateStep()">
-        <div class="opt-card"><div class="opt-icon">🆕</div><div class="opt-text"><div class="opt-label">Never had a lesson</div><div class="opt-desc">Self-taught or just figuring it out</div></div><div class="opt-check"></div></div></label>
+        <div class="opt-card"><div class="opt-icon"><i class="ti ti-user-plus"></i></div><div class="opt-text"><div class="opt-label">Never had a lesson</div><div class="opt-desc">Self-taught or just figuring it out</div></div><div class="opt-check"></div></div></label>
       <label class="opt"><input type="radio" name="lessons" value="few" onchange="validateStep()">
-        <div class="opt-card"><div class="opt-icon">📖</div><div class="opt-text"><div class="opt-label">One or two lessons</div><div class="opt-desc">Dipped my toes in with a pro</div></div><div class="opt-check"></div></div></label>
+        <div class="opt-card"><div class="opt-icon"><i class="ti ti-book"></i></div><div class="opt-text"><div class="opt-label">One or two lessons</div><div class="opt-desc">Dipped my toes in with a pro</div></div><div class="opt-check"></div></div></label>
       <label class="opt"><input type="radio" name="lessons" value="regular" onchange="validateStep()">
-        <div class="opt-card"><div class="opt-icon">🎓</div><div class="opt-text"><div class="opt-label">Regular lessons</div><div class="opt-desc">Working with an instructor consistently</div></div><div class="opt-check"></div></div></label>
+        <div class="opt-card"><div class="opt-icon"><i class="ti ti-school"></i></div><div class="opt-text"><div class="opt-label">Regular lessons</div><div class="opt-desc">Working with an instructor consistently</div></div><div class="opt-check"></div></div></label>
       <label class="opt"><input type="radio" name="lessons" value="video" onchange="validateStep()">
-        <div class="opt-card"><div class="opt-icon">📱</div><div class="opt-text"><div class="opt-label">Self-taught from videos</div><div class="opt-desc">YouTube, apps, and trial &amp; error</div></div><div class="opt-check"></div></div></label>
+        <div class="opt-card"><div class="opt-icon"><i class="ti ti-device-mobile"></i></div><div class="opt-text"><div class="opt-label">Self-taught from videos</div><div class="opt-desc">YouTube, apps, and trial &amp; error</div></div><div class="opt-check"></div></div></label>
     </div>
     <div class="wiz-nav">
-      <button class="btn-back" onclick="goBack()">← Back</button>
-      <button class="btn-next" id="btn-next-13" onclick="goNext()" disabled>Continue →</button>
+      <button class="btn-back" onclick="goBack()"><i class="ti ti-chevron-left" style="vertical-align:-1px;"></i> Back</button>
+      <button class="btn-next" id="btn-next-13" onclick="goNext()" disabled>Continue <i class="ti ti-arrow-right" style="vertical-align:-1px;"></i></button>
     </div>
   </div>
 
   <!-- ══ STEP 14: GENERATE ══ -->
   <div class="step" id="step-14">
     <div class="done-wrap">
-      <div class="done-emoji">✅</div>
+      <div style="width:80px;height:80px;margin:0 auto 20px;background:rgba(45,106,63,0.1);border:1.5px solid rgba(45,106,63,0.25);border-radius:20px;display:flex;align-items:center;justify-content:center;">
+        <i class="ti ti-check" style="font-size:2.6rem;color:var(--green);"></i>
+      </div>
       <div class="done-title" id="done-name-title">You're all set!</div>
       <div class="done-sub">Your personalized golf guide opens instantly — no download needed. The URL <em>is</em> your guide. Bookmark it, share it, or add it to your home screen.</div>
       <div class="done-steps">
         <div class="done-step"><div class="done-step-num">1</div><div class="done-step-text">Tap <strong>Generate My Guide</strong> — your guide opens right in this tab</div></div>
-        <div class="done-step"><div class="done-step-num">📱</div><div class="done-step-text"><strong>Add to Home Screen:</strong> tap the <strong>Share button</strong> → <strong>Add to Home Screen</strong> → it lives on your phone like an app</div></div>
-        <div class="done-step"><div class="done-step-num">🔗</div><div class="done-step-text"><strong>Share with friends:</strong> copy the URL from your address bar and text it — they get their own guide</div></div>
-        <div class="done-step"><div class="done-step-num">✅</div><div class="done-step-text">Your progress saves automatically — just come back to the same URL anytime</div></div>
+        <div class="done-step"><div class="done-step-num"><i class="ti ti-device-mobile" style="font-size:1rem;color:var(--gold);"></i></div><div class="done-step-text"><strong>Add to Home Screen:</strong> tap the <strong>Share button</strong> → <strong>Add to Home Screen</strong> → it lives on your phone like an app</div></div>
+        <div class="done-step"><div class="done-step-num"><i class="ti ti-link" style="font-size:1rem;color:var(--gold);"></i></div><div class="done-step-text"><strong>Share with friends:</strong> copy the URL from your address bar and text it — they get their own guide</div></div>
+        <div class="done-step"><div class="done-step-num"><i class="ti ti-check" style="font-size:1rem;color:var(--gold);"></i></div><div class="done-step-text">Your progress saves automatically — just come back to the same URL anytime</div></div>
       </div>
-      <div class="section-label" style="margin-top:20px;">📧 Email me my guide link <span style="font-weight:400;opacity:0.5;font-size:0.8em;">(optional)</span></div>
+      <div class="section-label" style="margin-top:20px;"><i class="ti ti-mail" style="vertical-align:-1px;"></i> Email me my guide link <span style="font-weight:400;opacity:0.5;font-size:0.8em;">(optional)</span></div>
       <input class="text-field" type="email" id="guide-email" placeholder="your@email.com" autocomplete="email" style="margin-bottom:6px;">
       <div style="font-size:0.72rem;color:var(--muted);margin-bottom:20px;">So you can always find your way back — no spam, ever.</div>
       <div class="wiz-nav">
-        <button class="btn-back" onclick="goBack()">← Back</button>
-        <button class="btn-generate" onclick="generateGuide()">⛳ Generate My Guide</button>
+        <button class="btn-back" onclick="goBack()"><i class="ti ti-chevron-left" style="vertical-align:-1px;"></i> Back</button>
+        <button class="btn-generate" onclick="generateGuide()"><i class="ti ti-flag-2" style="vertical-align:-1px;margin-right:6px;"></i> Generate My Guide</button>
       </div>
     </div>
     <div class="footer-note">Your guide is 100% standalone. It has no connection to any other user's guide.</div>
@@ -1062,7 +1067,7 @@ function activateBeginnerMode() {
   btn.style.background = 'rgba(34,197,94,0.18)';
   btn.style.borderColor = '#22c55e';
   btn.style.cursor = 'default';
-  btn.innerHTML = '<div style="font-size:1rem;font-weight:700;color:#22c55e;margin-bottom:3px;">✅ Beginner Mode — you\'re all set!</div><div style="font-size:0.8rem;color:var(--muted);line-height:1.4;">Just enter your name below, then we\'ll guide you through 3 simple questions.</div>';
+  btn.innerHTML = '<div style="font-size:1rem;font-weight:700;color:#22c55e;margin-bottom:3px;"><i class=\'ti ti-check\' style=\'vertical-align:-1px;\'></i> Beginner Mode — you\'re all set!</div><div style="font-size:0.8rem;color:var(--muted);line-height:1.4;">Just enter your name below, then we\'ll guide you through 3 simple questions.</div>';
   btn.onclick = null;
   // Update step header
   const stepQ = document.querySelector('#step-1 .step-q');
@@ -1180,7 +1185,7 @@ function validateWeakness() {
 
 function toggleMode() {
   const dark = document.body.classList.toggle('dark-mode');
-  document.getElementById('modeBtn').textContent = dark ? '☀️' : '🌙';
+  document.getElementById('modeBtnIcon').className = dark ? 'ti ti-sun' : 'ti ti-moon';
 }
 
 // ── FAMILY MEMBERS ──
