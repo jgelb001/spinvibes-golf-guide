@@ -8,17 +8,17 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
   <style>
     :root {
-      --bg:      #f4efe3;
-      --surface: #ffffff;
-      --surface2:#ebe5d4;
-      --surface3:#ddd6c2;
-      --green:   #2d6a3f;
-      --green-b: #3d8a52;
+      --bg:      #ffffff;
+      --surface: #f8f9fa;
+      --surface2:#f0f0f0;
+      --surface3:#e5e5e5;
+      --green:   #1a5c2e;
+      --green-b: #2d7a40;
       --gold:    #8a6010;
       --gold-l:  #6b4a0c;
-      --cream:   #1c2018;
-      --muted:   #6a7a68;
-      --border:  rgba(0,0,0,0.1);
+      --cream:   #0f172a;
+      --muted:   #64748b;
+      --border:  rgba(0,0,0,0.08);
       --red:     #d64f3a;
     }
     body.dark-mode {
@@ -464,14 +464,18 @@
     .theme-desc{font-size:0.68rem;letter-spacing:0.5px;opacity:0.7;}
     .theme-dots{display:flex;gap:5px;margin-bottom:10px;}
     .theme-dot{width:12px;height:12px;border-radius:50%;}
+    .tp-white{background:#ffffff;border:1px solid #e5e5e5;}
+    .tp-white .theme-name{color:#8a6010;}
+    .tp-white .theme-desc{color:#64748b;}
+    .tp-white .d1{background:#1a5c2e;} .tp-white .d2{background:#8a6010;} .tp-white .d3{background:#f0f0f0;}
+    .tp-warm{background:#f4efe3;border:1px solid #ddd6c2;}
+    .tp-warm .theme-name{color:#8a6010;}
+    .tp-warm .theme-desc{color:#6a7a68;}
+    .tp-warm .d1{background:#2d6a3f;} .tp-warm .d2{background:#8a6010;} .tp-warm .d3{background:#ebe5d4;}
     .tp-forest{background:#0a1a0e;}
     .tp-forest .theme-name{color:#c9a84c;}
     .tp-forest .theme-desc{color:#6a8a6e;}
     .tp-forest .d1{background:#2d6a3f;} .tp-forest .d2{background:#c9a84c;} .tp-forest .d3{background:#1a2f1e;}
-    .tp-classic{background:#f4efe3;border:1px solid #ddd6c2;}
-    .tp-classic .theme-name{color:#8a6010;}
-    .tp-classic .theme-desc{color:#6a7a68;}
-    .tp-classic .d1{background:#2d6a3f;} .tp-classic .d2{background:#8a6010;} .tp-classic .d3{background:#ebe5d4;}
     .tp-ocean{background:#071520;}
     .tp-ocean .theme-name{color:#4db8d4;}
     .tp-ocean .theme-desc{color:#5a8aa0;}
@@ -952,17 +956,23 @@
     <div class="step-q">Pick your guide's look.</div>
     <div class="step-sub">Choose a color theme — this is how your guide will appear every time you open it.</div>
     <div class="theme-grid">
-      <label class="theme-opt"><input type="radio" name="theme" value="forest" onchange="validateStep()" checked>
+      <label class="theme-opt"><input type="radio" name="theme" value="white" onchange="validateStep()" checked>
+        <div class="theme-card tp-white">
+          <div class="theme-dots"><div class="theme-dot d1"></div><div class="theme-dot d2"></div><div class="theme-dot d3"></div></div>
+          <div class="theme-name">White</div>
+          <div class="theme-desc">Clean white · Gold</div>
+        </div></label>
+      <label class="theme-opt"><input type="radio" name="theme" value="warm" onchange="validateStep()">
+        <div class="theme-card tp-warm">
+          <div class="theme-dots"><div class="theme-dot d1"></div><div class="theme-dot d2"></div><div class="theme-dot d3"></div></div>
+          <div class="theme-name">🌿 Warm</div>
+          <div class="theme-desc">Cream · Warm gold</div>
+        </div></label>
+      <label class="theme-opt"><input type="radio" name="theme" value="forest" onchange="validateStep()">
         <div class="theme-card tp-forest">
           <div class="theme-dots"><div class="theme-dot d1"></div><div class="theme-dot d2"></div><div class="theme-dot d3"></div></div>
           <div class="theme-name">🌿 Forest</div>
           <div class="theme-desc">Dark green · Gold</div>
-        </div></label>
-      <label class="theme-opt"><input type="radio" name="theme" value="classic" onchange="validateStep()">
-        <div class="theme-card tp-classic">
-          <div class="theme-dots"><div class="theme-dot d1"></div><div class="theme-dot d2"></div><div class="theme-dot d3"></div></div>
-          <div class="theme-name">☀️ Classic</div>
-          <div class="theme-desc">Cream · Warm green</div>
         </div></label>
       <label class="theme-opt"><input type="radio" name="theme" value="ocean" onchange="validateStep()">
         <div class="theme-card tp-ocean">
@@ -1288,7 +1298,7 @@ function getAnswers() {
     bag:        (document.getElementById('q-bag')?.value || '').trim(),
     lessons:    get('lessons') || 'none',
     physical:   get('physical') || 'none',
-    theme:      get('theme') || 'forest',
+    theme:      get('theme') || 'white',
     hasFamily:  get('family') === 'yes',
     members
   };
@@ -1741,7 +1751,7 @@ function buildReviewStep() {
     if (beq) rows.push({label:'Club Situation', value:beqMap[beq.value]||beq.value, step:'b3'});
   }
 
-  const themeMap = {forest:'Forest (Dark Green)',classic:'Classic (Cream)',ocean:'Ocean (Navy)',rose:'Rose (Plum)'};
+  const themeMap = {white:'White',warm:'Warm (Cream)',forest:'Forest (Dark Green)',ocean:'Ocean (Navy)',rose:'Rose (Plum)'};
   if (a.theme) rows.push({label:'Guide Theme', value:themeMap[a.theme]||a.theme, step:15});
 
   if (!beginnerMode) {
