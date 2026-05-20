@@ -1826,7 +1826,7 @@ function generateGuide() {
   const email = (document.getElementById('guide-email')?.value || '').trim();
   if (email) {
     const payload = JSON.stringify({ email, name: a.name, guideUrl: fullGuideUrl });
-    navigator.sendBeacon('/.netlify/functions/send-guide-email', new Blob([payload], { type: 'application/json' }));
+    navigator.sendBeacon('https://spinvibes-golf.netlify.app/.netlify/functions/send-guide-email', new Blob([payload], { type: 'application/json' }));
   }
 
   // Navigate to the guide
