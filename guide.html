@@ -116,6 +116,11 @@
     textarea#pnote{width:100%;background:var(--surface);border:1.5px solid var(--border);border-radius:12px;padding:12px;color:var(--cream);font-family:'Outfit',sans-serif;font-size:0.85rem;resize:vertical;min-height:76px;outline:none;transition:border-color .18s;}
     textarea#pnote:focus{border-color:var(--gold);}
     .log-btn{background:var(--green);border:none;border-radius:12px;padding:12px 18px;color:#fff;font-family:'Outfit',sans-serif;font-size:0.88rem;font-weight:700;cursor:pointer;margin-top:8px;width:100%;}
+    /* ── BRANDING FOOTER ── */
+    .sv-credit{display:flex;align-items:center;justify-content:center;gap:9px;padding:24px 20px 20px;margin-top:4px;border-top:1px solid var(--border);}
+    .sv-credit img{width:28px;height:28px;border-radius:50%;flex-shrink:0;}
+    .sv-credit-text{font-size:0.7rem;color:var(--muted);letter-spacing:.3px;}
+    .sv-credit-text strong{color:var(--cream);font-weight:700;}
     /* swing steps */
     .sw-step{display:flex;align-items:flex-start;gap:13px;background:var(--surface);border:var(--c-border);border-radius:16px;padding:16px;margin-bottom:10px;box-shadow:var(--c-shadow);}
     .sw-num{background:rgba(26,92,46,0.1);border:none;border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--green);flex-shrink:0;}
@@ -166,7 +171,7 @@
 <body class="dark">
 
 <div id="landing">
-  <img src="spinvibes_profile.svg" alt="SpinVibes Golf" style="width:130px;height:130px;border-radius:50%;display:block;margin:0 auto 16px;">
+  <img src="spinvibes_profile.svg" alt="SpinVibes Golf" style="width:156px;height:156px;border-radius:50%;display:block;margin:0 auto 16px;">
   <div class="ld-logo" style="font-size:1.6rem;letter-spacing:3px;">Golf<span>Guide</span></div>
   <div class="ld-sub" id="ld-sub">Your family pocket caddie</div>
   <div class="ld-q">Who's playing today?</div>
@@ -178,7 +183,7 @@
 <div id="app">
   <div id="topbar">
     <div onclick="toLanding()" style="cursor:pointer;">
-      <div class="tb-logo"><i class="ti ti-flag-2" style="font-size:1rem;vertical-align:-1px;"></i> Golf<span>Guide</span></div>
+      <div class="tb-logo">Golf<span>Guide</span></div>
       <div class="tb-sub" id="tb-sub"></div>
     </div>
     <div id="pills"></div>
@@ -1434,8 +1439,10 @@ function toLanding() {
   document.getElementById('app').style.display = 'none';
 }
 
+const svCredit = `<div class="sv-credit"><img src="spinvibes_profile.svg" alt="SpinVibes"><div class="sv-credit-text">Brought to you by <strong>SpinVibes</strong></div></div>`;
+
 function renderHome_page(profile) {
-  document.getElementById('pg-home').innerHTML = renderHome(profile);
+  document.getElementById('pg-home').innerHTML = renderHome(profile) + svCredit;
   const p = allProfiles.find(p => p.key === profile);
   document.getElementById('tb-sub').textContent = p ? `${p.desc}` : '';
 }
@@ -1459,18 +1466,22 @@ function renderAllPages() {
     </div>
     <div class="loc-panel${defaultLoc==='backyard'||defaultLoc==='mix'?' on':''}" data-loc="backyard">
       <div class="sect"><div class="sect-title">Backyard / Home Session</div>${renderBackyardPlan()}</div>
-    </div>`;
+    </div>
+    ${svCredit}`;
   document.getElementById('pg-swing').innerHTML = `
     <div class="ph"><div class="ph-tag">Build it once · repeat forever</div><div class="ph-title">Swing Sequence</div><div class="ph-sub">7 checkpoints · same order every time</div></div>
     <div class="sect">${renderSwing()}</div>
-    <div class="sect"><div class="sect-title">Pre-Round Warmup</div>${renderWarmup()}<div class="card"><div class="cue" style="margin:0;"><i class="ti ti-bulb" style="vertical-align:-1px;"></i> 5 min warmup = 10 strokes saved. Never skip it.</div></div></div>`;
+    <div class="sect"><div class="sect-title">Pre-Round Warmup</div>${renderWarmup()}<div class="card"><div class="cue" style="margin:0;"><i class="ti ti-bulb" style="vertical-align:-1px;"></i> 5 min warmup = 10 strokes saved. Never skip it.</div></div></div>
+    ${svCredit}`;
   document.getElementById('pg-short').innerHTML = `
     <div class="ph"><div class="ph-tag">Where rounds are won</div><div class="ph-title">Short Game</div><div class="ph-sub">Chipping · Putting · Sand · Strategy</div></div>
-    <div class="sect">${renderShort()}</div>`;
+    <div class="sect">${renderShort()}</div>
+    ${svCredit}`;
   document.getElementById('pg-progress').innerHTML = `
     <div class="ph"><div class="ph-tag">Track your journey</div><div class="ph-title">My Progress</div><div class="ph-sub">Log sessions · notes · goal tracker</div></div>
-    ${renderProgress()}`;
-  document.getElementById('pg-caddie').innerHTML = renderCaddie();
+    ${renderProgress()}
+    ${svCredit}`;
+  document.getElementById('pg-caddie').innerHTML = renderCaddie() + svCredit;
 }
 
 // ── PROGRESS LOG ──
