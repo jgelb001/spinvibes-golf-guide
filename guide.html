@@ -548,40 +548,40 @@ function renderYardageChart() {
 function renderSwingThoughts() {
   const bySkill = {
     beginner: [
-      '<i class="ti ti-target"></i> <strong>Ball first, then ground</strong> — brush the grass just past where the ball was',
-      '<i class="ti ti-refresh"></i> <strong>Finish your swing</strong> — hold the pose until the ball lands. Can\'t hold it? You rushed it.',
-      '<i class="ti ti-scale"></i> <strong>Weight forward at impact</strong> — feel your belt buckle facing the target at the finish',
-      '<i class="ti ti-hand-stop"></i> <strong>Grip pressure: 5 out of 10</strong> — tension kills the swing'
+      '<i class="ti ti-target"></i> <strong>Ball first, then ground</strong> — your divot starts past the ball, not behind it',
+      '<i class="ti ti-refresh"></i> <strong>Hold your finish</strong> — if you can\'t hold the pose until the ball lands, you rushed it',
+      '<i class="ti ti-scale"></i> <strong>Belt buckle to the target</strong> — if it\'s still pointing at the ball, you didn\'t finish',
+      '<i class="ti ti-hand-stop"></i> <strong>Grip pressure: 5 out of 10</strong> — tight hands kill the swing before it starts'
     ],
     high: [
       '<i class="ti ti-refresh"></i> <strong>Slow takeaway</strong> — the backswing has no speed limit. Save it all for the downswing.',
-      '<i class="ti ti-scale"></i> <strong>Turn your shoulders, not just your arms</strong> — your chest should face away from the target at the top',
-      '<i class="ti ti-target"></i> <strong>One thought per session</strong> — pick it before you start, never change mid-round',
-      '<i class="ti ti-map-pin"></i> <strong>Divot target: just past the ball</strong> — if your divot starts before the ball, fix this first'
+      '<i class="ti ti-scale"></i> <strong>Turn your chest, not just your arms</strong> — at the top, your back faces the target',
+      '<i class="ti ti-target"></i> <strong>One thought per session</strong> — pick it before you start, never swap it mid-round',
+      '<i class="ti ti-map-pin"></i> <strong>Divot past the ball</strong> — if it starts behind the ball, everything else is a symptom of that'
     ],
     'mid-high': [
-      '<i class="ti ti-run"></i> <strong>Hip bump starts the downswing</strong> — left hip shifts toward target before arms move',
-      '<i class="ti ti-message"></i> <strong>Smooth transition</strong> — there\'s a pause at the top. Don\'t rush from backswing to downswing.',
-      '<i class="ti ti-target"></i> <strong>Eyes on the back of the ball</strong> — not the top, the back. Watch contact happen.',
-      '<i class="ti ti-hand-stop"></i> <strong>Grip pressure stays constant</strong> — don\'t tighten at impact. It\'s already happening too fast.'
+      `<i class="ti ti-run"></i> <strong>Hip leads the downswing</strong> — ${lead()} hip bumps toward target before your arms do anything`,
+      '<i class="ti ti-message"></i> <strong>Pause at the top</strong> — one beat between backswing and downswing. Don\'t race the transition.',
+      '<i class="ti ti-target"></i> <strong>Watch the back of the ball</strong> — not the top. Watch your club make contact.',
+      '<i class="ti ti-hand-stop"></i> <strong>Same grip all the way through</strong> — don\'t squeeze harder at impact. It\'s already happened.'
     ],
     mid: [
-      '<i class="ti ti-bolt"></i> <strong>Lag — feel the clubhead drop</strong> — delay the release as long as possible. Hear the whoosh at the bottom.',
-      '<i class="ti ti-run"></i> <strong>Hips open before the arms come down</strong> — if you\'re flipping, your hips stopped first',
-      '<i class="ti ti-ruler-2"></i> <strong>Shaft lean at impact</strong> — hands ahead of the ball. This is what compression feels like.',
-      '<i class="ti ti-brain"></i> <strong>Pick your shot shape</strong> — commit to a target and shape before you step in'
+      '<i class="ti ti-bolt"></i> <strong>Hold the lag</strong> — club drops halfway before you let it fire. You\'ll hear the whoosh at the bottom.',
+      `<i class="ti ti-run"></i> <strong>Hips clear, then arms</strong> — if you\'re flipping, your ${lead()} hip stopped rotating first`,
+      '<i class="ti ti-ruler-2"></i> <strong>Hands ahead at impact</strong> — shaft leaning toward target. That\'s compression.',
+      '<i class="ti ti-brain"></i> <strong>Commit to a shape before you step in</strong> — pick your landing spot and your curve, then go'
     ],
     'low-mid': [
-      '<i class="ti ti-ruler-2"></i> <strong>Pressure shift is the swing</strong> — lead foot loads during transition, not after',
-      '<i class="ti ti-target"></i> <strong>Control your miss</strong> — know which way you miss under pressure and aim to compensate',
-      '<i class="ti ti-bolt"></i> <strong>Maintain spine angle to the finish</strong> — early extension kills consistency for your level',
-      '<i class="ti ti-brain"></i> <strong>Swing thought: one shape, all day</strong> — pick draw or fade for the round and commit'
+      `<i class="ti ti-ruler-2"></i> <strong>${lead().charAt(0).toUpperCase() + lead().slice(1)} foot loads first</strong> — pressure shift starts on the way down, not after impact`,
+      '<i class="ti ti-target"></i> <strong>Know your miss</strong> — under pressure you have a pattern. Aim to use it, not fight it.',
+      '<i class="ti ti-bolt"></i> <strong>Spine angle stays</strong> — early extension is the last variable killing consistency at your level',
+      '<i class="ti ti-brain"></i> <strong>One shape all day</strong> — pick draw or fade on the first tee and don\'t change it'
     ],
     low: [
-      '<i class="ti ti-map-pin"></i> <strong>Right elbow slots in — always</strong> — on the downswing the trail elbow finds your hip pocket',
-      '<i class="ti ti-scale"></i> <strong>Pressure leads the swing</strong> — ground force up through the lead side before the arms fire',
-      '<i class="ti ti-target"></i> <strong>Face control at impact</strong> — feel the face angle, don\'t just swing the path',
-      '<i class="ti ti-brain"></i> <strong>Process over outcome</strong> — commit to the routine, let the result happen'
+      `<i class="ti ti-map-pin"></i> <strong>${trail().charAt(0).toUpperCase() + trail().slice(1)} elbow to the hip pocket</strong> — it slots in on the way down. Every time.`,
+      `<i class="ti ti-scale"></i> <strong>Ground force, then arms</strong> — ${lead()} side loads and drives up before the arms fire`,
+      '<i class="ti ti-target"></i> <strong>Feel the face, not just the path</strong> — path shapes the ball, face determines where it starts',
+      '<i class="ti ti-brain"></i> <strong>Trust the routine</strong> — commit to the process, let the result happen'
     ]
   };
   const goalAddons = {
@@ -612,10 +612,10 @@ function bagSection() {
 
 function freqNote() {
   return {
-    rare:   'Make every session count — quality beats quantity every time.',
-    weekly: 'One session a week is enough to build real momentum. Stay consistent and you\'ll see progress in 4–6 weeks.',
-    multi:  '2–3× a week is the sweet spot for rapid improvement. Mix range work with short game.',
-    daily:  'Daily practice is powerful — vary what you work on. Rotate: full swing, short game, putting.'
+    rare:   'Make each session count. Come in with one thing to work on. Leave knowing whether it got better.',
+    weekly: 'Once a week is enough to build a real swing. Work one thing per session — don\'t tinker between visits.',
+    multi:  'Three times a week is where the game changes fast. Rotate: full swing one day, short game one day, putting one day. Don\'t repeat the same session.',
+    daily:  'Daily reps work — if you vary them. Same drill every day locks in the same miss. Full swing, short game, putting — rotate, don\'t repeat.'
   }[a.freq] || '';
 }
 
@@ -631,12 +631,12 @@ function physNote() {
 function lessonNote() {
   const exp = a.experience;
   const les = a.lessons;
-  if (les === 'regular') return '<i class="ti ti-check" style="color:var(--green);vertical-align:-1px;"></i> <strong>You\'re taking regular lessons</strong> — use this guide to reinforce what your pro teaches. If anything here conflicts with your pro\'s advice, always follow your pro.';
-  if (les === 'few')     return '<i class="ti ti-book" style="color:var(--gold);vertical-align:-1px;"></i> <strong>You\'ve had a few lessons</strong> — your fundamentals are set. Book a check-up lesson every 6–8 weeks to keep the patterns grooved.';
-  if (les === 'video')   return '<i class="ti ti-device-mobile" style="color:var(--gold);vertical-align:-1px;"></i> <strong>You\'re self-coaching with video</strong> — great habit. Add one in-person lesson every 2–3 months to catch things video can\'t. A trained eye spots what a camera misses.';
+  if (les === 'regular') return '<i class="ti ti-check" style="color:var(--green);vertical-align:-1px;"></i> <strong>You\'re taking regular lessons</strong> — use this guide between sessions. If anything conflicts with your pro, follow your pro.';
+  if (les === 'few')     return '<i class="ti ti-book" style="color:var(--gold);vertical-align:-1px;"></i> <strong>You\'ve had a few lessons</strong> — book a check-up every 6–8 weeks. Fresh eyes catch what you stop noticing.';
+  if (les === 'video')   return '<i class="ti ti-device-mobile" style="color:var(--gold);vertical-align:-1px;"></i> <strong>Self-coaching with video</strong> — good habit. One in-person lesson every 2–3 months catches what a camera can\'t. A trained eye sees your compensations before they become permanent.';
   // none
-  if (exp === 'none' || exp === 'some') return '<i class="ti ti-school" style="color:var(--gold);vertical-align:-1px;"></i> <strong>No formal lessons yet</strong> — one lesson with a local pro is the single best investment you can make. Even one session sets you on the right track and prevents bad habits from locking in.';
-  return '<i class="ti ti-school" style="color:var(--gold);vertical-align:-1px;"></i> <strong>Consider a check-up lesson</strong> — even experienced players benefit from a fresh set of eyes every few months.';
+  if (exp === 'none' || exp === 'some') return '<i class="ti ti-school" style="color:var(--gold);vertical-align:-1px;"></i> <strong>No formal lessons yet</strong> — book one. One session with a local pro does more than a year of self-teaching. It stops the patterns you\'d otherwise spend years unlearning.';
+  return '<i class="ti ti-school" style="color:var(--gold);vertical-align:-1px;"></i> <strong>Consider a check-up lesson</strong> — even experienced players need a fresh set of eyes. A few months of grooved habits can go in the wrong direction without you noticing.';
 }
 
 function experienceBadge() {
@@ -691,9 +691,9 @@ function renderBeginnerPractice() {
     <div class="cr"><span>4. <strong>Putting</strong> — you use this every hole, so don't ignore it</span></div>
     <div class="cr"><span>5. <strong>Everything else</strong> — once you have 1–4, the rest will come</span></div>
   </div></div>
-  <div class="card"><div class="ct"><i class="ti ti-bulb" style="color:var(--gold);vertical-align:-1px;"></i> Beginner Tips</div><div class="cb">
-    Don't try to hit the ball far. The harder you swing, the worse it usually goes. Focus on a smooth, balanced swing — distance comes naturally as your technique improves.<br><br>
-    <strong>One tip per session.</strong> Pick one thing to work on and ignore everything else. Trying to fix 5 things at once fixes nothing.
+  <div class="card"><div class="ct"><i class="ti ti-bulb" style="color:var(--gold);vertical-align:-1px;"></i> Two Rules for Beginners</div><div class="cb">
+    Swing at 50%. A ball that travels 80 yards in the air is a win. Distance comes last — contact comes first.<br><br>
+    <strong>One thing per session.</strong> Pick it before you start. Ignore everything else. Five fixes at once fixes nothing.
   </div></div>`;
 }
 
@@ -734,12 +734,12 @@ function renderRange() {
 
   // Phase 1
   html += phaseCard(1,'tg-gld','Short Irons — Contact Quality',['9-iron','PW','GW'],b1,
-    (hasIrn?'<strong>⭐ YOUR FOCUS AREA</strong> — this is where you recoup strokes. Every ball here is worth two on the course.<br><br>':'')
-    +`<strong>Ball position:</strong> center of stance. Weight 50/50 at setup, shifts fully to ${lead()} side at impact.<br>Focus: flush contact, divot just past the ball, consistent finish.`,
-    'Ball first, then ground — compress it', hasIrn);
+    (hasIrn?'<strong>⭐ YOUR FOCUS AREA</strong> — short irons win and lose more strokes than any other club. Every ball here counts.<br><br>':'')
+    +`<strong>Ball center.</strong> Weight 50/50 at address, shifts fully to your ${lead()} side by impact. Focus: divot starts past the ball, not behind it. Consistent finish every time.`,
+    'Ball first, then ground — the divot tells you everything', hasIrn);
 
   if (ph >= 3) html += phaseCard(2,'tg-org','Mid Irons + Hybrid',['7-iron','6-iron','Hybrid'],b2,
-    `<strong>Ball position:</strong> 1–2 ball-widths toward ${trail()} foot as clubs get longer.<br>Same hip-fire sequence — hips before hands, always. Wider arc, not harder swing.`,
+    `<strong>Ball position:</strong> 1–2 ball-widths toward your ${lead()} foot as clubs get longer.<br>Same sequence as short irons — hips first, then hands. Wider arc, not harder swing.`,
     'Wider arc, same sequence — let the shaft do the work', false);
 
   if (ph >= 4 || hasDrv) html += phaseCard(3,'tg-blu','Driver',[`Driver`],Math.round(b3*0.6),
@@ -983,13 +983,13 @@ function renderBeginnerClubs() {
 function renderSwing() {
   if (a.beg === '1') return renderBeginnerBasics();
   const steps = [
-    {n:1,title:'Setup & Stance',body:`Feet shoulder-width. Ball center for short irons, moving toward your ${lead()} heel as clubs get longer. Weight 50/50. Stand tall — don't hunch over the ball.`,cue:'Spine angle set, chin up'},
-    {n:2,title:'Grip Pressure',body:'Hold the club like you\'re holding a tube of toothpaste without squeezing any out. Too tight = tension and blocked shots. Find the "5 out of 10."',cue:'Light grip = free swing'},
-    {n:3,title:'Takeaway — One Piece',body:`Hands, arms, and shoulders move together as one unit for the first 12 inches. No early wrist roll. Club head stays outside the hands.`,cue:'Turn the triangle — chest, arms, club together'},
-    {n:4,title:'Top of Backswing',body:`Your ${trail()} shoulder moves under your chin. Club parallel to the ground or slightly short — overswinging kills consistency. Feel the stretch in your core.`,cue:'Coil, don\'t collapse — feel the tension'},
-    {n:5,title:'Transition — Hips Lead',body:`Before your backswing finishes, your ${lead()} hip bumps toward the target. This is the move that separates good ball-strikers from everyone else. Hips before hands. Always.`,cue:'Bump the hip, then fire — sequence is everything'},
-    {n:6,title:'Impact — Hands Ahead',body:`Hands slightly ahead of the ball at impact. Weight shifted to ${lead()} side (80–90%). Shaft leans toward target. This is what creates that crisp "click."`,cue:'Ball first, ground second'},
-    {n:7,title:'Follow Through & Finish',body:`Belt buckle faces the target. ${trail()} foot up on its toe. Club finishes high over your ${lead()} shoulder. A full finish means a full swing.`,cue:'Hold the finish — if you can\'t pose it, you rushed it'},
+    {n:1,title:'Setup & Stance',body:`Feet shoulder-width. Ball center for short irons, progressing toward your ${lead()} instep by driver. Weight 50/50. Spine angle from the hips — not the waist.`,cue:'Chin up, spine angle set'},
+    {n:2,title:'Grip Pressure',body:`Hold it like a tube of toothpaste — firm enough to control, loose enough not to squeeze any out. Tight hands block the swing before it starts. Find 5 out of 10.`,cue:'Light grip, free swing'},
+    {n:3,title:'Takeaway — One Piece',body:`Chest, arms, and club leave together for the first 12 inches. No early wrist roll. Club head stays outside your hands.`,cue:'Turn the triangle — chest, arms, club as one'},
+    {n:4,title:'Top of Backswing',body:`${trail().charAt(0).toUpperCase() + trail().slice(1)} shoulder under your chin. Club parallel to the ground or slightly short — more backswing doesn't mean more distance. Feel the coil in your core.`,cue:'Coil, don\'t collapse'},
+    {n:5,title:'Transition — Hips Lead',body:`${lead().charAt(0).toUpperCase() + lead().slice(1)} hip bumps toward the target before your backswing finishes. Hips first, then arms — every time, no exceptions.`,cue:'Hip bumps first — sequence is everything'},
+    {n:6,title:'Impact — Hands Ahead',body:`Hands slightly ahead of the ball. Weight on your ${lead()} side (80–90%). Shaft leans toward the target. Hands behind the ball is a scoop — hands ahead is a strike.`,cue:'Ball first, ground second'},
+    {n:7,title:'Follow Through & Finish',body:`Belt buckle faces the target. ${trail()} foot on its toe. Club finishes high over your ${lead()} shoulder. If you can\'t hold the pose, you rushed the downswing.`,cue:'Hold the finish — no pose means no sequence'},
   ];
   return steps.map(s=>`<div class="sw-step"><div class="sw-num">${s.n}</div><div style="flex:1;"><div class="ct">${s.title}</div><div class="cb">${s.body}</div><div class="cue">${s.cue}</div></div></div>`).join('');
 }
@@ -1045,11 +1045,11 @@ function renderShort() {
 
   // Strategy
   const stratTips = {
-    fun:      ['<i class="ti ti-tree"></i> Play the easier tee box — zero shame, maximum fun','<i class="ti ti-flag-2"></i> Pick one target per shot and commit fully','<i class="ti ti-mood-smile"></i> Celebrate every par — they\'re harder than they look'],
-    break120: ['<i class="ti ti-target"></i> Tee it up on every par 3 — it\'s legal and it helps','<i class="ti ti-refresh"></i> Take more club than you think — most beginners come up short','<i class="ti ti-map-pin"></i> Aim for the center of every green, not the flag'],
-    break100: ['<i class="ti ti-ban"></i> Never go for the hero shot — chip sideways and save bogey','<i class="ti ti-ruler-2"></i> Course management beats swing improvement right now','<i class="ti ti-target"></i> Two-putt every hole and you\'ll break 100 automatically'],
-    break90:  ['<i class="ti ti-chart-bar"></i> Track your stats: fairways, GIR, putts per round','<i class="ti ti-brain"></i> Play for position — where does the miss hurt least?','<i class="ti ti-flag-2"></i> Lag putt from outside 20 feet to eliminate 3-putts'],
-    break80:  ['<i class="ti ti-map-pin"></i> Know your exact carry distances for every club','<i class="ti ti-map"></i> Play backwards from the hole — pick your ideal approach angle','<i class="ti ti-focus-2"></i> Stay present — one shot at a time, no scoreboard math'],
+    fun:      ['<i class="ti ti-tree"></i> Play the forward tees — not a compromise, it\'s just smarter golf','<i class="ti ti-flag-2"></i> Pick a specific target before every shot. A tree, a post, a discolored patch of grass. Vague aim = vague result.','<i class="ti ti-mood-smile"></i> Every par is a win. They\'re harder to make than they look.'],
+    break120: ['<i class="ti ti-target"></i> Tee it up on every par 3 — it\'s legal, and there\'s no reason not to','<i class="ti ti-refresh"></i> Take one more club than feels right. You\'re not as strong as you think, and the wind is always stronger than it looks.','<i class="ti ti-map-pin"></i> Aim at the center of the green every time. The flag is a trap until you can hit it on demand.'],
+    break100: ['<i class="ti ti-ban"></i> Never attempt the hero shot. Chip sideways, make bogey, move on. A bogey is a good hole.','<i class="ti ti-ruler-2"></i> Course management is worth more than swing mechanics right now. Smart routing drops strokes without touching your swing.','<i class="ti ti-target"></i> Two-putt every hole. That\'s it. That\'s the whole strategy.'],
+    break90:  ['<i class="ti ti-chart-bar"></i> Track fairways, greens, and putts per round. Numbers tell you where the strokes are going — your gut can\'t.','<i class="ti ti-brain"></i> Before every shot, ask: where\'s the miss that costs me least? Aim away from the miss that hurts most.','<i class="ti ti-flag-2"></i> From outside 20 feet, lag to 3 feet. That\'s the only plan. Don\'t attempt to make everything.'],
+    break80:  ['<i class="ti ti-map-pin"></i> Know your exact carry — not approximate — for every club in the bag. Wrong number = wrong club = wrong score.','<i class="ti ti-map"></i> Work backwards from the pin. Where do you want your approach angle from? Drive to that spot, not just \'the fairway\'.','<i class="ti ti-focus-2"></i> One shot at a time. No scoreboard math until you\'re walking off 18.'],
   };
   const tips = stratTips[a.goal] || stratTips.fun;
   h += `<div class="sect-title" style="margin-top:6px;">Course Strategy</div>`;
@@ -1063,17 +1063,17 @@ function renderShort() {
       ${hasMental?'<span class="tag tg-gld">⭐ YOUR FOCUS</span>':''}
       <div class="ct">Mental Game</div>
       <div class="cb">
-        <div class="cr"><span><i class="ti ti-focus-2" style="color:var(--gold);vertical-align:-1px;"></i> <strong>Pre-shot routine:</strong> Pick target → visualize → pull trigger. Same 3 steps every time. Takes 10 seconds.</span></div>
-        <div class="cr"><span><i class="ti ti-refresh" style="color:var(--gold);vertical-align:-1px;"></i> <strong>Bad shot reset:</strong> 10 seconds to be annoyed. One deep breath. Then it's gone — never carry a shot to the next tee.</span></div>
-        <div class="cr"><span><i class="ti ti-message" style="color:var(--gold);vertical-align:-1px;"></i> <strong>One thought only:</strong> Pick one swing cue before you start and stick to it the whole round.</span></div>
+        <div class="cr"><span><i class="ti ti-focus-2" style="color:var(--gold);vertical-align:-1px;"></i> <strong>Pre-shot routine:</strong> Target → picture → go. Same three steps, same order, every single shot. Ten seconds.</span></div>
+        <div class="cr"><span><i class="ti ti-refresh" style="color:var(--gold);vertical-align:-1px;"></i> <strong>Bad shot reset:</strong> Ten seconds of annoyance. One breath. Gone. Never walk to the next shot carrying the last one.</span></div>
+        <div class="cr"><span><i class="ti ti-message" style="color:var(--gold);vertical-align:-1px;"></i> <strong>One swing thought all day.</strong> Pick it on the range before you tee off. If it stops working on hole 12, you still don't change it.</span></div>
       </div>
-      <div class="cue">Golf is 90% mental once you can make contact</div></div>`;
+      <div class="cue">Bad shots happen to everyone. What separates scores is what happens next.</div></div>`;
   }
 
   h += `<div class="card"><div class="ct">The 3 Rules That Save Shots</div><div class="cb">
-    <div class="cr"><span><i class="ti ti-ban" style="color:var(--gold);vertical-align:-1px;"></i> <strong>Never attempt a shot you haven't practiced.</strong> On the course is not the place to try it for the first time.</span></div>
-    <div class="cr"><span><i class="ti ti-map-pin" style="color:var(--gold);vertical-align:-1px;"></i> <strong>Miss to the safe side.</strong> Plan your misses — know where trouble is before you swing.</span></div>
-    <div class="cr"><span><i class="ti ti-clock" style="color:var(--gold);vertical-align:-1px;"></i> <strong>Slow down on the first tee, last hole, and any shot over water.</strong> That's where amateurs throw strokes away.</span></div>
+    <div class="cr"><span><i class="ti ti-ban" style="color:var(--gold);vertical-align:-1px;"></i> <strong>Never attempt a shot you haven't practiced.</strong> The course is not the place to try something for the first time.</span></div>
+    <div class="cr"><span><i class="ti ti-map-pin" style="color:var(--gold);vertical-align:-1px;"></i> <strong>Plan your miss before you swing.</strong> Know which side of the trouble is the easy side. Aim away from the hole that costs you.</span></div>
+    <div class="cr"><span><i class="ti ti-clock" style="color:var(--gold);vertical-align:-1px;"></i> <strong>Breathe on the first tee, last hole, and anything over water.</strong> That's where adrenaline eats strokes. Slow down exactly there.</span></div>
   </div></div>`;
 
   return h;
