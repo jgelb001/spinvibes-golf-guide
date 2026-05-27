@@ -231,6 +231,9 @@
 
 <script>
 // ── PARSE URL PARAMS ──
+// ── CADDIE URL — Cloudflare Worker ──
+const CADDIE_URL = 'https://spinvibes-caddie.spinvibes.workers.dev';
+
 const P = new URLSearchParams(location.search);
 const a = {
   name:      decodeURIComponent(P.get('n') || 'Golfer'),
@@ -1201,10 +1204,10 @@ async function askCaddie(text) {
   if (status) status.textContent = 'Consulting your caddie…';
 
   try {
-    const res = await fetch('https://spinvibes-golf.netlify.app/.netlify/functions/caddie', {
+    const res = await fetch(CADDIE_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: text, systemPrompt: buildCaddieSystemPrompt() }),
+      body: JSON.stringify({ messages: [{ role: 'user', content: text }], systemPrompt: buildCaddieSystemPrompt(), max_tokens: 60 }),
     });
 
     if (!res.ok) {
