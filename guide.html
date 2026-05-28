@@ -230,30 +230,38 @@
 </div>
 
 <script>
-// ── PARSE URL PARAMS ──
-// ── CADDIE URL — Cloudflare Worker ──
-const CADDIE_URL = 'https://spinvibes-caddie.spinvibes.workers.dev';
+// ── CONFIG ──
+const CADDIE_URL    = 'https://spinvibes-caddie.spinvibes.workers.dev';
+const SUPABASE_URL  = 'https://zairvjyiwhajsulefyoi.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InphaXJ2anlpd2hhanN1bGVmeW9pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxMDkxODAsImV4cCI6MjA5MTY4NTE4MH0.AAdJfqSGHMergPgL4tEoBMn0Wr5d8D1NuxhPMonp_60';
 
-const P = new URLSearchParams(location.search);
-const a = {
-  name:      decodeURIComponent(P.get('n') || 'Golfer'),
-  hand:      P.get('h') === 'l' ? 'left' : 'right',
-  age:       P.get('a') || 'adult',
-  experience:P.get('exp') || 'some',   // none | some | returning | years
-  gender:    P.get('gdr') || 'm',      // m | f | x
-  skill:     P.get('s') || 'mid',
-  goal:      P.get('g') || 'break90',
-  location:  P.get('loc') || 'range',  // range | sim | backyard | mix
-  weaknesses:(P.get('w') || '').split(',').filter(Boolean),
-  freq:      P.get('f') || 'weekly',
-  duration:  P.get('d') || 'long',
-  equip:     P.get('e') || 'full',
-  bag:       decodeURIComponent(P.get('b') || ''),
-  lessons:   P.get('les') || 'none',   // none | video | few | regular
-  physical:  P.get('p') || 'none',
-  members:   parseFM(P.get('fm') || ''),
-  beg:       P.get('beg') || '0'
-};
+const P       = new URLSearchParams(location.search);
+const _userId = P.get('u'); // UUID personal link — takes priority over URL params
+
+let a; // populated by initGuide() — do not access before that resolves
+
+// Build profile object from URL params (legacy links / fallback)
+function buildAFromParams() {
+  return {
+    name:      decodeURIComponent(P.get('n') || 'Golfer'),
+    hand:      P.get('h') === 'l' ? 'left' : 'right',
+    age:       P.get('a') || 'adult',
+    experience:P.get('exp') || 'some',
+    gender:    P.get('gdr') || 'm',
+    skill:     P.get('s') || 'mid',
+    goal:      P.get('g') || 'break90',
+    location:  P.get('loc') || 'range',
+    weaknesses:(P.get('w') || '').split(',').filter(Boolean),
+    freq:      P.get('f') || 'weekly',
+    duration:  P.get('d') || 'long',
+    equip:     P.get('e') || 'full',
+    bag:       decodeURIComponent(P.get('b') || ''),
+    lessons:   P.get('les') || 'none',
+    physical:  P.get('p') || 'none',
+    members:   parseFM(P.get('fm') || ''),
+    beg:       P.get('beg') || '0'
+  };
+}
 
 function parseFM(s) {
   if (!s) return [];
@@ -263,12 +271,11 @@ function parseFM(s) {
   }).filter(m => m.name);
 }
 
-// ── APPLY THEME ──
+// ── APPLY THEME (synchronous — uses ?t= even on UUID links) ──
 (function(){
   const t = P.get('t') || 'forest';
   document.body.classList.remove('dark');
   document.body.classList.add('theme-' + t);
-  // hide dark toggle if a named theme is set
   const btn = document.getElementById('darkBtn');
   if (btn) btn.style.display = 'none';
 })();
@@ -277,7 +284,9 @@ function parseFM(s) {
 const distKeys = ['driver','3w','hybrid','7i','9i','pw','sw'];
 const distNames = {driver:'Driver','3w':'3-Wood',hybrid:'Hybrid / 5-Iron','7i':'7-Iron','9i':'9-Iron',pw:'Pitching Wedge',sw:'Sand Wedge'};
 const distEmoji = {driver:'',  '3w':'', hybrid:'', '7i':'', '9i':'', pw:'', sw:''};
-const DIST_EDIT_KEY = 'dist_edits_' + (P.get('n') || 'golfer') + '_' + (P.get('s') || 'mid');
+const DIST_EDIT_KEY = _userId
+  ? 'dist_edits_u_' + _userId
+  : 'dist_edits_' + (P.get('n') || 'golfer') + '_' + (P.get('s') || 'mid');
 const distances = {};
 (P.get('dist')||'').split(',').forEach((v,i) => { if (v && distKeys[i]) distances[distKeys[i]] = parseInt(v); });
 // Merge in any locally-saved edits (these take priority over URL)
@@ -1488,34 +1497,121 @@ function renderAllPages() {
 }
 
 // ── PROGRESS LOG ──
-const PKEY = 'gg-prog-' + slug(a.name);
-function logSession() {
+const PKEY = () => 'gg-prog-' + slug(a?.name || 'golfer');
+
+async function logSession() {
   const ta = document.getElementById('pnote');
   const note = (ta.value||'').trim();
   if (!note) return;
-  const saved = JSON.parse(localStorage.getItem(PKEY)||'[]');
-  saved.unshift({ date: new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}), note });
-  localStorage.setItem(PKEY, JSON.stringify(saved));
   ta.value = '';
-  renderProgList();
+  if (_userId) {
+    try {
+      await fetch(`${SUPABASE_URL}/rest/v1/guide_sessions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          apikey: SUPABASE_ANON,
+          Authorization: `Bearer ${SUPABASE_ANON}`,
+        },
+        body: JSON.stringify({ user_id: _userId, note }),
+      });
+    } catch(e) { console.warn('logSession error:', e); }
+    renderProgList();
+  } else {
+    const saved = JSON.parse(localStorage.getItem(PKEY())||'[]');
+    saved.unshift({ date: new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}), note });
+    localStorage.setItem(PKEY(), JSON.stringify(saved));
+    renderProgList();
+  }
 }
-function deleteSession(i) {
-  const saved = JSON.parse(localStorage.getItem(PKEY)||'[]');
-  saved.splice(i,1);
-  localStorage.setItem(PKEY, JSON.stringify(saved));
-  renderProgList();
+
+async function deleteSession(id, isLocal) {
+  if (!isLocal && _userId) {
+    try {
+      await fetch(`${SUPABASE_URL}/rest/v1/guide_sessions?id=eq.${id}`, {
+        method: 'DELETE',
+        headers: { apikey: SUPABASE_ANON, Authorization: `Bearer ${SUPABASE_ANON}` },
+      });
+    } catch(e) { console.warn('deleteSession error:', e); }
+    renderProgList();
+  } else {
+    const saved = JSON.parse(localStorage.getItem(PKEY())||'[]');
+    saved.splice(id, 1);
+    localStorage.setItem(PKEY(), JSON.stringify(saved));
+    renderProgList();
+  }
 }
-function renderProgList() {
+
+async function renderProgList() {
   const el = document.getElementById('prog-list');
   if (!el) return;
-  const saved = JSON.parse(localStorage.getItem(PKEY)||'[]');
-  el.innerHTML = saved.length
-    ? saved.map((s,i)=>`<div class="prog-entry"><div class="pe-date">${s.date}</div><div class="pe-note">${s.note}</div><button class="pe-del" onclick="deleteSession(${i})">✕</button></div>`).join('')
-    : '<div class="card"><div class="cb" style="text-align:center;padding:10px 0;">No sessions logged yet. Hit the range and come back!</div></div>';
+  if (_userId) {
+    try {
+      const res = await fetch(
+        `${SUPABASE_URL}/rest/v1/guide_sessions?user_id=eq.${_userId}&order=created_at.desc&select=*`,
+        { headers: { apikey: SUPABASE_ANON, Authorization: `Bearer ${SUPABASE_ANON}` } }
+      );
+      const rows = await res.json();
+      el.innerHTML = rows.length
+        ? rows.map(s => {
+            const d = new Date(s.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+            return `<div class="prog-entry"><div class="pe-date">${d}</div><div class="pe-note">${s.note}</div><button class="pe-del" onclick="deleteSession('${s.id}',false)">✕</button></div>`;
+          }).join('')
+        : '<div class="card"><div class="cb" style="text-align:center;padding:10px 0;">No sessions logged yet. Hit the range and come back!</div></div>';
+    } catch(e) {
+      el.innerHTML = '<div class="card"><div class="cb" style="text-align:center;color:var(--muted);">Couldn\'t load sessions.</div></div>';
+    }
+  } else {
+    const saved = JSON.parse(localStorage.getItem(PKEY())||'[]');
+    el.innerHTML = saved.length
+      ? saved.map((s,i)=>`<div class="prog-entry"><div class="pe-date">${s.date}</div><div class="pe-note">${s.note}</div><button class="pe-del" onclick="deleteSession(${i},true)">✕</button></div>`).join('')
+      : '<div class="card"><div class="cb" style="text-align:center;padding:10px 0;">No sessions logged yet. Hit the range and come back!</div></div>';
+  }
 }
 
 // ── INIT ──
-buildLanding();
+async function initGuide() {
+  if (_userId) {
+    try {
+      const res = await fetch(
+        `${SUPABASE_URL}/rest/v1/guide_users?id=eq.${_userId}&select=*`,
+        { headers: { apikey: SUPABASE_ANON, Authorization: `Bearer ${SUPABASE_ANON}` } }
+      );
+      const rows = await res.json();
+      if (rows && rows[0]) {
+        const u = rows[0];
+        a = {
+          name:       u.name || 'Golfer',
+          hand:       u.hand === 'l' ? 'left' : 'right',
+          age:        u.age || 'adult',
+          experience: u.experience || 'some',
+          gender:     u.gender || 'm',
+          skill:      u.skill || 'mid',
+          goal:       u.goal || 'break90',
+          location:   u.location || 'range',
+          weaknesses: Array.isArray(u.weaknesses) ? u.weaknesses : [],
+          freq:       u.freq || 'weekly',
+          duration:   u.duration || 'long',
+          equip:      u.equip || 'full',
+          bag:        u.bag || '',
+          lessons:    u.lessons || 'none',
+          physical:   u.physical || 'none',
+          members:    Array.isArray(u.members) ? u.members : [],
+          beg:        u.beg ? '1' : '0',
+        };
+        if (u.distances && typeof u.distances === 'object') {
+          Object.assign(distances, u.distances);
+        }
+      }
+    } catch(e) {
+      console.warn('Failed to load profile from Supabase:', e);
+    }
+  }
+  // Fallback to URL params (legacy links or Supabase failed)
+  if (!a) a = buildAFromParams();
+  buildLanding();
+}
+initGuide();
 </script>
 </body>
 </html>

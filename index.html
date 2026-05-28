@@ -1080,6 +1080,10 @@
 // Steps used: 1,3,5,6,7,9,11,12,14 (2,4,8,10,13 are merged/skipped)
 // Display order: 1→3→5→6→7→9→11→12→14
 // ════════════════════════════════════════
+const SUPABASE_URL  = 'https://zairvjyiwhajsulefyoi.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InphaXJ2anlpd2hhanN1bGVmeW9pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxMDkxODAsImV4cCI6MjA5MTY4NTE4MH0.AAdJfqSGHMergPgL4tEoBMn0Wr5d8D1NuxhPMonp_60';
+const _distKeys     = ['driver','3w','hybrid','7i','9i','pw','sw'];
+
 let currentStep = 0;
 let TOTAL_STEPS = 14;
 let STEP_SEQ = [1,2,3,4,5,6,7,8,9,10,11,15,12,'review',14]; // actual step IDs in order
@@ -1772,13 +1776,21 @@ function buildReviewStep() {
 }
 
 // ════════════════════════════════════════
-function generateGuide() {
+async function generateGuide() {
   const a = getAnswers();
+  const email = (document.getElementById('guide-email')?.value || '').trim();
+
   // Encode family members as pipe-separated tilde-delimited fields
   const fm = a.members.map(m =>
     `${encodeURIComponent(m.name)}~${m.age}~${m.hand[0]}~${m.goal}`
   ).join('|');
   const dist = getDistances();
+
+  // Build distances object from comma-separated dist string
+  const distObj = {};
+  dist.split(',').forEach((v,i) => { if (v && _distKeys[i]) distObj[_distKeys[i]] = parseInt(v); });
+
+  // Legacy params URL (fallback if Supabase fails)
   const params = new URLSearchParams({
     n: a.name,
     h: a.hand[0],
@@ -1800,11 +1812,56 @@ function generateGuide() {
     ...(fm ? { fm } : {}),
     ...(dist.replace(/,/g,'') ? { dist } : {})
   });
-  const guideUrl = 'guide.html?' + params.toString();
+
+  // ── SAVE PROFILE TO SUPABASE → get UUID ──
+  let userId = null;
+  try {
+    const profile = {
+      name:       a.name,
+      email:      email || null,
+      hand:       a.hand[0],
+      gender:     a.gender || 'm',
+      age:        a.age,
+      experience: a.experience || 'some',
+      skill:      a.skill,
+      goal:       a.goal,
+      location:   a.location || 'range',
+      weaknesses: a.weaknesses,
+      freq:       a.freq,
+      duration:   a.duration,
+      equip:      a.equip,
+      bag:        a.bag || '',
+      lessons:    a.lessons || 'none',
+      physical:   a.physical || 'none',
+      theme:      a.theme || 'forest',
+      distances:  Object.keys(distObj).length ? distObj : null,
+      members:    a.members.length ? a.members : null,
+      beg:        beginnerMode,
+    };
+    const sbRes = await fetch(`${SUPABASE_URL}/rest/v1/guide_users`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        apikey: SUPABASE_ANON,
+        Authorization: `Bearer ${SUPABASE_ANON}`,
+        Prefer: 'return=representation',
+      },
+      body: JSON.stringify(profile),
+    });
+    const rows = await sbRes.json();
+    userId = rows?.[0]?.id || null;
+  } catch(e) {
+    console.warn('Supabase save failed — falling back to URL params:', e);
+  }
+
+  // UUID link if saved, long URL as fallback
+  const guideUrl = userId
+    ? `guide.html?u=${userId}&t=${a.theme || 'forest'}`
+    : 'guide.html?' + params.toString();
 
   const fullGuideUrl = location.origin + '/' + guideUrl;
 
-  // ── NETLIFY FORM SUBMISSION via sendBeacon (survives page navigation) ──
+  // ── NETLIFY FORM SUBMISSION via sendBeacon ──
   const formData = new FormData();
   formData.append('form-name', 'guide-log');
   formData.append('name',       a.name);
@@ -1823,7 +1880,6 @@ function generateGuide() {
   navigator.sendBeacon('/', formData);
 
   // ── EMAIL GUIDE LINK (optional) ──
-  const email = (document.getElementById('guide-email')?.value || '').trim();
   if (email) {
     const payload = JSON.stringify({ email, name: a.name, guideUrl: fullGuideUrl });
     navigator.sendBeacon('https://spinvibes-golf.netlify.app/.netlify/functions/send-guide-email', new Blob([payload], { type: 'application/json' }));
