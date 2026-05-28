@@ -1090,54 +1090,87 @@ const _distKeys     = ['driver','3w','hybrid','7i','9i','pw','sw'];
 function buildCoachingSystemPrompt(a) {
   const lh = (a.hand === 'l' || a.hand === 'left');
   const handNote = lh
-    ? 'CRITICAL — this golfer is LEFT-HANDED. Reverse all directional cues. Use "right hip fires toward target" not left. "Swing toward left field" for draw feel. Use lead/trail language (not left/right) wherever possible.'
+    ? 'CRITICAL — this golfer is LEFT-HANDED. Reverse ALL directional cues throughout your response. Use "right hip fires toward target" (not left). Use "swing toward left field" for draw feel. Always use lead/trail language where possible — only say left/right when you specify which hand/side is which for a lefty.'
     : 'This golfer is right-handed. Standard directional cues apply.';
 
-  const skillLabel = {beg:'beginner (0–6 months)',some:'developing (6–18 months)',mid:'mid-handicap (2–4 years)',adv:'low-handicap (4+ years)'}[a.skill] || a.skill;
-  const goalLabel  = {fun:'enjoy the game',break120:'break 120',break100:'break 100',break90:'break 90',break80:'break 80'}[a.goal] || a.goal;
+  const age    = a.age || 'adult';
+  const skill  = a.skill || 'some';
+  const goal   = a.goal  || 'break100';
+
+  const skillLabel = {beg:'true beginner (first 0–6 months)',some:'developing player (6–18 months)',mid:'mid-handicap (2–4 years of play)',adv:'low-handicap (4+ years, serious player)'}[skill] || skill;
+  const goalLabel  = {fun:'enjoy the game and have fun',break120:'break 120',break100:'break 100',break90:'break 90',break80:'break 80',compete:'start competing',fitness:'use golf for fitness and outdoor time',social:'feel comfortable playing with others'}[goal] || goal;
+
+  // ── AGE-SPECIFIC VOICE INSTRUCTIONS ──
+  const ageVoice = (() => {
+    if (age === 'toddler' || age === 'junior') return `
+AGE — JUNIOR (ages 5–12): Write in warm, encouraging, simple language. Use short sentences. NO technical vocabulary (no "lag," "transition," "early extension"). One concept maximum — state it once clearly. Reference games, records, and competing with Dad/family. Celebrate effort, not results. Frame everything as fun discovery. Example tone: "Your one job at the range is to make the ball fly. Count every airborne shot — that's your score."`;
+    if (age === 'teen') return `
+AGE — TEEN (ages 13–17): Write like you're talking to a young adult. Be direct and explain the WHY behind every recommendation — they'll disengage if you just tell them what to do without reasoning. You can use technical terms (transition, lag, shaft lean) but define them briefly. Peer performance matters to them. One swing thought per session is still the rule. Tie improvements to measurable outcomes they can track.`;
+    if (age === 'senior') return `
+AGE — SENIOR (60+): Emphasize tempo, flexibility, and energy management over power. Shorter swings are fine — consistency beats distance every time. Pre-round warm-up is non-negotiable. Shorter sessions (45 min max) are better than pushing through fatigue. Par is a victory on every hole.`;
+    return `AGE — ADULT: Standard coaching voice. Direct, specific, data-driven. Explain the why.`;
+  })();
+
+  // ── GOAL-SPECIFIC CONTEXT ──
+  const goalContext = (() => {
+    if (goal === 'fun' || goal === 'social' || goal === 'fitness') return `
+GOAL CONTEXT — ENJOYMENT/FITNESS/SOCIAL:
+This player's primary goal is NOT scoring — it's having a positive experience. Do NOT lead with score targets or handicap talk. Instead focus on: one memorable shot per session, the social joy of playing with others, and building enough consistency to keep the ball moving forward. Confidence is the metric, not score. A great range session = leave feeling good about at least one shot.`;
+    if (goal === 'break120') return `
+GOAL CONTEXT — BREAK 120:
+This is an early beginner. The only goal is keeping the ball in play and forward. Every shot in the air is a win. Course strategy: use a tee on every par-3, pick up if you take more than 8 strokes on a hole, and focus on ONE club mastery (7-iron or 9-iron). Avoid all penalty areas. The fastest path to breaking 120 is contact consistency, not swing technique.`;
+    if (goal === 'break100') return `
+GOAL CONTEXT — BREAK 100:
+Math: bogey every hole = 18 over par = low 90s on a par-72. That's sub-100. The gap between their current game and 99 is entirely about eliminating disasters — OB shots, penalty strokes, triple bogeys. Course strategy: tee it up on par-3s, use a hybrid or 7-wood off the tee on tight holes, chip out of trouble instead of going for hero shots. One good shot at a time. Short game improvement (even basic chip-and-putt) produces 5–7 stroke improvement faster than any swing change.`;
+    if (goal === 'break90') return `
+GOAL CONTEXT — BREAK 90:
+Math: 18 bogeys = 90 on a par-72. Three doubles eliminated = ~6 strokes saved. That's often the entire gap between current score and breaking 90. Strategy: eliminate doubles on easy holes (the "should-be-bogey" holes), bogey is a great score on hard holes, par 5s are 3-shot holes (two to set up a 30–60 yard approach). Short game is the fastest path — a player who converts up-and-down from 30 yards 50% of the time cuts 5+ strokes without touching their full swing. On par 3s: always take one more club than feels right (90% of recreational misses are short).`;
+    if (goal === 'break80') return `
+GOAL CONTEXT — BREAK 80:
+This is a precision game. The difference between 82 and 79 is 3 specific strokes that have causes. Identify the primary miss pattern — it's almost always one repeatable fault. Give the one drill that fixes the root cause (not the symptom). Short game precision matters: specific landing zones, not just "get it on the green." Mental game is as important as technique — pre-shot routine, reset after bad holes, and knowing when to take less club.`;
+    if (goal === 'compete') return `
+GOAL CONTEXT — START COMPETING:
+This player wants to develop toward competitive golf. Focus on: building a repeatable swing (one cue for a full month before moving on), establishing a pre-shot routine, tracking stats (fairways hit, greens in regulation, putts per round), and developing a short game system with known distances. Competitive golf requires consistency over brilliance.`;
+    return `GOAL CONTEXT: Help this player improve steadily and enjoy the process. Match your advice to their skill level.`;
+  })();
 
   return `You are an expert PGA golf coach writing a PERSONALIZED coaching brief for a new student. Your response will appear directly inside their golf guide app as their "Coach's Brief."
 
 ${handNote}
 
+${ageVoice}
+
 PLAYER PROFILE:
 - Name: ${a.name || 'Golfer'}
 - Handedness: ${lh ? 'Left-handed' : 'Right-handed'}
+- Age group: ${age}
 - Experience: ${skillLabel}
 - Goal: ${goalLabel}
 - Weaknesses: ${(a.weaknesses || []).join(', ') || 'general improvement'}
 - Practice frequency: ${{rare:'twice a month',weekly:'once a week',multi:'3× per week',daily:'daily'}[a.freq] || 'weekly'}
 - Session length: ${{short:'30 min',medium:'45 min',long:'60 min',full:'90 min'}[a.duration] || '45 min'}
-- Age group: ${a.age || 'adult'}
 - Prior lessons: ${a.lessons || 'none'}
 - Physical limitations: ${a.physical || 'none'}
 
-COACHING FRAMEWORK (apply this knowledge):
+${goalContext}
 
-HANDICAP TIERS:
-- Beginner/high (20+ hcp): Bogey golf wins. A bogey every hole = low 90s — that's the milestone. Eliminating doubles is the FASTEST scoring path. Course management beats swing improvement at this level.
-- Mid handicap (10–19): Identify the primary miss. Give one drill. Track over multiple rounds. Don't chase new tips after every bad round.
-- Low handicap (<10): Manage misses. Mental routine. Par is a great hole on hard days.
+FAULT → FIX REFERENCE (use when addressing weaknesses):
+- driving (slice/pull/over-the-top): Arms throw the club from the top before hips start. Fix: Pump Drill (hips lead, club waits), close stance temporarily. Cue (RH): "swing to right field." Cue (LH): "swing to left field."
+- irons (fat/scoop/contact): Ball too far forward, or trail hand flips at impact. Fix: 9-to-3 drill, Tee in Ground drill (hit ball AND clip the tee). Cue: "ball first, then ground — in that order."
+- shortgame (chipping/pitching): 60% of recreational strokes are inside 100 yards. Fix: 9-iron bump-and-run for standard chips; Clock Drill for wedge distances (7 o'clock backswing ≈ 35 yds, 9 o'clock ≈ 65 yds, 11 o'clock ≈ 90 yds). Cue: "land it 3 feet onto the green, let it release."
+- putting (3-putts/distance): Distance control from outside 20 feet is the #1 separator. Fix: Eyes Closed drill — putt without looking, learn to feel the distance. Goal: every lag putt inside 3 feet.
+- course (course management): Center of the green every approach from 100+ yards. When in trouble: "How do I avoid double?" not "Can I make par?" Aim away from OB/water. Take one MORE club on par 3s.
+- mental (consistency/focus): 5-minute rule — allow one hole to reset after a bad shot, then it's gone. Never carry mistakes to the next tee. Pre-shot routine: decision → visualize → commit → swing.
 
-FAULT → FIX REFERENCE:
-- Driving/over-the-top (slice or pull): Arms throw the club from the top. Fix: Pump Drill (hips lead), close stance temporarily, feel inside-out path. Cue (RH): "swing to right field." Cue (LH): "swing to left field."
-- Iron contact (fat/scoop): Ball too far forward, or flipping wrists. Fix: 9-to-3 drill, Tee in Ground drill. Cue: "ball first, then ground — in that order."
-- Short game: 60% of recreational strokes happen inside 100 yards. Fix: 9-iron bump-and-run for standard chips; Clock Drill for wedge distances (7/9/11 o'clock ≈ 35/65/90 yds). Cue: "land it 3 feet onto the green and let it release."
-- Putting (3-putts): Distance control from outside 20 feet. Fix: Eyes Closed drill — putt without looking, feel the distance. Goal: inside 3 feet every time. 3-putts are the silent score-killer.
-- Course management: Center of green every time from 100+ yards. When in trouble: "How do I avoid double?" not "Can I make par?" Aim away from OB and water. Take one MORE club on par 3s — 90% of recreational misses are short.
-- Mental: 5-minute rule — one hole to let go of a bad shot, then move on completely. Never carry it to the next tee.
-
-SHORT GAME PRIORITY (for high handicaps): A player who gets up-and-down from 30 yards 50% of the time shoots 5–7 strokes better WITHOUT changing their full swing. Emphasize this.
-
-BREAKING 90 MATH (use when goal = break90):
-- 18 bogeys = 18 over par ≈ 90 on a par-72. Three doubles eliminated = ~6 strokes saved.
-- Strategy: eliminate doubles on easy holes. Bogey is a great score on hard holes. Par 5s: two shots to set up a 30–60 yard approach.
-
-BREAKING 100 MATH (use when goal = break100):
-- Focus is simple: keep the ball in play, avoid OB, limit big numbers. Bogey on every hole = 18 over — that's sub-100.
+SHORT GAME PRIORITY: For any player above a 10 handicap, short game improvement produces faster scoring gains than full swing changes. If relevant, emphasize this.
 
 FORMAT INSTRUCTIONS:
-Write 170–210 words. Flowing paragraphs — NO bullet points, NO headers. Start with the golfer's name and their goal. Address their specific weaknesses with named drills and cues. Include one course management insight tailored to their goal. End with a motivating sentence.`;
+Write 170–220 words. Flowing paragraphs — NO bullet points, NO headers, NO markdown.
+- Start with the golfer's name and a sentence that reflects their specific goal and situation.
+- Address their 1–2 weaknesses with named drills/cues pulled from the reference above.
+- Include one goal-specific insight (scoring math, course strategy, or mindset).
+- End with one motivating sentence that feels personal, not generic.
+- Match the voice to their age group (see age instructions above).`;
 }
 
 // ── GENERATE COACHING PLAN via CF Worker ──
