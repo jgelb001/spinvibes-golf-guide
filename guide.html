@@ -116,6 +116,37 @@
     textarea#pnote{width:100%;background:var(--surface);border:1.5px solid var(--border);border-radius:12px;padding:12px;color:var(--cream);font-family:'Outfit',sans-serif;font-size:0.85rem;resize:vertical;min-height:76px;outline:none;transition:border-color .18s;}
     textarea#pnote:focus{border-color:var(--gold);}
     .log-btn{background:var(--green);border:none;border-radius:12px;padding:12px 18px;color:#fff;font-family:'Outfit',sans-serif;font-size:0.88rem;font-weight:700;cursor:pointer;margin-top:8px;width:100%;}
+    .log-round-btn{background:none;border:1.5px solid var(--gold);border-radius:12px;padding:12px 18px;color:var(--gold);font-family:'Outfit',sans-serif;font-size:0.88rem;font-weight:700;cursor:pointer;margin-top:8px;width:100%;}
+    /* ── ROUND MODAL ── */
+    .round-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:800;opacity:0;pointer-events:none;transition:opacity .25s;}
+    .round-overlay.open{opacity:1;pointer-events:all;}
+    .round-sheet{position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-radius:22px 22px 0 0;padding:20px 18px;z-index:801;transform:translateY(100%);transition:transform .3s cubic-bezier(.32,.72,0,1);max-height:90vh;overflow-y:auto;padding-bottom:calc(28px + env(safe-area-inset-bottom,0px));}
+    .round-sheet.open{transform:translateY(0);}
+    .round-sheet-handle{width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 16px;}
+    .round-sheet-title{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:1.5px;color:var(--gold);margin-bottom:14px;}
+    .round-input{width:100%;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:10px 13px;color:var(--cream);font-family:'Outfit',sans-serif;font-size:0.9rem;outline:none;transition:border-color .15s;margin-bottom:10px;}
+    .round-input:focus{border-color:var(--gold);}
+    .hole-toggle{display:flex;gap:8px;margin-bottom:14px;}
+    .hole-toggle button{flex:1;padding:9px;border-radius:10px;border:1.5px solid var(--border);background:var(--surface2);color:var(--muted);font-family:'Outfit',sans-serif;font-weight:700;font-size:0.85rem;cursor:pointer;transition:all .15s;}
+    .hole-toggle button.active{border-color:var(--gold);color:var(--gold);background:rgba(138,96,16,0.08);}
+    .hole-grid{display:grid;grid-template-columns:repeat(9,1fr);gap:5px;margin-bottom:14px;}
+    .hole-cell{display:flex;flex-direction:column;align-items:center;gap:3px;}
+    .hole-num{font-size:0.58rem;color:var(--muted);font-weight:600;text-align:center;}
+    .hole-score-input{width:100%;background:var(--surface2);border:1.5px solid var(--border);border-radius:7px;padding:6px 2px;color:var(--cream);font-family:'Outfit',sans-serif;font-size:0.85rem;font-weight:700;text-align:center;outline:none;transition:border-color .15s;}
+    .hole-score-input:focus{border-color:var(--gold);}
+    .round-total-row{display:flex;justify-content:space-between;align-items:center;background:rgba(138,96,16,0.07);border:1px solid rgba(138,96,16,0.2);border-radius:10px;padding:10px 14px;margin-bottom:14px;}
+    .round-total-label{font-size:0.78rem;color:var(--muted);font-weight:600;letter-spacing:.5px;text-transform:uppercase;}
+    .round-total-val{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:var(--gold);}
+    .round-save-btn{width:100%;background:var(--green);border:none;border-radius:12px;padding:14px;color:#fff;font-family:'Outfit',sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer;}
+    /* round history cards */
+    .round-card{background:var(--surface);border:var(--c-border);border-radius:14px;padding:14px 16px;margin-bottom:10px;box-shadow:var(--c-shadow);}
+    .round-card-top{display:flex;justify-content:space-between;align-items:flex-start;}
+    .round-card-score{font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--gold);line-height:1;}
+    .round-card-meta{font-size:0.72rem;color:var(--muted);margin-top:3px;}
+    .round-card-del{background:none;border:none;color:var(--muted);cursor:pointer;font-size:1rem;padding:2px 5px;}
+    .round-holes-row{display:flex;flex-wrap:wrap;gap:4px;margin-top:10px;padding-top:8px;border-top:1px solid var(--border);}
+    .round-hole-chip{font-size:0.68rem;background:var(--surface2);border-radius:6px;padding:3px 6px;color:var(--muted);}
+    .round-hole-chip.good{color:var(--green);background:rgba(26,92,46,0.08);}
     /* ── BRANDING FOOTER ── */
     .sv-credit{display:flex;align-items:center;justify-content:center;gap:9px;padding:24px 20px 20px;margin-top:4px;border-top:1px solid var(--border);}
     .sv-credit img{width:28px;height:28px;border-radius:50%;flex-shrink:0;}
@@ -227,6 +258,25 @@
   <div class="dist-sheet-sub">Enter your average carry in yards. Leave blank to use estimated ranges.</div>
   <div id="distSheetRows"></div>
   <button class="dist-save-btn" onclick="saveDistSheet()">Save My Distances</button>
+</div>
+
+<!-- ── ROUND ENTRY SHEET ── -->
+<div class="round-overlay" id="roundOverlay" onclick="closeRoundSheet()"></div>
+<div class="round-sheet" id="roundSheet">
+  <div class="round-sheet-handle"></div>
+  <div class="round-sheet-title"><i class="ti ti-flag-2" style="vertical-align:-2px;font-size:1.1rem;"></i> Log a Round</div>
+  <input class="round-input" type="text" id="roundCourse" placeholder="Course name (optional)">
+  <div class="hole-toggle">
+    <button id="btn9" class="active" onclick="setHoles(9)">9 Holes</button>
+    <button id="btn18" onclick="setHoles(18)">18 Holes</button>
+  </div>
+  <div class="hole-grid" id="holeGrid"></div>
+  <div class="round-total-row">
+    <span class="round-total-label">Total Score</span>
+    <span class="round-total-val" id="roundTotal">—</span>
+  </div>
+  <textarea class="round-input" id="roundNotes" placeholder="Notes from this round… (optional)" style="min-height:60px;resize:vertical;"></textarea>
+  <button class="round-save-btn" onclick="saveRound()"><i class="ti ti-device-floppy" style="vertical-align:-1px;"></i> Save Round</button>
 </div>
 
 <script>
@@ -1330,10 +1380,19 @@ function stopListening() {
 }
 
 function renderProgress() {
-  return `<div class="sect">
-    <div class="sect-title">Log a Session</div>
+  return `
+  <div class="sect">
+    <div class="sect-title">Log a Round</div>
+    <button class="log-round-btn" onclick="openRoundSheet()"><i class="ti ti-flag-2" style="vertical-align:-1px;"></i> + Log a Round</button>
+  </div>
+  <div class="sect" id="round-history-sect">
+    <div class="sect-title">Round History</div>
+    <div id="round-list"><div class="card"><div class="cb" style="text-align:center;color:var(--muted);padding:8px 0;">Loading rounds…</div></div></div>
+  </div>
+  <div class="sect">
+    <div class="sect-title">Practice Notes</div>
     <textarea id="pnote" placeholder="What did you work on? What clicked? What needs more reps?"></textarea>
-    <button class="log-btn" onclick="logSession()">+ Log This Session</button>
+    <button class="log-btn" onclick="logSession()" style="margin-top:8px;">+ Log This Session</button>
   </div>
   <div class="sect">
     <div class="sect-title">Session History</div>
@@ -1432,6 +1491,7 @@ function enterProfile(key) {
   applyProfile(key);
   renderAllPages();
   renderProgList();
+  renderRoundList();
   buildPills();
   go('home');
 }
@@ -1566,6 +1626,130 @@ async function renderProgList() {
     el.innerHTML = saved.length
       ? saved.map((s,i)=>`<div class="prog-entry"><div class="pe-date">${s.date}</div><div class="pe-note">${s.note}</div><button class="pe-del" onclick="deleteSession(${i},true)">✕</button></div>`).join('')
       : '<div class="card"><div class="cb" style="text-align:center;padding:10px 0;">No sessions logged yet. Hit the range and come back!</div></div>';
+  }
+}
+
+// ── ROUND TRACKING ──
+let _roundHoles = 9;
+
+function openRoundSheet() {
+  _roundHoles = 9;
+  document.getElementById('btn9').classList.add('active');
+  document.getElementById('btn18').classList.remove('active');
+  document.getElementById('roundCourse').value = '';
+  document.getElementById('roundNotes').value = '';
+  buildHoleGrid(9);
+  document.getElementById('roundOverlay').classList.add('open');
+  document.getElementById('roundSheet').classList.add('open');
+}
+function closeRoundSheet() {
+  document.getElementById('roundOverlay').classList.remove('open');
+  document.getElementById('roundSheet').classList.remove('open');
+}
+function setHoles(n) {
+  _roundHoles = n;
+  document.getElementById('btn9').classList.toggle('active', n === 9);
+  document.getElementById('btn18').classList.toggle('active', n === 18);
+  buildHoleGrid(n);
+}
+function buildHoleGrid(n) {
+  const grid = document.getElementById('holeGrid');
+  grid.innerHTML = Array.from({length: n}, (_,i) => `
+    <div class="hole-cell">
+      <div class="hole-num">${i+1}</div>
+      <input class="hole-score-input" type="number" min="1" max="20" id="hs${i+1}"
+        oninput="updateRoundTotal()" placeholder="–">
+    </div>`).join('');
+  updateRoundTotal();
+}
+function updateRoundTotal() {
+  let total = 0;
+  let any = false;
+  for (let i = 1; i <= _roundHoles; i++) {
+    const v = parseInt(document.getElementById('hs'+i)?.value || '');
+    if (!isNaN(v)) { total += v; any = true; }
+  }
+  document.getElementById('roundTotal').textContent = any ? total : '—';
+}
+async function saveRound() {
+  const holes = [];
+  let total = 0;
+  for (let i = 1; i <= _roundHoles; i++) {
+    const v = parseInt(document.getElementById('hs'+i)?.value || '');
+    holes.push({ hole: i, score: isNaN(v) ? null : v });
+    if (!isNaN(v)) total += v;
+  }
+  const course = document.getElementById('roundCourse').value.trim() || null;
+  const notes  = document.getElementById('roundNotes').value.trim() || null;
+  const payload = {
+    user_id:    _userId || null,
+    course_name: course,
+    date_played: new Date().toISOString().split('T')[0],
+    total_score: total || null,
+    holes:       holes,
+    notes:       notes,
+  };
+  try {
+    await fetch(`${SUPABASE_URL}/rest/v1/guide_rounds`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        apikey: SUPABASE_ANON,
+        Authorization: `Bearer ${SUPABASE_ANON}`,
+      },
+      body: JSON.stringify(payload),
+    });
+  } catch(e) { console.warn('saveRound error:', e); }
+  closeRoundSheet();
+  renderRoundList();
+}
+async function deleteRound(id) {
+  try {
+    await fetch(`${SUPABASE_URL}/rest/v1/guide_rounds?id=eq.${id}`, {
+      method: 'DELETE',
+      headers: { apikey: SUPABASE_ANON, Authorization: `Bearer ${SUPABASE_ANON}` },
+    });
+  } catch(e) { console.warn('deleteRound error:', e); }
+  renderRoundList();
+}
+async function renderRoundList() {
+  const el = document.getElementById('round-list');
+  if (!el) return;
+  if (!_userId) {
+    el.innerHTML = '<div class="card"><div class="cb" style="text-align:center;color:var(--muted);">Rounds save to your personal link — generate a guide to get yours.</div></div>';
+    return;
+  }
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/guide_rounds?user_id=eq.${_userId}&order=date_played.desc,created_at.desc&select=*`,
+      { headers: { apikey: SUPABASE_ANON, Authorization: `Bearer ${SUPABASE_ANON}` } }
+    );
+    const rows = await res.json();
+    if (!rows.length) {
+      el.innerHTML = '<div class="card"><div class="cb" style="text-align:center;color:var(--muted);padding:8px 0;">No rounds yet — tap + Log a Round after your next game.</div></div>';
+      return;
+    }
+    el.innerHTML = rows.map(r => {
+      const d = new Date(r.date_played + 'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+      const holes = Array.isArray(r.holes) ? r.holes.filter(h => h.score !== null) : [];
+      const holeChips = holes.map(h => {
+        const good = h.score <= 4;
+        return `<span class="round-hole-chip${good?' good':''}">H${h.hole}: ${h.score}</span>`;
+      }).join('');
+      return `<div class="round-card">
+        <div class="round-card-top">
+          <div>
+            <div class="round-card-score">${r.total_score ?? '—'}</div>
+            <div class="round-card-meta">${d}${r.course_name ? ' · ' + r.course_name : ''} · ${holes.length} holes</div>
+            ${r.notes ? `<div style="font-size:0.78rem;color:var(--muted);margin-top:5px;">${r.notes}</div>` : ''}
+          </div>
+          <button class="round-card-del" onclick="deleteRound('${r.id}')"><i class="ti ti-trash" style="font-size:0.9rem;"></i></button>
+        </div>
+        ${holeChips ? `<div class="round-holes-row">${holeChips}</div>` : ''}
+      </div>`;
+    }).join('');
+  } catch(e) {
+    el.innerHTML = '<div class="card"><div class="cb" style="text-align:center;color:var(--muted);">Couldn\'t load rounds.</div></div>';
   }
 }
 
