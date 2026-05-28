@@ -1082,7 +1082,86 @@
 // ════════════════════════════════════════
 const SUPABASE_URL  = 'https://zairvjyiwhajsulefyoi.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InphaXJ2anlpd2hhanN1bGVmeW9pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxMDkxODAsImV4cCI6MjA5MTY4NTE4MH0.AAdJfqSGHMergPgL4tEoBMn0Wr5d8D1NuxhPMonp_60';
+const CADDIE_URL    = 'https://spinvibes-caddie.spinvibes.workers.dev';
 const _distKeys     = ['driver','3w','hybrid','7i','9i','pw','sw'];
+
+// ── COACHING SYSTEM PROMPT ──
+// Builds a rich, PGA-grounded system prompt for generating a personalized coaching brief.
+function buildCoachingSystemPrompt(a) {
+  const lh = (a.hand === 'l' || a.hand === 'left');
+  const handNote = lh
+    ? 'CRITICAL — this golfer is LEFT-HANDED. Reverse all directional cues. Use "right hip fires toward target" not left. "Swing toward left field" for draw feel. Use lead/trail language (not left/right) wherever possible.'
+    : 'This golfer is right-handed. Standard directional cues apply.';
+
+  const skillLabel = {beg:'beginner (0–6 months)',some:'developing (6–18 months)',mid:'mid-handicap (2–4 years)',adv:'low-handicap (4+ years)'}[a.skill] || a.skill;
+  const goalLabel  = {fun:'enjoy the game',break120:'break 120',break100:'break 100',break90:'break 90',break80:'break 80'}[a.goal] || a.goal;
+
+  return `You are an expert PGA golf coach writing a PERSONALIZED coaching brief for a new student. Your response will appear directly inside their golf guide app as their "Coach's Brief."
+
+${handNote}
+
+PLAYER PROFILE:
+- Name: ${a.name || 'Golfer'}
+- Handedness: ${lh ? 'Left-handed' : 'Right-handed'}
+- Experience: ${skillLabel}
+- Goal: ${goalLabel}
+- Weaknesses: ${(a.weaknesses || []).join(', ') || 'general improvement'}
+- Practice frequency: ${{rare:'twice a month',weekly:'once a week',multi:'3× per week',daily:'daily'}[a.freq] || 'weekly'}
+- Session length: ${{short:'30 min',medium:'45 min',long:'60 min',full:'90 min'}[a.duration] || '45 min'}
+- Age group: ${a.age || 'adult'}
+- Prior lessons: ${a.lessons || 'none'}
+- Physical limitations: ${a.physical || 'none'}
+
+COACHING FRAMEWORK (apply this knowledge):
+
+HANDICAP TIERS:
+- Beginner/high (20+ hcp): Bogey golf wins. A bogey every hole = low 90s — that's the milestone. Eliminating doubles is the FASTEST scoring path. Course management beats swing improvement at this level.
+- Mid handicap (10–19): Identify the primary miss. Give one drill. Track over multiple rounds. Don't chase new tips after every bad round.
+- Low handicap (<10): Manage misses. Mental routine. Par is a great hole on hard days.
+
+FAULT → FIX REFERENCE:
+- Driving/over-the-top (slice or pull): Arms throw the club from the top. Fix: Pump Drill (hips lead), close stance temporarily, feel inside-out path. Cue (RH): "swing to right field." Cue (LH): "swing to left field."
+- Iron contact (fat/scoop): Ball too far forward, or flipping wrists. Fix: 9-to-3 drill, Tee in Ground drill. Cue: "ball first, then ground — in that order."
+- Short game: 60% of recreational strokes happen inside 100 yards. Fix: 9-iron bump-and-run for standard chips; Clock Drill for wedge distances (7/9/11 o'clock ≈ 35/65/90 yds). Cue: "land it 3 feet onto the green and let it release."
+- Putting (3-putts): Distance control from outside 20 feet. Fix: Eyes Closed drill — putt without looking, feel the distance. Goal: inside 3 feet every time. 3-putts are the silent score-killer.
+- Course management: Center of green every time from 100+ yards. When in trouble: "How do I avoid double?" not "Can I make par?" Aim away from OB and water. Take one MORE club on par 3s — 90% of recreational misses are short.
+- Mental: 5-minute rule — one hole to let go of a bad shot, then move on completely. Never carry it to the next tee.
+
+SHORT GAME PRIORITY (for high handicaps): A player who gets up-and-down from 30 yards 50% of the time shoots 5–7 strokes better WITHOUT changing their full swing. Emphasize this.
+
+BREAKING 90 MATH (use when goal = break90):
+- 18 bogeys = 18 over par ≈ 90 on a par-72. Three doubles eliminated = ~6 strokes saved.
+- Strategy: eliminate doubles on easy holes. Bogey is a great score on hard holes. Par 5s: two shots to set up a 30–60 yard approach.
+
+BREAKING 100 MATH (use when goal = break100):
+- Focus is simple: keep the ball in play, avoid OB, limit big numbers. Bogey on every hole = 18 over — that's sub-100.
+
+FORMAT INSTRUCTIONS:
+Write 170–210 words. Flowing paragraphs — NO bullet points, NO headers. Start with the golfer's name and their goal. Address their specific weaknesses with named drills and cues. Include one course management insight tailored to their goal. End with a motivating sentence.`;
+}
+
+// ── GENERATE COACHING PLAN via CF Worker ──
+async function generateCoachingPlan(a) {
+  try {
+    const systemPrompt = buildCoachingSystemPrompt(a);
+    const userMsg = `Generate the personalized coaching brief now for ${a.name || 'this golfer'}.`;
+    const res = await fetch(CADDIE_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        systemPrompt,
+        messages: [{ role: 'user', content: userMsg }],
+        max_tokens: 350,
+      }),
+    });
+    if (!res.ok) throw new Error('CF Worker error ' + res.status);
+    const data = await res.json();
+    return data.reply || null;
+  } catch(e) {
+    console.warn('Coaching plan generation failed:', e);
+    return null;
+  }
+}
 
 let currentStep = 0;
 let TOTAL_STEPS = 14;
@@ -1813,30 +1892,39 @@ async function generateGuide() {
     ...(dist.replace(/,/g,'') ? { dist } : {})
   });
 
+  // ── GENERATE PERSONALIZED COACHING PLAN ──
+  // Do this before Supabase save so we can include coaching_plan in the INSERT.
+  // Show the button as "Generating…" during the async call.
+  const genBtn = document.querySelector('.btn-generate');
+  if (genBtn) { genBtn.disabled = true; genBtn.textContent = 'Building your plan…'; }
+  const coachingPlan = await generateCoachingPlan(a);
+  if (genBtn) { genBtn.disabled = false; genBtn.innerHTML = '<i class="ti ti-flag-2" style="vertical-align:-1px;margin-right:6px;"></i> Generate My Guide'; }
+
   // ── SAVE PROFILE TO SUPABASE → get UUID ──
   let userId = null;
   try {
     const profile = {
-      name:       a.name,
-      email:      email || null,
-      hand:       a.hand[0],
-      gender:     a.gender || 'm',
-      age:        a.age,
-      experience: a.experience || 'some',
-      skill:      a.skill,
-      goal:       a.goal,
-      location:   a.location || 'range',
-      weaknesses: a.weaknesses,
-      freq:       a.freq,
-      duration:   a.duration,
-      equip:      a.equip,
-      bag:        a.bag || '',
-      lessons:    a.lessons || 'none',
-      physical:   a.physical || 'none',
-      theme:      a.theme || 'forest',
-      distances:  Object.keys(distObj).length ? distObj : null,
-      members:    a.members.length ? a.members : null,
-      beg:        beginnerMode,
+      name:          a.name,
+      email:         email || null,
+      hand:          a.hand[0],
+      gender:        a.gender || 'm',
+      age:           a.age,
+      experience:    a.experience || 'some',
+      skill:         a.skill,
+      goal:          a.goal,
+      location:      a.location || 'range',
+      weaknesses:    a.weaknesses,
+      freq:          a.freq,
+      duration:      a.duration,
+      equip:         a.equip,
+      bag:           a.bag || '',
+      lessons:       a.lessons || 'none',
+      physical:      a.physical || 'none',
+      theme:         a.theme || 'forest',
+      distances:     Object.keys(distObj).length ? distObj : null,
+      members:       a.members.length ? a.members : null,
+      beg:           beginnerMode,
+      coaching_plan: coachingPlan || null,
     };
     const sbRes = await fetch(`${SUPABASE_URL}/rest/v1/guide_users`, {
       method: 'POST',

@@ -289,6 +289,7 @@ const P       = new URLSearchParams(location.search);
 const _userId = P.get('u'); // UUID personal link — takes priority over URL params
 
 let a; // populated by initGuide() — do not access before that resolves
+let _coachingPlan = null; // AI-generated coaching brief, loaded from Supabase
 
 // Build profile object from URL params (legacy links / fallback)
 function buildAFromParams() {
@@ -371,6 +372,15 @@ const phases= () => ({short:2,medium:3,long:4,full:4}[a.duration]||3);
 
 // ── COACH BRIEF ──
 function buildCoachBrief() {
+  // If we have an AI-generated plan from Supabase, use it directly
+  if (_coachingPlan) {
+    return `<div class="coach-brief">
+      <div class="cb-head"><i class="ti ti-message-circle" style="vertical-align:-1px;font-size:0.9rem;"></i> Coach's Brief</div>
+      <div style="font-size:0.87rem;color:var(--cream);line-height:1.72;">${_coachingPlan.replace(/\n\n/g,'<br><br>').replace(/\n/g,' ')}</div>
+    </div>`;
+  }
+
+  // Fallback: hardcoded content for legacy/param-only links
   const w1 = a.weaknesses[0];
   const w2 = a.weaknesses[1];
   const goal = a.goal;
@@ -1786,6 +1796,8 @@ async function initGuide() {
         if (u.distances && typeof u.distances === 'object') {
           Object.assign(distances, u.distances);
         }
+        // Load AI-generated coaching plan if it exists
+        _coachingPlan = u.coaching_plan || null;
       }
     } catch(e) {
       console.warn('Failed to load profile from Supabase:', e);
