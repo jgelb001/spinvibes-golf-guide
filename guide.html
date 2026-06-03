@@ -197,6 +197,15 @@
     .stat{flex:1;min-width:55px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 8px;text-align:center;}
     .sn{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--gold);line-height:1;}
     .sl{font-size:0.58rem;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-top:3px;}
+
+    .app-cta-banner{background:linear-gradient(135deg,rgba(138,96,16,0.18),rgba(45,106,63,0.18));border:1.5px solid rgba(138,96,16,0.45);border-radius:16px;padding:18px 20px;margin-bottom:18px;text-align:center;}
+    .app-cta-banner .app-cta-label{font-size:0.65rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+    .app-cta-banner .app-cta-name{font-family:Georgia,serif;font-size:1.3rem;color:var(--gold);font-weight:700;margin-bottom:4px;}
+    .app-cta-banner .app-cta-sub{font-size:0.78rem;color:var(--muted);margin-bottom:14px;line-height:1.5;}
+    .app-cta-btn{display:inline-flex;align-items:center;gap:8px;background:var(--green);color:#e8f5ec;padding:13px 28px;border-radius:12px;text-decoration:none;font-weight:700;font-size:0.92rem;letter-spacing:.3px;border:1px solid var(--green-b);}
+    .app-cta-btn:active{opacity:0.85;}
+    .app-sticky-bar{position:fixed;bottom:0;left:0;right:0;z-index:500;background:var(--bg);border-top:1px solid var(--border);padding:10px 20px calc(10px + env(safe-area-inset-bottom,0px));display:none;}
+    .app-sticky-bar a{display:flex;align-items:center;justify-content:center;gap:8px;background:var(--green);color:#e8f5ec;padding:13px;border-radius:12px;text-decoration:none;font-weight:700;font-size:0.92rem;border:1px solid var(--green-b);}
   </style>
 </head>
 <body class="dark">
@@ -483,6 +492,28 @@ function renderBeginnerHome() {
 }
 
 // ── RENDER HOME ──
+
+// ── APP CTA ──────────────────────────────────────────────────────
+function _appUrl() {
+  if (_userId) return 'https://app.spinvibes.com?u=' + _userId;
+  // fallback: pass key params
+  const p = new URLSearchParams({ u: 'preview', n: a.name, h: a.hand[0], s: a.skill, g: a.goal, a: a.age });
+  return 'https://app.spinvibes.com?' + p.toString();
+}
+
+function buildAppCTA() {
+  const url = _appUrl();
+  return `
+  <div class="app-cta-banner">
+    <div class="app-cta-label">Your Personal App</div>
+    <div class="app-cta-name">SpinVibes · ${a.name}</div>
+    <div class="app-cta-sub">Your guide, your stats, your caddie — all in one app.<br>Add to your home screen and it works offline.</div>
+    <a class="app-cta-btn" href="${url}">
+      <i class="ti ti-device-mobile" style="font-size:1.1rem;"></i> Open My SpinVibes App
+    </a>
+  </div>`;
+}
+
 function renderHome(profile) {
   const isMain = profile === 'main';
   if (isMain) {
@@ -504,6 +535,7 @@ function renderHome(profile) {
       <div class="stat"><div class="sn">${{rare:'2×/mo',weekly:'1×/wk',multi:'3×/wk',daily:'Daily'}[a.freq]||'1×/wk'}</div><div class="sl">Frequency</div></div>
       <div class="stat"><div class="sn">${a.weaknesses.length||1}</div><div class="sl">Focus Areas</div></div>
     </div>
+    ${buildAppCTA()}
     <div class="grid">
       <a class="gc" onclick="go('range')"><span class="gi"><i class="ti ti-run" style="font-size:1.5rem;color:var(--gold);"></i></span><div class="gt">Practice Session</div><div class="gs">Range · Sim · Home</div></a>
       <a class="gc" onclick="go('swing')"><span class="gi"><i class="ti ti-bolt" style="font-size:1.5rem;color:var(--gold);"></i></span><div class="gt">Swing Sequence</div><div class="gs">7 steps · warmup inside</div></a>
@@ -1423,6 +1455,8 @@ function go(id) {
   document.querySelectorAll('.nb').forEach(b => b.classList.remove('on'));
   document.getElementById('pg-' + id).classList.add('on');
   document.getElementById('nb-' + id).classList.add('on');
+  const bar = document.getElementById('app-sticky-bar');
+  if (bar) bar.style.display = (id === 'home') ? '' : 'none';
 }
 
 function toggleDark() {
@@ -1527,6 +1561,11 @@ function renderHome_page(profile) {
   document.getElementById('pg-home').innerHTML = renderHome(profile) + svCredit;
   const p = allProfiles.find(p => p.key === profile);
   document.getElementById('tb-sub').textContent = p ? `${p.desc}` : '';
+  // Show sticky app bar on home, update link
+  const bar = document.getElementById('app-sticky-bar');
+  const lnk = document.getElementById('app-sticky-link');
+  if (bar) bar.style.display = (profile === 'main') ? '' : 'none';
+  if (lnk) lnk.href = _appUrl();
 }
 
 function renderAllPages() {

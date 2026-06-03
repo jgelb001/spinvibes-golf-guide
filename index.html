@@ -1982,6 +1982,11 @@ async function generateGuide() {
 
   const fullGuideUrl = location.origin + '/' + guideUrl;
 
+  // App URL — points to app.spinvibes.com with UUID (or fallback params)
+  const appUrl = userId
+    ? `https://app.spinvibes.com?u=${userId}`
+    : `https://app.spinvibes.com?n=${encodeURIComponent(a.name)}&h=${a.hand[0]}&s=${a.skill}&g=${a.goal}&a=${a.age}`;
+
   // ── NETLIFY FORM SUBMISSION via sendBeacon ──
   const formData = new FormData();
   formData.append('form-name', 'guide-log');
@@ -2002,7 +2007,7 @@ async function generateGuide() {
 
   // ── EMAIL GUIDE LINK (optional) ──
   if (email) {
-    const payload = JSON.stringify({ email, name: a.name, guideUrl: fullGuideUrl });
+    const payload = JSON.stringify({ email, name: a.name, guideUrl: fullGuideUrl, appUrl });
     navigator.sendBeacon('https://spinvibes-golf.netlify.app/.netlify/functions/send-guide-email', new Blob([payload], { type: 'application/json' }));
   }
 
