@@ -134,6 +134,7 @@
     /* ── STEP ── */
     .step { display: none; }
     .step.active { display: block; animation: fadeUp 0.28s ease; }
+    @keyframes spin { to { transform: rotate(360deg); } }
     @keyframes fadeUp {
       from { opacity:0; transform:translateY(14px); }
       to   { opacity:1; transform:translateY(0); }
@@ -1933,6 +1934,95 @@ async function generateGuide() {
   const coachingPlan = await generateCoachingPlan(a);
   if (genBtn) { genBtn.disabled = false; genBtn.innerHTML = '<i class="ti ti-flag-2" style="vertical-align:-1px;margin-right:6px;"></i> Generate My Guide'; }
 
+  // ── PIN SETUP — collect before saving so we can include in INSERT ──
+  showPinSetup(a, email, params, distObj, coachingPlan);
+}
+
+// ── PIN SETUP SCREEN ──────────────────────────────────────────────
+let _pinPhase = 'set', _pinFirst = '', _pinCurrent = '';
+
+function showPinSetup(a, email, params, distObj, coachingPlan) {
+  // Hide wizard UI
+  document.querySelectorAll('main, .wizard-wrap, #wizard, .step-wrap, .progress-bar-wrap, .progress-wrap, .wiz-header').forEach(el => { el.style.display = 'none'; });
+
+  const screen = document.createElement('div');
+  screen.id = 'pin-setup-screen';
+  screen.style.cssText = 'min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;text-align:center;background:#0d1a0f;';
+  screen.innerHTML = `
+    <div style="font-family:'Bebas Neue',Georgia,serif;font-size:2rem;color:#c9a84c;letter-spacing:4px;margin-bottom:4px;">SPINVIBES</div>
+    <div id="pin-title" style="font-size:1.05rem;font-weight:700;color:#f0ead8;margin-bottom:6px;">Set your app PIN</div>
+    <div id="pin-sub" style="font-size:0.85rem;color:#6a8a6e;margin-bottom:28px;max-width:280px;line-height:1.5;">You'll enter this each time you open your app.</div>
+
+    <div id="pin-dots" style="display:flex;gap:14px;margin-bottom:32px;">
+      ${[0,1,2,3].map(i=>`<div id="pd-${i}" style="width:16px;height:16px;border-radius:50%;border:2px solid rgba(201,168,76,0.5);background:transparent;transition:background 0.15s;"></div>`).join('')}
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:260px;width:100%;margin:0 auto;">
+      ${[1,2,3,4,5,6,7,8,9,'','0','⌫'].map(k=>`
+        <button onclick="pinKey('${k}')" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:18px 0;font-size:1.3rem;font-weight:600;color:#f0ead8;cursor:pointer;${k===''?'visibility:hidden;':''}" ${k===''?'disabled':''}>
+          ${k}
+        </button>`).join('')}
+    </div>
+
+    <div id="pin-err" style="height:20px;font-size:0.8rem;color:#d64f3a;margin-top:16px;"></div>
+    <button id="pin-skip" onclick="doSaveAndShowSuccess(window._svPinAnswers, window._svPinEmail, window._svPinParams, window._svPinDist, window._svPinPlan, null)" style="margin-top:20px;font-size:0.78rem;color:#4a6a4e;background:none;border:none;cursor:pointer;text-decoration:underline;">Skip — I'll set a PIN later</button>
+  `;
+  document.body.appendChild(screen);
+
+  // Stash args for keypad callbacks
+  window._svPinAnswers = a;
+  window._svPinEmail   = email;
+  window._svPinParams  = params;
+  window._svPinDist    = distObj;
+  window._svPinPlan    = coachingPlan;
+  _pinPhase = 'set'; _pinFirst = ''; _pinCurrent = '';
+}
+
+function pinKey(k) {
+  if (k === '⌫') {
+    _pinCurrent = _pinCurrent.slice(0,-1);
+  } else if (k !== '' && _pinCurrent.length < 4) {
+    _pinCurrent += k;
+  }
+  // Update dots
+  for (let i=0;i<4;i++) {
+    const d = document.getElementById('pd-'+i);
+    if (d) d.style.background = i < _pinCurrent.length ? '#c9a84c' : 'transparent';
+  }
+  document.getElementById('pin-err').textContent = '';
+
+  if (_pinCurrent.length === 4) {
+    setTimeout(() => {
+      if (_pinPhase === 'set') {
+        _pinFirst = _pinCurrent; _pinCurrent = '';
+        _pinPhase = 'confirm';
+        document.getElementById('pin-title').textContent = 'Confirm your PIN';
+        document.getElementById('pin-sub').textContent = 'Re-enter your 4-digit PIN to confirm.';
+        document.getElementById('pin-skip').style.display = 'none';
+        for (let i=0;i<4;i++) { const d=document.getElementById('pd-'+i); if(d) d.style.background='transparent'; }
+      } else {
+        if (_pinCurrent === _pinFirst) {
+          doSaveAndShowSuccess(window._svPinAnswers, window._svPinEmail, window._svPinParams, window._svPinDist, window._svPinPlan, _pinFirst);
+        } else {
+          document.getElementById('pin-err').textContent = 'PINs don\'t match — try again.';
+          _pinCurrent = ''; _pinFirst = ''; _pinPhase = 'set';
+          document.getElementById('pin-title').textContent = 'Set your app PIN';
+          document.getElementById('pin-sub').textContent = 'You\'ll enter this each time you open your app.';
+          document.getElementById('pin-skip').style.display = '';
+          for (let i=0;i<4;i++) { const d=document.getElementById('pd-'+i); if(d) d.style.background='transparent'; }
+        }
+      }
+    }, 120);
+  }
+}
+
+async function doSaveAndShowSuccess(a, email, params, distObj, coachingPlan, pin) {
+  // Remove PIN screen, show saving indicator
+  const pinScreen = document.getElementById('pin-setup-screen');
+  if (pinScreen) {
+    pinScreen.innerHTML = '<div style="min-height:100dvh;display:flex;align-items:center;justify-content:center;background:#0d1a0f;"><div style="width:36px;height:36px;border:3px solid rgba(201,168,76,0.2);border-top-color:#c9a84c;border-radius:50%;animation:spin 0.8s linear infinite;"></div></div>';
+  }
+
   // ── SAVE PROFILE TO SUPABASE → get UUID ──
   let userId = null;
   try {
@@ -1958,6 +2048,7 @@ async function generateGuide() {
       members:       a.members.length ? a.members : null,
       beg:           beginnerMode,
       coaching_plan: coachingPlan || null,
+      app_pin:       pin || null,
     };
     const sbRes = await fetch(`${SUPABASE_URL}/rest/v1/guide_users`, {
       method: 'POST',
@@ -2016,9 +2107,10 @@ async function generateGuide() {
 }
 
 function showAppReady(name, appUrl, guideUrl, email) {
-  // Hide the wizard
-  const wizard = document.getElementById('wizard') || document.querySelector('.wizard-wrap') || document.querySelector('main') || document.body.firstElementChild;
-  document.querySelectorAll('main, .wizard-wrap, #wizard, .step-wrap, .progress-bar-wrap').forEach(el => { el.style.display = 'none'; });
+  // Remove PIN screen if present, hide wizard elements
+  const pinScreen = document.getElementById('pin-setup-screen');
+  if (pinScreen) pinScreen.remove();
+  document.querySelectorAll('main, .wizard-wrap, #wizard, .step-wrap, .progress-bar-wrap, .wiz-header').forEach(el => { el.style.display = 'none'; });
 
   // Build the success screen
   const screen = document.createElement('div');
