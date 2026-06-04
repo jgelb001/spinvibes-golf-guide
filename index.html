@@ -6,6 +6,7 @@
   <title>Build Your Golf Guide</title>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <style>
     :root {
       --bg:      #ffffff;
@@ -534,7 +535,24 @@
       <div class="intro-bullet"><span class="intro-bullet-icon"><i class="ti ti-lock"></i></span> Stays on your device · No accounts · No data collected</div>
     </div>
     <button class="btn-next" style="width:100%;font-size:1.1rem;padding:18px;" onclick="startWizard()">Let's Build My Guide <i class="ti ti-arrow-right" style="vertical-align:-1px;"></i></button>
-    <div class="footer-note">Generated file is yours. No crossover with anyone else's guide.</div>
+    <div class="footer-note" style="margin-top:16px;">Already have an app? <button onclick="showGuideSignIn()" style="background:none;border:none;color:var(--gold);font-size:inherit;font-family:inherit;cursor:pointer;text-decoration:underline;padding:0;">Sign in to open it →</button></div>
+  </div>
+
+  <!-- RETURN USER SIGN-IN OVERLAY -->
+  <div id="guide-signin-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:999;align-items:center;justify-content:center;padding:24px;">
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:28px 24px;width:100%;max-width:360px;text-align:center;">
+      <div style="font-size:1.5rem;margin-bottom:8px;">⛳</div>
+      <div style="font-weight:700;font-size:1.05rem;color:var(--cream);margin-bottom:6px;" id="gs-title">Welcome back</div>
+      <div style="font-size:0.82rem;color:var(--muted);margin-bottom:18px;line-height:1.5;" id="gs-sub">Enter your email and we'll send a magic link to open your SpinVibes app.</div>
+      <input type="email" id="gs-email" placeholder="your@email.com" autocomplete="email"
+        style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px 16px;color:var(--cream);font-size:1rem;font-family:inherit;box-sizing:border-box;margin-bottom:12px;">
+      <button id="gs-send-btn" onclick="submitGuideSignIn()"
+        style="width:100%;background:linear-gradient(135deg,var(--green,#1a5c2e),#0f3a1c);color:#c9a84c;padding:15px;border:none;border-radius:12px;font-size:1rem;font-weight:700;cursor:pointer;">
+        Send Magic Link
+      </button>
+      <div id="gs-msg" style="font-size:0.8rem;margin-top:12px;color:var(--muted);line-height:1.4;min-height:20px;"></div>
+      <button onclick="hideGuideSignIn()" style="margin-top:14px;font-size:0.78rem;color:var(--muted);background:none;border:none;cursor:pointer;">Cancel</button>
+    </div>
   </div>
 
   <!-- ══ STEP 1: NAME + HAND + GENDER (combined) ══ -->
@@ -1083,6 +1101,68 @@
 // ════════════════════════════════════════
 const SUPABASE_URL  = 'https://zairvjyiwhajsulefyoi.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InphaXJ2anlpd2hhanN1bGVmeW9pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxMDkxODAsImV4cCI6MjA5MTY4NTE4MH0.AAdJfqSGHMergPgL4tEoBMn0Wr5d8D1NuxhPMonp_60';
+
+// Supabase JS client for return-user auth
+const _sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+// On load: if magic link redirected back here, handle the session and open their app
+(async () => {
+  const { data: { session } } = await _sb.auth.getSession();
+  if (session) {
+    try {
+      const res  = await fetch(`${SUPABASE_URL}/rest/v1/guide_users?auth_id=eq.${session.user.id}&select=id&limit=1`,
+        { headers: { apikey: SUPABASE_ANON, Authorization: `Bearer ${session.access_token}` } });
+      const rows = await res.json();
+      if (rows?.[0]?.id) {
+        window.location.href = `https://app.spinvibes.com?u=${rows[0].id}`;
+        return;
+      }
+    } catch(e) {}
+    // Signed in but no linked profile — show message on overlay
+    showGuideSignIn();
+    document.getElementById('gs-title').textContent = 'Signed in — no profile found';
+    document.getElementById('gs-sub').textContent = "We couldn't find an app linked to this account. You may need to build a guide first.";
+  }
+
+  // Listen for magic link auth (fires when user clicks email link)
+  _sb.auth.onAuthStateChange(async (event, sess) => {
+    if (event === 'SIGNED_IN' && sess) {
+      try {
+        const res  = await fetch(`${SUPABASE_URL}/rest/v1/guide_users?auth_id=eq.${sess.user.id}&select=id&limit=1`,
+          { headers: { apikey: SUPABASE_ANON, Authorization: `Bearer ${sess.access_token}` } });
+        const rows = await res.json();
+        if (rows?.[0]?.id) { window.location.href = `https://app.spinvibes.com?u=${rows[0].id}`; return; }
+      } catch(e) {}
+      document.getElementById('gs-msg').innerHTML = '<strong style="color:#c9a84c;">Signed in!</strong> No linked app found — try building a guide first.';
+    }
+  });
+})();
+
+function showGuideSignIn() {
+  const el = document.getElementById('guide-signin-overlay');
+  el.style.display = 'flex';
+  setTimeout(() => document.getElementById('gs-email')?.focus(), 100);
+}
+function hideGuideSignIn() { document.getElementById('guide-signin-overlay').style.display = 'none'; }
+
+async function submitGuideSignIn() {
+  const email = document.getElementById('gs-email').value.trim();
+  if (!email || !email.includes('@')) { document.getElementById('gs-msg').textContent = 'Enter a valid email address.'; return; }
+  const btn = document.getElementById('gs-send-btn');
+  btn.disabled = true; btn.textContent = 'Sending…';
+  try {
+    const { error } = await _sb.auth.signInWithOtp({
+      email,
+      options: { emailRedirectTo: 'https://golf.spinvibes.com' }
+    });
+    if (error) throw error;
+    document.getElementById('gs-msg').innerHTML = `<strong style="color:#c9a84c;">Check your email!</strong><br>We sent a link to <strong>${email}</strong>. Tap it to open your app.`;
+    btn.textContent = 'Sent ✓';
+  } catch(e) {
+    document.getElementById('gs-msg').textContent = 'Something went wrong — ' + (e.message || 'try again.');
+    btn.disabled = false; btn.textContent = 'Send Magic Link';
+  }
+}
 const CADDIE_URL    = 'https://spinvibes-caddie.spinvibes.workers.dev';
 const _distKeys     = ['driver','3w','hybrid','7i','9i','pw','sw'];
 
