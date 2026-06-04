@@ -2011,8 +2011,39 @@ async function generateGuide() {
     navigator.sendBeacon('https://spinvibes-golf.netlify.app/.netlify/functions/send-guide-email', new Blob([payload], { type: 'application/json' }));
   }
 
-  // Navigate to the guide
-  window.location.href = guideUrl;
+  // Show success screen — app is the primary destination
+  showAppReady(a.name, appUrl, fullGuideUrl, email);
+}
+
+function showAppReady(name, appUrl, guideUrl, email) {
+  // Hide the wizard
+  const wizard = document.getElementById('wizard') || document.querySelector('.wizard-wrap') || document.querySelector('main') || document.body.firstElementChild;
+  document.querySelectorAll('main, .wizard-wrap, #wizard, .step-wrap, .progress-bar-wrap').forEach(el => { el.style.display = 'none'; });
+
+  // Build the success screen
+  const screen = document.createElement('div');
+  screen.style.cssText = 'min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;text-align:center;background:var(--bg,#0d1a0f);';
+  screen.innerHTML = `
+    <div style="width:64px;height:64px;border-radius:50%;background:rgba(201,168,76,0.15);border:2px solid rgba(201,168,76,0.5);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:1.8rem;">&#x26F3;</div>
+    <div style="font-family:Georgia,serif;font-size:2rem;color:#c9a84c;letter-spacing:4px;margin-bottom:6px;">SPINVIBES</div>
+    <div style="font-size:1.1rem;font-weight:700;color:#f0ead8;margin-bottom:8px;">${name}, your app is ready.</div>
+    <div style="font-size:0.9rem;color:#8a9e8e;line-height:1.6;margin-bottom:32px;max-width:320px;">Your personalized golf caddie, practice plan, and coaching guide are all built around your game. Open your app to get started.</div>
+
+    <a href="${appUrl}" style="display:block;width:100%;max-width:320px;background:linear-gradient(135deg,#2d6a3f,#1e4d2b);color:#c9a84c;padding:18px 28px;border-radius:14px;text-decoration:none;font-weight:700;font-size:1.05rem;letter-spacing:0.5px;margin-bottom:14px;">
+      &#x1F4F1; Open My SpinVibes App &#x2192;
+    </a>
+
+    <div style="font-size:0.72rem;color:#8a9e8e;margin-bottom:20px;max-width:280px;line-height:1.5;">
+      <strong style="color:#c9a84c;">To install:</strong> Open in Safari → Share → Add to Home Screen<br>Works offline once installed.
+    </div>
+
+    <div style="height:1px;background:rgba(255,255,255,0.08);width:100%;max-width:320px;margin-bottom:16px;"></div>
+
+    <a href="${guideUrl}" style="font-size:0.82rem;color:#8a9e8e;text-decoration:underline;">View my coaching guide &#x2192;</a>
+
+    ${email ? `<div style="font-size:0.72rem;color:#6a8a6e;margin-top:12px;">Also sent to: ${email}</div>` : ''}
+  `;
+  document.body.appendChild(screen);
 }
 
 </script>
