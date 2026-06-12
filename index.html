@@ -2022,8 +2022,9 @@ async function generateGuide() {
 let _pinPhase = 'set', _pinFirst = '', _pinCurrent = '';
 
 function showPinSetup(a, email, params, distObj, coachingPlan) {
-  // Hide wizard UI
-  document.querySelectorAll('main, .wizard-wrap, #wizard, .step-wrap, .progress-bar-wrap, .progress-wrap, .wiz-header').forEach(el => { el.style.display = 'none'; });
+  // Hide wizard UI (.wiz-body is the container that holds every step — without it the wizard stays visible and the PIN screen renders below the fold)
+  document.querySelectorAll('main, .wizard-wrap, #wizard, .wiz-body, .step-wrap, .progress-bar-wrap, .progress-wrap, .wiz-header').forEach(el => { el.style.display = 'none'; });
+  window.scrollTo(0,0);
 
   const screen = document.createElement('div');
   screen.id = 'pin-setup-screen';
@@ -2182,15 +2183,16 @@ async function doSaveAndShowSuccess(a, email, params, distObj, coachingPlan, pin
     navigator.sendBeacon('https://spinvibes-golf.netlify.app/.netlify/functions/send-guide-email', new Blob([payload], { type: 'application/json' }));
   }
 
-  // Show success screen — app is the primary destination
-  showAppReady(a.name, appUrl, fullGuideUrl, email);
+  // Open their app immediately — no intermediate screen to get lost on
+  window.location.href = appUrl;
 }
 
 function showAppReady(name, appUrl, guideUrl, email) {
   // Remove PIN screen if present, hide wizard elements
   const pinScreen = document.getElementById('pin-setup-screen');
   if (pinScreen) pinScreen.remove();
-  document.querySelectorAll('main, .wizard-wrap, #wizard, .step-wrap, .progress-bar-wrap, .wiz-header').forEach(el => { el.style.display = 'none'; });
+  document.querySelectorAll('main, .wizard-wrap, #wizard, .wiz-body, .step-wrap, .progress-bar-wrap, .wiz-header').forEach(el => { el.style.display = 'none'; });
+  window.scrollTo(0,0);
 
   // Build the success screen
   const screen = document.createElement('div');
