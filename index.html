@@ -781,6 +781,8 @@
         <div class="opt-card"><div class="opt-icon"><i class="ti ti-target"></i></div><div class="opt-text"><div class="opt-label">Break 90</div><div class="opt-desc">Consistency and course management</div></div><div class="opt-check"></div></div></label>
       <label class="opt"><input type="radio" name="goal" value="break80" onchange="validateStep()">
         <div class="opt-card"><div class="opt-icon"><i class="ti ti-flame"></i></div><div class="opt-text"><div class="opt-label">Break 80</div><div class="opt-desc">Scoring focus, shot shaping, finesse</div></div><div class="opt-check"></div></div></label>
+      <label class="opt"><input type="radio" name="goal" value="break70" onchange="validateStep()">
+        <div class="opt-card"><div class="opt-icon"><i class="ti ti-trophy"></i></div><div class="opt-text"><div class="opt-label">Break 70</div><div class="opt-desc">Elite scoring — tournament-level golf</div></div><div class="opt-check"></div></div></label>
     </div>
     <div class="wiz-nav">
       <button class="btn-back" onclick="goBack()"><i class="ti ti-chevron-left" style="vertical-align:-1px;"></i> Back</button>
@@ -1179,7 +1181,7 @@ function buildCoachingSystemPrompt(a) {
   const goal   = a.goal  || 'break100';
 
   const skillLabel = {beg:'true beginner (first 0–6 months)',some:'developing player (6–18 months)',mid:'mid-handicap (2–4 years of play)',adv:'low-handicap (4+ years, serious player)'}[skill] || skill;
-  const goalLabel  = {fun:'enjoy the game and have fun',break120:'break 120',break100:'break 100',break90:'break 90',break80:'break 80',compete:'start competing',fitness:'use golf for fitness and outdoor time',social:'feel comfortable playing with others'}[goal] || goal;
+  const goalLabel  = {fun:'enjoy the game and have fun',break120:'break 120',break100:'break 100',break90:'break 90',break80:'break 80',break70:'break 70',compete:'start competing',fitness:'use golf for fitness and outdoor time',social:'feel comfortable playing with others'}[goal] || goal;
 
   // ── AGE-SPECIFIC VOICE INSTRUCTIONS ──
   const ageVoice = (() => {
@@ -1209,6 +1211,9 @@ Math: 18 bogeys = 90 on a par-72. Three doubles eliminated = ~6 strokes saved. T
     if (goal === 'break80') return `
 GOAL CONTEXT — BREAK 80:
 This is a precision game. The difference between 82 and 79 is 3 specific strokes that have causes. Identify the primary miss pattern — it's almost always one repeatable fault. Give the one drill that fixes the root cause (not the symptom). Short game precision matters: specific landing zones, not just "get it on the green." Mental game is as important as technique — pre-shot routine, reset after bad holes, and knowing when to take less club.`;
+    if (goal === 'break70') return `
+GOAL CONTEXT — BREAK 70:
+This player is already breaking 80 and wants tournament-level scoring. They don't need swing rebuilds — they need marginal gains. Focus on: proximity practice with precise landing-zone targets (not "on the green" — inside 15 feet), wedge distance matrix (3 swing lengths × 4 wedges = 12 known numbers), lag putting to eliminate ALL 3-putts, and scoring-zone strategy (when to attack pins vs. play to the fat side). Stats discipline matters: strokes gained thinking, not raw score. The mental game at this level is about staying neutral — no shot is "big," every shot is the same routine.`;
     if (goal === 'compete') return `
 GOAL CONTEXT — START COMPETING:
 This player wants to develop toward competitive golf. Focus on: building a repeatable swing (one cue for a full month before moving on), establishing a pre-shot routine, tracking stats (fairways hit, greens in regulation, putts per round), and developing a short game system with known distances. Competitive golf requires consistency over brilliance.`;
@@ -1504,10 +1509,10 @@ function getAnswers() {
 // ════════════════════════════════════════
 
 function goalLabel(g) {
-  return {fun:'Enjoy the Game',break120:'Break 120',break100:'Break 100',break90:'Break 90',break80:'Break 80'}[g] || 'Enjoy the Game';
+  return {fun:'Enjoy the Game',break120:'Break 120',break100:'Break 100',break90:'Break 90',break80:'Break 80',break70:'Break 70'}[g] || 'Enjoy the Game';
 }
 function goalNum(g) {
-  return {fun:'FUN',break120:'120',break100:'100',break90:'90',break80:'80'}[g] || 'FUN';
+  return {fun:'FUN',break120:'120',break100:'100',break90:'90',break80:'80',break70:'70'}[g] || 'FUN';
 }
 function handLabel(h) { return h === 'left' ? 'Lefty' : 'Righty'; }
 function handEmoji(h) { return h === 'left' ? 'L' : 'R'; }
@@ -1862,6 +1867,7 @@ function buildStrategySection(a) {
     break100: ['Never try the hero shot — chip out sideways to save bogey', 'Course management > swing improvement right now', 'Two-putt every hole and you\'ll break 100 automatically'],
     break90:  ['Track your stats: fairways hit, GIR, putts per round', 'Play for position, not distance — where does the miss hurt least?', 'Lag putting from outside 20 feet eliminates 3-putts'],
     break80:  ['Know your exact carry distances for every club', 'Play backwards from the hole — pick your ideal approach angle', 'Stay in the present — one shot at a time, no scoreboard math'],
+    break70:  ['Attack pins only with short irons — play the fat side with everything else', 'Build a wedge matrix: 3 swing lengths × 4 wedges = 12 known numbers', 'Zero 3-putts: lag everything outside 25 feet to a 3-foot circle'],
   };
 
   const mentalTips = [
@@ -1880,7 +1886,7 @@ function buildStrategySection(a) {
       ${tips.map(t => `<div class="check-row"><span>${t}</span></div>`).join('')}
     </div></div>`;
 
-  if (hasMental || goal === 'break80' || goal === 'break90') {
+  if (hasMental || goal === 'break80' || goal === 'break90' || goal === 'break70') {
     html += `<div class="card" ${hasMental ? 'style="border-color:rgba(201,168,76,0.5);"' : ''}>
       ${hasMental ? '<span class="tag tag-gold">⭐ YOUR FOCUS</span>' : ''}
       <div class="card-title">Mental Game</div>
@@ -1924,7 +1930,7 @@ function buildReviewStep() {
     if (a.location) rows.push({label:'Practice Location', value:locMap[a.location]||a.location, step:4});
   }
 
-  const goalMap = {fun:'Just Have Fun',break120:'Break 120',break100:'Break 100',break90:'Break 90',break80:'Break 80'};
+  const goalMap = {fun:'Just Have Fun',break120:'Break 120',break100:'Break 100',break90:'Break 90',break80:'Break 80',break70:'Break 70'};
   if (a.goal) rows.push({label:'Goal', value:goalMap[a.goal]||a.goal, step: beginnerMode ? 'b2' : 5});
 
   if (!beginnerMode) {
@@ -2178,9 +2184,19 @@ async function doSaveAndShowSuccess(a, email, params, distObj, coachingPlan, pin
   navigator.sendBeacon('/', formData);
 
   // ── EMAIL GUIDE LINK (optional) ──
+  // NOTE: was navigator.sendBeacon with an application/json Blob — browsers silently
+  // block that cross-origin (only CORS-safelisted types allowed), so the email never
+  // sent. fetch with keepalive survives the redirect and text/plain avoids preflight.
   if (email) {
     const payload = JSON.stringify({ email, name: a.name, guideUrl: fullGuideUrl, appUrl });
-    navigator.sendBeacon('https://spinvibes-golf.netlify.app/.netlify/functions/send-guide-email', new Blob([payload], { type: 'application/json' }));
+    try {
+      await fetch('https://spinvibes-golf.netlify.app/.netlify/functions/send-guide-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: payload,
+        keepalive: true,
+      });
+    } catch(e) { console.warn('Guide email send failed:', e); }
   }
 
   // Open their app immediately — no intermediate screen to get lost on

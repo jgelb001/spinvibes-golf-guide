@@ -368,8 +368,8 @@ function clubLabelFor(yards) {
 }
 
 // ── HELPERS ──
-const gLabel = {fun:'Enjoy the Game',break120:'Break 120',break100:'Break 100',break90:'Break 90',break80:'Break 80'};
-const gNum   = {fun:'FUN',break120:'120',break100:'100',break90:'90',break80:'80'};
+const gLabel = {fun:'Enjoy the Game',break120:'Break 120',break100:'Break 100',break90:'Break 90',break80:'Break 80',break70:'Break 70'};
+const gNum   = {fun:'FUN',break120:'120',break100:'100',break90:'90',break80:'80',break70:'70'};
 const wLabel = {driving:'Driving',irons:'Iron Play',shortgame:'Short Game',putting:'Putting',course:'Course Mgmt',mental:'Mental Game'};
 const sLabel = {beginner:'Beginner',high:'110+','mid-high':'100–110',mid:'90–100','low-mid':'80–90',low:'Under 80'};
 const hl = h => h === 'left' ? 'Lefty' : 'Righty';
@@ -415,7 +415,8 @@ function buildCoachBrief() {
     break120: `${a.name}, your path to 120 is simple: make contact, keep the ball moving forward, and enjoy every swing`,
     break100: `${a.name}, breaking 100 comes down to eliminating disasters — not shooting birdies. Bogeys win`,
     break90:  `${a.name}, the gap between 95 and 89 isn't talent — it's course management and short game consistency`,
-    break80:  `${a.name}, breaking 80 is a precision game. Every dropped stroke has a cause, and this guide is built around finding yours`
+    break80:  `${a.name}, breaking 80 is a precision game. Every dropped stroke has a cause, and this guide is built around finding yours`,
+    break70:  `${a.name}, you're past "getting better" — this is tournament golf. Marginal gains, wedge numbers, and zero wasted strokes`
   };
   const freqInsight = {
     rare:   'You have limited range time — make every session purposeful. No mindless ball-bashing. Follow the structured range plan in the Practice tab.',
@@ -696,7 +697,8 @@ function renderSwingThoughts() {
     break120: '<i class="ti ti-leaf"></i> <strong>Make contact and keep moving</strong> — don\'t stop mid-round to fix your swing',
     break100: '<i class="ti ti-ban"></i> <strong>One mistake at a time</strong> — bogeys are fine, doubles kill your score',
     break90:  '<i class="ti ti-target"></i> <strong>Commit before you swing</strong> — indecision is the most common double bogey',
-    break80:  '<i class="ti ti-trophy"></i> <strong>Trust your routine</strong> — you have the swing. Trust it.'
+    break80:  '<i class="ti ti-trophy"></i> <strong>Trust your routine</strong> — you have the swing. Trust it.',
+    break70:  '<i class="ti ti-trophy"></i> <strong>Stay neutral</strong> — no shot is "big." Same routine on the 1st tee and the 72nd hole.'
   };
   const thoughts = bySkill[a.skill] || bySkill.mid;
   const goalLine = goalAddons[a.goal] || '';
@@ -1157,6 +1159,7 @@ function renderShort() {
     break100: ['<i class="ti ti-ban"></i> Never attempt the hero shot. Chip sideways, make bogey, move on. A bogey is a good hole.','<i class="ti ti-ruler-2"></i> Course management is worth more than swing mechanics right now. Smart routing drops strokes without touching your swing.','<i class="ti ti-target"></i> Two-putt every hole. That\'s it. That\'s the whole strategy.'],
     break90:  ['<i class="ti ti-chart-bar"></i> Track fairways, greens, and putts per round. Numbers tell you where the strokes are going — your gut can\'t.','<i class="ti ti-brain"></i> Before every shot, ask: where\'s the miss that costs me least? Aim away from the miss that hurts most.','<i class="ti ti-flag-2"></i> From outside 20 feet, lag to 3 feet. That\'s the only plan. Don\'t attempt to make everything.'],
     break80:  ['<i class="ti ti-map-pin"></i> Know your exact carry — not approximate — for every club in the bag. Wrong number = wrong club = wrong score.','<i class="ti ti-map"></i> Work backwards from the pin. Where do you want your approach angle from? Drive to that spot, not just \'the fairway\'.','<i class="ti ti-focus-2"></i> One shot at a time. No scoreboard math until you\'re walking off 18.'],
+    break70:  ['<i class="ti ti-trophy"></i> Attack pins only with short irons and wedges. With everything else, play to the fat side and take your 20-footer.','<i class="ti ti-ruler-2"></i> Build a wedge matrix — 3 swing lengths × every wedge. Twelve known carry numbers turn 60–120 yards into a scoring zone.','<i class="ti ti-target"></i> Zero 3-putts. Outside 25 feet, lag to a 3-foot circle. The card never remembers how close your lag was — only the next putt.'],
   };
   const tips = stratTips[a.goal] || stratTips.fun;
   h += `<div class="sect-title" style="margin-top:6px;">Course Strategy</div>`;
@@ -1165,7 +1168,7 @@ function renderShort() {
     <div class="ct">On-Course Strategy — ${gLabel[a.goal]||a.goal}</div>
     <div class="cb">${tips.map(t=>`<div class="cr"><span>${t}</span></div>`).join('')}</div></div>`;
 
-  if (hasMental || a.goal === 'break80' || a.goal === 'break90') {
+  if (hasMental || a.goal === 'break80' || a.goal === 'break90' || a.goal === 'break70') {
     h += `<div class="card" ${hasMental?'style="border-color:rgba(138,96,16,0.5);"':''}>
       ${hasMental?'<span class="tag tg-gld">⭐ YOUR FOCUS</span>':''}
       <div class="ct">Mental Game</div>
