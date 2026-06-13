@@ -495,10 +495,19 @@ function renderBeginnerHome() {
 // ── RENDER HOME ──
 
 // ── APP CTA ──────────────────────────────────────────────────────
+// Encode family members the same way the wizard does, so they always reach the
+// app even if the guide_users.members column wasn't persisted (belt-and-suspenders).
+function _fmParam() {
+  const mem = Array.isArray(a.members) ? a.members : [];
+  if (!mem.length) return '';
+  return mem.map(m => `${encodeURIComponent(m.name)}~${m.age}~${String(m.hand||'right')[0]}~${m.goal||'fun'}`).join('|');
+}
 function _appUrl() {
-  if (_userId) return 'https://app.spinvibes.com?u=' + _userId;
+  const fm = _fmParam();
+  if (_userId) return 'https://app.spinvibes.com?u=' + _userId + (fm ? '&fm=' + encodeURIComponent(fm) : '');
   // fallback: pass key params
   const p = new URLSearchParams({ u: 'preview', n: a.name, h: a.hand[0], s: a.skill, g: a.goal, a: a.age });
+  if (fm) p.set('fm', fm);
   return 'https://app.spinvibes.com?' + p.toString();
 }
 

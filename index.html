@@ -2160,10 +2160,13 @@ async function doSaveAndShowSuccess(a, email, params, distObj, coachingPlan, pin
 
   const fullGuideUrl = location.origin + '/' + guideUrl;
 
-  // App URL — points to app.spinvibes.com with UUID (or fallback params)
+  // App URL — points to app.spinvibes.com with UUID (or fallback params).
+  // Always append &fm= so family reaches the app even if the members column
+  // didn't persist (belt-and-suspenders; the app also reads profile.members).
+  const fmQ = fm ? `&fm=${encodeURIComponent(fm)}` : '';
   const appUrl = userId
-    ? `https://app.spinvibes.com?u=${userId}`
-    : `https://app.spinvibes.com?n=${encodeURIComponent(a.name)}&h=${a.hand[0]}&s=${a.skill}&g=${a.goal}&a=${a.age}`;
+    ? `https://app.spinvibes.com?u=${userId}${fmQ}`
+    : `https://app.spinvibes.com?n=${encodeURIComponent(a.name)}&h=${a.hand[0]}&s=${a.skill}&g=${a.goal}&a=${a.age}${fmQ}`;
 
   // ── NETLIFY FORM SUBMISSION via sendBeacon ──
   const formData = new FormData();
