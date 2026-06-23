@@ -2298,9 +2298,14 @@ async function doSaveAndShowSuccess(a, email, params, distObj, coachingPlan, pin
   }
 
   // ── SAVE PROFILE TO SUPABASE → get UUID ──
+  // Generate the UUID client-side so we don't need INSERT...RETURNING (return=representation),
+  // which requires anon SELECT — revoked by Phase-2 RLS. This keeps guide creation working
+  // after lockdown. Falls back to representation only if crypto.randomUUID is unavailable.
   let userId = null;
+  const _newId = (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : null;
   try {
     const profile = {
+      ...(_newId ? { id: _newId } : {}),
       name:          a.name,
       email:         email || null,
       hand:          a.hand[0],
@@ -2336,12 +2341,17 @@ async function doSaveAndShowSuccess(a, email, params, distObj, coachingPlan, pin
         'Content-Type': 'application/json',
         apikey: SUPABASE_ANON,
         Authorization: `Bearer ${SUPABASE_ANON}`,
-        Prefer: 'return=representation',
+        // return=minimal when we supplied the id (no RETURNING/SELECT needed → Phase-2 safe).
+        Prefer: _newId ? 'return=minimal' : 'return=representation',
       },
       body: JSON.stringify(profile),
     });
-    const rows = await sbRes.json();
-    userId = rows?.[0]?.id || null;
+    if (_newId) {
+      userId = sbRes.ok ? _newId : null;
+    } else {
+      const rows = await sbRes.json();
+      userId = rows?.[0]?.id || null;
+    }
   } catch(e) {
     console.warn('Supabase save failed — falling back to URL params:', e);
   }
