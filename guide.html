@@ -1862,15 +1862,35 @@ async function renderRoundList() {
   }
 }
 
+// ── Read one profile by UUID. Prefers the secure get_guide_user() RPC
+// (so the DB can't be enumerated once Phase 2 RLS lands); falls back to the
+// direct REST select if the RPC isn't deployed yet. Zero-downtime either way. ──
+async function fetchGuideUser(id) {
+  const auth = { apikey: SUPABASE_ANON, Authorization: `Bearer ${SUPABASE_ANON}` };
+  try {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/rpc/get_guide_user`, {
+      method: 'POST',
+      headers: { ...auth, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ p_id: id }),
+    });
+    if (r.ok) {
+      const rows = await r.json();
+      if (Array.isArray(rows)) return rows;        // RPC present → use it
+    }
+  } catch (e) { /* fall through to REST */ }
+  // Fallback: legacy direct select (works while Phase-2 RLS not yet applied)
+  const res = await fetch(
+    `${SUPABASE_URL}/rest/v1/guide_users?id=eq.${id}&select=*`,
+    { headers: auth }
+  );
+  return res.json();
+}
+
 // ── INIT ──
 async function initGuide() {
   if (_userId) {
     try {
-      const res = await fetch(
-        `${SUPABASE_URL}/rest/v1/guide_users?id=eq.${_userId}&select=*`,
-        { headers: { apikey: SUPABASE_ANON, Authorization: `Bearer ${SUPABASE_ANON}` } }
-      );
-      const rows = await res.json();
+      const rows = await fetchGuideUser(_userId);
       if (rows && rows[0]) {
         const u = rows[0];
         a = {
