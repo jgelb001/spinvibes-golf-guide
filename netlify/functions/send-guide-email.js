@@ -31,7 +31,7 @@ exports.handler = async (event) => {
 
       <p style="color:#f0ead8;font-size:1rem;margin-bottom:8px;">Hey ${name}!</p>
       <p style="color:#c8c0aa;font-size:0.92rem;line-height:1.6;margin-bottom:24px;">
-        Your personalized SpinVibes app is ready. It's built around your game — your goals, your bag, your caddie. Add it to your home screen and it works offline.
+        Your personalized SpinVibes app is ready. It's built around your game, your goals, your bag, your caddie. Add it to your home screen and it works offline.
       </p>
 
       <div style="text-align:center;margin-bottom:24px;">
@@ -54,7 +54,7 @@ exports.handler = async (event) => {
       </div>
 
       <p style="color:#6a8a6e;font-size:0.72rem;line-height:1.5;border-top:1px solid rgba(255,255,255,0.08);padding-top:16px;margin-top:16px;margin-bottom:0;">
-        You're receiving this because you created a guide at golf.spinvibes.com. This is a one-time email — we'll never spam you.
+        You're receiving this because you created a guide at golf.spinvibes.com. This is a one-time email, we'll never spam you.
       </p>
     </div>
   `;

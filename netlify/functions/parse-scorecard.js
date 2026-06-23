@@ -45,7 +45,7 @@ exports.handler = async (event) => {
     return { statusCode: 500, body: 'Not configured' };
   }
 
-  const systemPrompt = `You are parsing a golf scorecard photo. Return ONLY valid JSON — no explanation, no markdown, no extra text. Use this exact structure:
+  const systemPrompt = `You are parsing a golf scorecard photo. Return ONLY valid JSON, no explanation, no markdown, no extra text. Use this exact structure:
 {
   "name": "full course name",
   "city": "city or null",
@@ -100,7 +100,7 @@ Rules: holePars and yardages must each have exactly "holes" entries. Use the ${t
             // Extract JSON from response (strip any accidental markdown fences)
             const jsonMatch = text.match(/\{[\s\S]*\}/);
             if (!jsonMatch) {
-              resolve({ statusCode: 422, headers: corsHeaders(event), body: JSON.stringify({ error: 'Could not parse scorecard — try a clearer photo' }) });
+              resolve({ statusCode: 422, headers: corsHeaders(event), body: JSON.stringify({ error: 'Could not parse scorecard, try a clearer photo' }) });
               return;
             }
             const course = JSON.parse(jsonMatch[0]);
@@ -111,7 +111,7 @@ Rules: holePars and yardages must each have exactly "holes" entries. Use the ${t
             });
           } catch (e) {
             console.error('Parse error:', e);
-            resolve({ statusCode: 422, headers: corsHeaders(event), body: JSON.stringify({ error: 'Could not read scorecard — try a clearer photo' }) });
+            resolve({ statusCode: 422, headers: corsHeaders(event), body: JSON.stringify({ error: 'Could not read scorecard, try a clearer photo' }) });
           }
         });
       }
