@@ -45,11 +45,14 @@ exports.handler = async (event) => {
     return { statusCode: 400, body: 'Bad Request: invalid JSON' };
   }
 
-  const { message, messages, systemPrompt } = body;
+  const { message, messages, systemPrompt, maxTokens } = body;
 
   if (!systemPrompt || typeof systemPrompt !== 'string') {
     return { statusCode: 400, body: 'Bad Request: systemPrompt missing' };
   }
+
+  // Caddie stays terse (default 80); coaching brief may request more, clamped for safety.
+  const tokenCap = Math.min(Math.max(parseInt(maxTokens) || 80, 1), 500);
 
   // Support both formats:
   //   guide: { message: "string", systemPrompt }  → single-turn
@@ -82,7 +85,7 @@ exports.handler = async (event) => {
   // ── Call Claude Haiku ──
   const requestBody = JSON.stringify({
     model: 'claude-haiku-4-5-20251001',
-    max_tokens: 80,
+    max_tokens: tokenCap,
     system: systemPrompt,
     messages: messageArray,
   });

@@ -814,6 +814,53 @@
     </div>
   </div>
 
+  <!-- ══ STEP 6B: DIAL IT IN — fault follow-ups + advanced layer ══ -->
+  <div class="step" id="step-6b">
+    <div class="step-q">Let's dial it in.</div>
+    <div class="step-sub">A few specifics about your problem areas — this is what makes your drills <em>yours</em>, not generic.</div>
+    <div id="fault-followups"></div>
+
+    <!-- Advanced layer: auto-expanded for serious players, toggle for everyone else -->
+    <div id="advanced-wrap" style="margin-top:6px;">
+      <button type="button" id="advanced-toggle" onclick="toggleAdvanced()" style="display:block;width:100%;background:rgba(34,150,87,0.10);border:2px solid rgba(34,150,87,0.35);border-radius:14px;padding:14px 16px;margin-bottom:8px;cursor:pointer;text-align:left;">
+        <div style="font-weight:700;color:var(--cream);font-size:0.95rem;"><i class="ti ti-adjustments-alt" style="vertical-align:-2px;"></i> Pro-level detail <span id="advanced-caret">+</span></div>
+        <div style="font-size:0.8rem;color:var(--muted);line-height:1.4;">Ball flight, shot shaping, and wedge numbers — for players chasing the low scores.</div>
+      </button>
+      <div id="advanced-detail" style="display:none;">
+        <div class="section-label" style="margin-top:14px;">Your typical driver ball flight</div>
+        <select class="family-select" id="adv-flight" style="width:100%;margin-bottom:8px;" onchange="validateStep()">
+          <option value="">Select…</option>
+          <option value="straight">Pretty straight</option>
+          <option value="fade">Controlled fade (small L→R)</option>
+          <option value="draw">Controlled draw (small R→L)</option>
+          <option value="slice">Slice (big L→R)</option>
+          <option value="hook">Hook (big R→L)</option>
+          <option value="variable">Two-way — varies</option>
+        </select>
+        <div class="section-label">Can you shape shots on demand?</div>
+        <select class="family-select" id="adv-shape" style="width:100%;margin-bottom:8px;" onchange="validateStep()">
+          <option value="">Select…</option>
+          <option value="none">Not really — one shape</option>
+          <option value="fade">Can hit a fade on command</option>
+          <option value="draw">Can hit a draw on command</option>
+          <option value="both">Both ways on command</option>
+        </select>
+        <div class="section-label">Do you know your wedge carry distances?</div>
+        <select class="family-select" id="adv-wedge" style="width:100%;margin-bottom:4px;" onchange="validateStep()">
+          <option value="">Select…</option>
+          <option value="precise">Yes — precise numbers for each</option>
+          <option value="rough">Roughly</option>
+          <option value="no">No — I just swing</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="wiz-nav">
+      <button class="btn-back" onclick="goBack()"><i class="ti ti-chevron-left" style="vertical-align:-1px;"></i> Back</button>
+      <button class="btn-next" id="btn-next-6b" onclick="goNext()" disabled>Continue <i class="ti ti-arrow-right" style="vertical-align:-1px;"></i></button>
+    </div>
+  </div>
+
   <!-- ══ STEP 7: PRACTICE PROFILE (freq + duration combined) ══ -->
   <div class="step" id="step-7">
     <div class="step-q">Your practice window.</div>
@@ -1220,6 +1267,51 @@ This player wants to develop toward competitive golf. Focus on: building a repea
     return `GOAL CONTEXT: Help this player improve steadily and enjoy the process. Match your advice to their skill level.`;
   })();
 
+  // ── SPECIFIC FAULT → FIX (driven by step-6b follow-ups) ──
+  // This is the heart of true personalization: map the player's EXACT miss to an
+  // exact named drill + cue, so an advanced driver-miss player never gets the same
+  // line as a beginner who just ticked "driving".
+  const SPECIFIC_FIX = {
+    'driving-slice':   'Driver SLICE (open face / out-to-in path). Fix: strengthen lead-hand grip so 2–3 knuckles show; feel the trail forearm rotate over through impact ("close the door"). Drill: Headcover outside the ball — swing without hitting it to groove an in-to-out path. Cue: start the ball at the right edge and let it draw back (reverse for lefty).',
+    'driving-hook':    'Driver HOOK (face too closed / overly in-to-out). Fix: ease grip to neutral, quiet the hands, rotate the body through so the chest faces target at finish. Drill: feet-together swings at 70% to sync arms and body. Cue: "hold the face off, turn through."',
+    'driving-pushpull':'Driver PUSH/PULL (ball starts offline, flies straight = clubface aimed where ball starts). Fix: alignment-stick gate at setup; check aim and ball position (off lead heel). Drill: lay a stick on the ground for start-line feedback every swing.',
+    'driving-low':     'Driver LOW & SHORT (negative attack angle / hitting down). Fix: tee it higher (half the ball above the crown), ball off lead heel, tilt spine slightly away at address to hit UP +2–4°. Drill: tee a ball high and clip it on a slight upswing. Cue: "launch it, sweep up."',
+    'driving-twoway':  'Driver TWO-WAY MISS (face control is the root — start line varies). Fix: this is a clubface-stability problem, not a path one. Prioritize grip consistency + a quieter lead wrist through impact. Drill: 9-to-3 driver swings at 60% watching only start direction; groove ONE start line before adding speed.',
+    'driving-distance':'Driver DISTANCE (contact/efficiency, wants more). Fix: center-face strike + positive attack angle beat raw effort. Drill: foot-spray/impact-tape to find center; widen stance, tee high, swing up. Target driver smash 1.48–1.50. Cue: "speed comes from the center, not the swing harder."',
+    'irons-fat':       'Irons FAT (low point behind the ball). Fix: pressure forward (60% lead side at impact), ball slightly back of center. Drill: Tee in the Ground / towel 4 inches behind ball — miss the towel. Cue: "ball first, then turf — divot starts past the ball."',
+    'irons-thin':      'Irons THIN (rising into the ball / early extension or pulling up). Fix: maintain posture, keep the trail shoulder working down. Drill: 9-to-3 punch shots hitting the ball then the ground. Cue: "cover the ball, low and forward."',
+    'irons-distance':  'Irons DISTANCE CONTROL (strike inconsistency). Fix: gap your irons with a launch metric or on-course testing; commit to center-face. Drill: ladder drill — 5 balls each club, note carry spread, shrink it. Track stock numbers.',
+    'irons-direction': 'Irons DIRECTION (push/pull). Fix: clubface at impact controls start line — check grip + aim. Drill: gate of two sticks just outside the ball; start the ball through the gate.',
+    'irons-contact':   'Irons CONTROL/SPIN (strike is solid, wants more). Fix: clean grooves, ball-first contact, and a touch steeper into wedges for spin. Drill: trajectory windows — hit the same club low/mid/high on command.',
+    'shortgame-chunkblade':'Chipping CHUNK-OR-BLADE (inconsistent low point). Fix: weight 70% lead foot, handle ahead, rock the shoulders — no wrist flip. Drill: hinge-and-hold; land-spot drill onto a towel. Cue: "lead the handle, brush the grass."',
+    'shortgame-distance':  'Pitching DISTANCE CONTROL (20–60 yds). Fix: Clock System — fixed backswing lengths for repeatable carries. Drill: 7/9/11 o\'clock backswings, log the carry for each wedge. Cue: "swing length = distance, tempo stays the same."',
+    'shortgame-bunker':    'Greenside BUNKERS. Fix: open face, enter the sand ~2 inches behind, accelerate through, finish. Drill: draw a line in the sand and splash the line (no ball) until consistent, then add a ball. Cue: "thump the sand, don\'t quit."',
+    'shortgame-spin':      'Short game SPIN/CHECK. Fix: clean grooves, fresh-ish wedge, ball-first contact, steeper angle, firmer turf. Drill: hit identical pitches and read the second bounce. Manage expectations off soft lies.',
+    'putting-threeputt':   '3-PUTTS (lag/distance). Fix: distance control from outside 20 ft is the separator. Drill: Ladder — 30/40/50 ft, stop each within a 3-ft circle; Eyes-Closed putts to feel pace. Goal: every lag inside 3 ft.',
+    'putting-short':       'SHORT PUTTS (inside 6 ft). Fix: steady head, square face, accelerate through. Drill: Gate drill (two tees just wider than the putter) from 4–6 ft; make 25 in a row before leaving. Cue: "head still until you hear it drop."',
+    'putting-read':        'GREEN READING. Fix: read from low side, find the fall line, play more break than you think. Drill: tee a ball at the apex of your read and roll putts over it. Track which way you under/over-read.',
+    'putting-startline':   'START LINE. Fix: face control + a consistent stroke path. Drill: gate drill plus a chalk-line / string to verify you start the ball on your intended line.',
+    'course-club':         'CLUB SELECTION. Fix: club to the CENTER of the green and to your carry number, not your best-ever number. Rule: take the club that covers the front + leaves an uphill putt. Track GIR.',
+    'course-risk':         'RISK DECISIONS. Fix: before every shot ask "where does the miss hurt most?" and aim away from it. Play to your stock shot; heroes make doubles. Lay up to a full wedge number.',
+    'course-trouble':      'TROUBLE MANAGEMENT. Fix: first shot out of trouble is to safety, not the green. Punch out to your favorite wedge yardage. One bad shot, not two.',
+    'course-tempo':        'PACE / PRE-SHOT PLAN. Fix: build a repeatable routine — decision → visualize → commit → swing. Never stand over a shot you haven\'t committed to.',
+    'mental-firsttee':     'FIRST-TEE NERVES. Fix: a longer warm-up + a conservative first-tee target (fairway finder, not driver). Box-breathing before the shot. Pick a tiny target.',
+    'mental-bounceback':   'BOUNCE-BACK. Fix: the 10-second rule — react, then it\'s gone by the time you reach the bag. Have a reset word. One bad hole never costs two.',
+    'mental-focus':        'FOCUS OVER 18. Fix: switch "on" only inside your routine; switch "off" between shots (talk, look around). You can\'t concentrate for 4 hours — only for 14 swings.',
+    'mental-confidence':   'CONFIDENCE / DOUBT. Fix: commit to ONE shot and target; doubt comes from indecision. Bank small wins — track "committed swings" as a stat, not just score.',
+  };
+  const faultLines = Object.entries(a.faults || {})
+    .map(([w, f]) => SPECIFIC_FIX[`${w}-${f}`])
+    .filter(Boolean);
+  const faultBlock = faultLines.length
+    ? `\nTHE PLAYER'S SPECIFIC FAULTS (address THESE precisely — do NOT give generic skill-level advice; this is the #1 thing that makes the brief feel personal):\n- ${faultLines.join('\n- ')}\n`
+    : '';
+
+  const adv = a.advanced;
+  const advBlock = adv
+    ? `\nADVANCED PLAYER DATA (this is a serious player — go deeper, skip fundamentals):\n- Typical driver flight: ${adv.flight || 'n/a'}\n- Shot-shaping ability: ${adv.shape || 'n/a'}\n- Wedge distance knowledge: ${adv.wedge || 'n/a'}\nUse this: if they can't shape shots or lack wedge numbers, that's the marginal gain to target. Talk in launch/spin/start-line and a wedge distance matrix, not "make solid contact."\n`
+    : '';
+
   return `You are an expert PGA golf coach writing a PERSONALIZED coaching brief for a new student. Your response will appear directly inside their golf guide app as their "Coach's Brief."
 
 ${handNote}
@@ -1237,7 +1329,7 @@ PLAYER PROFILE:
 - Session length: ${{short:'30 min',medium:'45 min',long:'60 min',full:'90 min'}[a.duration] || '45 min'}
 - Prior lessons: ${a.lessons || 'none'}
 - Physical limitations: ${a.physical || 'none'}
-
+${faultBlock}${advBlock}
 ${goalContext}
 
 FAULT → FIX REFERENCE (use when addressing weaknesses):
@@ -1251,9 +1343,10 @@ FAULT → FIX REFERENCE (use when addressing weaknesses):
 SHORT GAME PRIORITY: For any player above a 10 handicap, short game improvement produces faster scoring gains than full swing changes. If relevant, emphasize this.
 
 FORMAT INSTRUCTIONS:
-Write 170–220 words. Flowing paragraphs — NO bullet points, NO headers, NO markdown.
+Write 180–230 words. Flowing paragraphs — NO bullet points, NO headers, NO markdown.
 - Start with the golfer's name and a sentence that reflects their specific goal and situation.
-- Address their 1–2 weaknesses with named drills/cues pulled from the reference above.
+- If "THE PLAYER'S SPECIFIC FAULTS" are listed, build the brief AROUND those exact faults with the named drills/cues given — name the specific miss and the specific fix. Do NOT fall back to generic skill-level advice when a specific fault is provided.
+- Otherwise address their 1–2 weakness categories with named drills/cues from the reference.
 - Include one goal-specific insight (scoring math, course strategy, or mindset).
 - End with one motivating sentence that feels personal, not generic.
 - Match the voice to their age group (see age instructions above).`;
@@ -1270,7 +1363,7 @@ async function generateCoachingPlan(a) {
       body: JSON.stringify({
         systemPrompt,
         messages: [{ role: 'user', content: userMsg }],
-        max_tokens: 350,
+        maxTokens: 420,
       }),
     });
     if (!res.ok) throw new Error('CF Worker error ' + res.status);
@@ -1283,8 +1376,8 @@ async function generateCoachingPlan(a) {
 }
 
 let currentStep = 0;
-let TOTAL_STEPS = 14;
-let STEP_SEQ = [1,2,3,4,5,6,7,8,9,10,11,15,12,'review',14]; // actual step IDs in order
+let TOTAL_STEPS = 15;
+let STEP_SEQ = [1,2,3,4,5,6,'6b',7,8,9,10,11,15,12,'review',14]; // actual step IDs in order
 const BEGINNER_STEP_SEQ = [1,'b2','b3',15,'review',14];
 let beginnerMode = false;
 let familyCount = 0;
@@ -1319,6 +1412,7 @@ function goTo(n) {
   if (el) el.classList.add('active');
   currentStep = n;
   if (n === 'review') buildReviewStep();
+  if (n === '6b') buildFaultFollowups();
   updateProgress();
   validateStep();
   window.scrollTo(0,0);
@@ -1361,6 +1455,9 @@ function validateStep() {
     valid = !!age && !!skill;
   } else if (currentStep === 6) {
     valid = document.querySelectorAll('input[name="weakness"]:checked').length >= 1;
+  } else if (currentStep === '6b') {
+    const selects = Array.from(document.querySelectorAll('.fault-select'));
+    valid = selects.length > 0 && selects.every(s => s.value);
   } else if (currentStep === 7) {
     // freq + duration both required
     const freq = document.querySelector('input[name="freq"]:checked');
@@ -1415,6 +1512,84 @@ function validateWeakness() {
   }
   const btn = document.getElementById('btn-next-6');
   if (btn) btn.disabled = checked.length < 1;
+}
+
+// ── ADAPTIVE FAULT FOLLOW-UPS (step 6b) ──
+// For each weakness the player picked, ask what SPECIFICALLY is wrong.
+// This is the data that turns a generic guide into a personalized one.
+const FAULT_OPTIONS = {
+  driving: { label:'Driving', q:'What does your driver do most often?', opts:[
+    ['slice','Slice — big left-to-right (lefty: right-to-left)'],
+    ['hook','Hook — big right-to-left (lefty: left-to-right)'],
+    ['pushpull','Starts offline (push or pull), flies fairly straight'],
+    ['low','Low & short — not enough carry'],
+    ['twoway','Two-way miss — never know which way'],
+    ['distance','Solid contact, just want more distance'],
+  ]},
+  irons: { label:'Iron play', q:'What goes wrong with your irons?', opts:[
+    ['fat','Fat — hit the ground before the ball'],
+    ['thin','Thin / skulled — catch it on the way up'],
+    ['distance','Distance control — never the same number'],
+    ['direction','Direction — push or pull off line'],
+    ['contact','Strike is fine, want more control / spin'],
+  ]},
+  shortgame: { label:'Chipping & pitching', q:'Where does your short game leak strokes?', opts:[
+    ['chunkblade','Chunk-or-blade chips — inconsistent contact'],
+    ['distance','Distance control on pitches (20–60 yds)'],
+    ['bunker','Greenside bunkers'],
+    ['spin','Can\'t get it to check / stop'],
+  ]},
+  putting: { label:'Putting', q:'What costs you on the greens?', opts:[
+    ['threeputt','3-putts — lag / distance control'],
+    ['short','Short putts — missing inside 6 feet'],
+    ['read','Green reading — wrong line'],
+    ['startline','Start line — can\'t roll it where I aim'],
+  ]},
+  course: { label:'Course management', q:'What part of strategy hurts you?', opts:[
+    ['club','Club selection — wrong club too often'],
+    ['risk','Risk decisions — go for too much'],
+    ['trouble','Getting out of trouble cleanly'],
+    ['tempo','Rushing / no plan over the ball'],
+  ]},
+  mental: { label:'Mental game', q:'When does your head cost you shots?', opts:[
+    ['firsttee','First-tee / pressure nerves'],
+    ['bounceback','Bouncing back after a bad hole'],
+    ['focus','Losing focus over a full round'],
+    ['confidence','Confidence — doubt over the ball'],
+  ]},
+};
+
+function buildFaultFollowups() {
+  const checked = Array.from(document.querySelectorAll('input[name="weakness"]:checked')).map(e => e.value);
+  const wrap = document.getElementById('fault-followups');
+  if (!wrap) return;
+  wrap.innerHTML = checked.map(w => {
+    const cfg = FAULT_OPTIONS[w];
+    if (!cfg) return '';
+    return `<div class="section-label" style="margin-top:6px;">${cfg.q}</div>
+      <select class="family-select fault-select" data-weak="${w}" style="width:100%;margin-bottom:12px;" onchange="validateStep()">
+        <option value="">Select…</option>
+        ${cfg.opts.map(([v,l]) => `<option value="${v}">${l}</option>`).join('')}
+      </select>`;
+  }).join('');
+
+  // Auto-expand the advanced layer for serious players; otherwise it's a toggle.
+  const goal  = (document.querySelector('input[name="goal"]:checked')||{}).value || '';
+  const skill = (document.querySelector('input[name="skill"]:checked')||{}).value || '';
+  const exp   = (document.querySelector('input[name="experience"]:checked')||{}).value || '';
+  const autoAdvanced = ['break80','break70'].includes(goal) || ['low','low-mid'].includes(skill) || exp === '10yr';
+  if (autoAdvanced && !advancedMode) toggleAdvanced(true);
+  validateStep();
+}
+
+let advancedMode = false;
+function toggleAdvanced(forceOn) {
+  const detail = document.getElementById('advanced-detail');
+  const caret  = document.getElementById('advanced-caret');
+  advancedMode = forceOn === true ? true : !advancedMode;
+  if (detail) detail.style.display = advancedMode ? 'block' : 'none';
+  if (caret)  caret.textContent = advancedMode ? '−' : '+';
+  validateStep();
 }
 
 function toggleMode() {
@@ -1474,6 +1649,14 @@ function getDistances() {
 function getAnswers() {
   const get = (name) => { const el = document.querySelector(`input[name="${name}"]:checked`); return el ? el.value : ''; };
   const weaknesses = Array.from(document.querySelectorAll('input[name="weakness"]:checked')).map(e => e.value);
+  // Adaptive fault detail per weakness (step 6b)
+  const faults = {};
+  document.querySelectorAll('.fault-select').forEach(s => { if (s.value) faults[s.dataset.weak] = s.value; });
+  const advanced = advancedMode ? {
+    flight: (document.getElementById('adv-flight')||{}).value || '',
+    shape:  (document.getElementById('adv-shape')||{}).value || '',
+    wedge:  (document.getElementById('adv-wedge')||{}).value || '',
+  } : null;
   const members = [];
   for (let i = 1; i <= familyCount; i++) {
     const name = (document.getElementById('fm-name-' + i) || {}).value || '';
@@ -1492,6 +1675,8 @@ function getAnswers() {
     goal:       beginnerMode ? (get('bgoal') || 'fun') : get('goal'),
     location:   get('location') || 'range',
     weaknesses,
+    faults,
+    advanced,
     freq:       get('freq') || 'weekly',
     duration:   get('duration') || 'medium',
     equip:      beginnerMode ? (get('bequip') || 'full') : (get('equip') || 'full'),
@@ -2000,6 +2185,8 @@ async function generateGuide() {
     g: a.goal,
     loc: a.location || '',
     w: a.weaknesses.join(','),
+    ...(Object.keys(a.faults||{}).length ? { fl: Object.entries(a.faults).map(([k,v])=>`${k}-${v}`).join(',') } : {}),
+    ...(a.advanced ? { adv: `${a.advanced.flight||''}.${a.advanced.shape||''}.${a.advanced.wedge||''}` } : {}),
     f: a.freq,
     d: a.duration,
     e: a.equip,
@@ -2132,6 +2319,12 @@ async function doSaveAndShowSuccess(a, email, params, distObj, coachingPlan, pin
       physical:      a.physical || 'none',
       theme:         a.theme || 'forest',
       distances:     Object.keys(distObj).length ? distObj : null,
+      // Personalization detail (faults per weakness + advanced layer). Requires the
+      // `personalization jsonb` column — see migration-personalization.sql. Falls back
+      // to URL params (fl=/adv=) if the column is missing.
+      personalization: (Object.keys(a.faults||{}).length || a.advanced)
+        ? { faults: a.faults || {}, advanced: a.advanced || null }
+        : null,
       members:       a.members.length ? a.members : null,
       beg:           beginnerMode,
       coaching_plan: coachingPlan || null,

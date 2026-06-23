@@ -312,6 +312,8 @@ function buildAFromParams() {
     goal:      P.get('g') || 'break90',
     location:  P.get('loc') || 'range',
     weaknesses:(P.get('w') || '').split(',').filter(Boolean),
+    faults:    (function(){ const o={}; (P.get('fl')||'').split(',').filter(Boolean).forEach(p=>{const i=p.indexOf('-'); if(i>0) o[p.slice(0,i)]=p.slice(i+1);}); return o; })(),
+    advanced:  (function(){ const v=(P.get('adv')||'').split('.'); return v.length>=3 && (v[0]||v[1]||v[2]) ? {flight:v[0]||'',shape:v[1]||'',wedge:v[2]||''} : null; })(),
     freq:      P.get('f') || 'weekly',
     duration:  P.get('d') || 'long',
     equip:     P.get('e') || 'full',
@@ -378,6 +380,47 @@ const trail = () => a.hand === 'left' ? 'left' : 'right';
 const wk    = () => a.weaknesses.map(w => wLabel[w]||w).join(' & ');
 const balls = () => ({short:28,medium:45,long:60,full:80}[a.duration]||50);
 const phases= () => ({short:2,medium:3,long:4,full:4}[a.duration]||3);
+
+// ── FAULT-SPECIFIC TIPS (from wizard step 6b) — turns a generic focus card into
+// a callout about the player's EXACT miss + the one drill that fixes it. ──
+const FAULT_TIP = {
+  'driving-slice':   {t:'Your miss: slice', d:'Open face / out-to-in path. Strengthen the lead-hand grip (2–3 knuckles visible) and feel the trail forearm rotate over through impact.', drill:'Headcover-outside-the-ball drill — swing without clipping it to groove an in-to-out path.'},
+  'driving-hook':    {t:'Your miss: hook', d:'Face too closed or path too far in-to-out. Ease the grip to neutral and rotate your body through so your chest faces the target at finish.', drill:'Feet-together swings at 70% to re-sync arms and body.'},
+  'driving-pushpull':{t:'Your miss: starts offline', d:'Ball flies fairly straight but starts left or right — your clubface points where the ball starts. Fix aim and ball position (off the lead heel).', drill:'Alignment-stick gate at setup; start every ball through the gate.'},
+  'driving-low':     {t:'Your miss: low & short', d:'You\'re hitting down on the driver. Tee it higher (half the ball above the crown), ball off the lead heel, tilt slightly away at address to hit UP +2–4°.', drill:'Tee it high and clip it on a slight upswing — feel "launch."'},
+  'driving-twoway':  {t:'Your miss: two-way', d:'Start line varies — this is clubface stability, not path. Prioritize a consistent grip and a quieter lead wrist through impact.', drill:'9-to-3 driver swings at 60% watching only start direction; groove ONE start line before adding speed.'},
+  'driving-distance':{t:'Your focus: more distance', d:'Distance comes from center-face contact and a positive attack angle, not swinging harder. Target driver smash 1.48–1.50.', drill:'Impact tape / foot spray to find the center; widen stance, tee high, swing up.'},
+  'irons-fat':       {t:'Your miss: fat', d:'Low point is behind the ball. Get pressure forward (60% lead side at impact) with the ball slightly back of center.', drill:'Towel 4 inches behind the ball — miss the towel. Divot starts past the ball.'},
+  'irons-thin':      {t:'Your miss: thin', d:'You\'re rising into the ball. Keep your posture and let the trail shoulder work down through impact.', drill:'9-to-3 punch shots: ball first, then ground.'},
+  'irons-distance':  {t:'Your focus: distance control', d:'Inconsistent strike = inconsistent carry. Commit to center-face and gap your irons with real numbers.', drill:'Ladder drill — 5 balls per club, note the carry spread, shrink it.'},
+  'irons-direction': {t:'Your miss: push/pull', d:'Clubface at impact controls start line — check grip and aim first.', drill:'Two-stick gate just outside the ball; start the ball through it.'},
+  'irons-contact':   {t:'Your focus: control & spin', d:'Strike is solid — now clean the grooves, stay ball-first, and steepen slightly into wedges.', drill:'Trajectory windows — same club low/mid/high on command.'},
+  'shortgame-chunkblade':{t:'Your miss: chunk-or-blade', d:'Low point wanders. Weight 70% on the lead foot, handle ahead, rock the shoulders — no wrist flip.', drill:'Hinge-and-hold; land each chip on a towel.'},
+  'shortgame-distance':  {t:'Your focus: pitch distance', d:'20–60 yds needs a repeatable system, not feel.', drill:'Clock drill — 7/9/11 o\'clock backswings; log the carry for each wedge.'},
+  'shortgame-bunker':    {t:'Your focus: bunkers', d:'Open the face, enter the sand ~2 inches behind the ball, accelerate through, finish.', drill:'Draw a line in the sand and splash the line (no ball) until consistent.'},
+  'shortgame-spin':      {t:'Your focus: spin & check', d:'Spin needs clean grooves, ball-first contact, a steeper angle, and a firmer lie.', drill:'Hit identical pitches and read the second bounce.'},
+  'putting-threeputt':   {t:'Your leak: 3-putts', d:'Distance control outside 20 ft is the separator.', drill:'Ladder 30/40/50 ft, stop each inside a 3-ft circle; Eyes-Closed putts to feel pace.'},
+  'putting-short':       {t:'Your leak: short putts', d:'Steady head, square face, accelerate through.', drill:'Gate drill (two tees just wider than the putter) from 4–6 ft; make 25 in a row.'},
+  'putting-read':        {t:'Your leak: green reading', d:'Read from the low side, find the fall line, play more break than you think.', drill:'Tee a ball at the apex of your read and roll putts over it.'},
+  'putting-startline':   {t:'Your leak: start line', d:'Face control plus a consistent path.', drill:'Gate drill + a chalk line to verify you start the ball on your intended line.'},
+  'course-club':         {t:'Your focus: club selection', d:'Club to the CENTER of the green and to your carry number — not your best-ever number.', drill:'Pick the club that covers the front and leaves an uphill putt. Track GIR.'},
+  'course-risk':         {t:'Your focus: smarter risk', d:'Before every shot ask "where does the miss hurt most?" and aim away from it.', drill:'Play your stock shot; lay up to a full wedge number instead of forcing it.'},
+  'course-trouble':      {t:'Your focus: escaping trouble', d:'First shot out of trouble goes to safety, not the green.', drill:'Punch out to your favorite wedge yardage. One bad shot, not two.'},
+  'course-tempo':        {t:'Your focus: pre-shot plan', d:'Build a repeatable routine: decision → visualize → commit → swing.', drill:'Never stand over a shot you haven\'t committed to.'},
+  'mental-firsttee':     {t:'Your focus: first-tee nerves', d:'Longer warm-up + a conservative first-tee target (fairway finder, not driver).', drill:'Box-breathing before the shot; pick a tiny target.'},
+  'mental-bounceback':   {t:'Your focus: bounce-back', d:'The 10-second rule — react, then it\'s gone by the time you reach the bag.', drill:'Have a reset word. One bad hole never costs two.'},
+  'mental-focus':        {t:'Your focus: focus over 18', d:'Switch "on" only inside your routine, "off" between shots.', drill:'You concentrate for 14 swings, not 4 hours — practice switching off.'},
+  'mental-confidence':   {t:'Your focus: confidence', d:'Doubt comes from indecision — commit to one shot and one target.', drill:'Track "committed swings" as a stat, not just score.'},
+};
+function faultTip(w) {
+  const f = (a.faults || {})[w];
+  if (!f) return '';
+  const tip = FAULT_TIP[`${w}-${f}`];
+  if (!tip) return '';
+  return `<div style="background:rgba(34,150,87,0.10);border:1px solid rgba(34,150,87,0.30);border-radius:10px;padding:11px 13px;margin-top:10px;font-size:0.8rem;color:var(--cream);line-height:1.5;">
+    <strong style="color:var(--green);"><i class="ti ti-target" style="vertical-align:-1px;"></i> ${tip.t}.</strong> ${tip.d}<br>
+    <strong>Drill:</strong> ${tip.drill}</div>`;
+}
 
 // ── COACH BRIEF ──
 function buildCoachBrief() {
@@ -853,7 +896,8 @@ function renderRange() {
   // Phase 1
   html += phaseCard(1,'tg-gld','Short Irons — Contact Quality',['9-iron','PW','GW'],b1,
     (hasIrn?'<strong>⭐ YOUR FOCUS AREA</strong> — short irons win and lose more strokes than any other club. Every ball here counts.<br><br>':'')
-    +`<strong>Ball center.</strong> Weight 50/50 at address, shifts fully to your ${lead()} side by impact. Focus: divot starts past the ball, not behind it. Consistent finish every time.`,
+    +`<strong>Ball center.</strong> Weight 50/50 at address, shifts fully to your ${lead()} side by impact. Focus: divot starts past the ball, not behind it. Consistent finish every time.`
+    +faultTip('irons'),
     'Ball first, then ground — the divot tells you everything', hasIrn);
 
   if (ph >= 3) html += phaseCard(2,'tg-org','Mid Irons + Hybrid',['7-iron','6-iron','Hybrid'],b2,
@@ -862,12 +906,14 @@ function renderRange() {
 
   if (ph >= 4 || hasDrv) html += phaseCard(3,'tg-blu','Driver',[`Driver`],Math.round(b3*0.6),
     (hasDrv?'<strong>⭐ YOUR FOCUS AREA</strong> — pick a target and commit. Swing at 80% — control beats distance every time.<br><br>':'')
-    +`<strong>Ball position:</strong> off ${lead()} instep. Tee high, slight upswing at impact. Swing smoother, not harder.`,
+    +`<strong>Ball position:</strong> off ${lead()} instep. Tee high, slight upswing at impact. Swing smoother, not harder.`
+    +faultTip('driving'),
     'Sweep up through the ball — tempo over power', hasDrv);
 
   if (ph >= 4) html += phaseCard(4,'tg-grn','Game Simulation',['Any club'],Math.round(b3*0.4),
     (hasSG?'<strong>⭐ YOUR FOCUS AREA</strong> — pick targets, play real shots. Land it on a spot and let it release.<br><br>':'')
-    +'Pick a different target every shot. Simulate real course decisions. Play the miss, not just the perfect shot.',
+    +'Pick a different target every shot. Simulate real course decisions. Play the miss, not just the perfect shot.'
+    +faultTip('shortgame'),
     'Pick a target, commit, execute — no practice swings', hasSG);
 
   return html;
@@ -926,7 +972,8 @@ function renderBackyardPlan() {
     `${hasPutt?'<strong>⭐ This is where you drop the most strokes. 10 minutes here is worth 20 at the range.</strong><br><br>':''}
     <strong>3-foot circle drill:</strong> Place 4–6 balls in a circle around a target (a coin, a cup, any mark). Make every one before you move out. Start at 3 feet.<br><br>
     <strong>Gate drill:</strong> Put two tees 1 ball-width apart, 6 inches in front of the ball. Roll it through the gate — teaches a square putter face.<br><br>
-    <strong>Lag drill:</strong> If you have space, practice 10-footers to just stop the ball at a target. Distance control wins more putts than line.`,
+    <strong>Lag drill:</strong> If you have space, practice 10-footers to just stop the ball at a target. Distance control wins more putts than line.`
+    +faultTip('putting'),
     'Make 10 from 3 feet before you touch a longer putt', hasPutt);
 
   // Chipping net or chip without net
@@ -936,7 +983,8 @@ function renderBackyardPlan() {
       `${hasChip?'<strong>⭐ Short game is the fastest way to lower your score. Every chip counts.</strong><br><br>':''}
       <strong>No net?</strong> Set a folded towel on the grass or carpet. Try to land the ball on it using a PW or 9-iron.<br><br>
       <strong>Hinge-and-hold drill:</strong> Hinge the wrist on the backswing, then hold the angle through impact — no flipping. Your hands should finish slightly ahead of the clubhead.<br><br>
-      <strong>Key thought:</strong> Small backswing, accelerate through. Chip from a narrow stance, weight forward (60% on ${lead()} foot).`,
+      <strong>Key thought:</strong> Small backswing, accelerate through. Chip from a narrow stance, weight forward (60% on ${lead()} foot).`
+      +faultTip('shortgame'),
       'Hands ahead at impact — every time', hasChip);
   }
 
@@ -1141,7 +1189,7 @@ function renderShort() {
     <div class="pills-row"><span class="ptag">7-Iron</span><span class="ptag">PW</span><span class="ptag">SW</span></div>
     <div class="cb"><strong>Setup:</strong> Ball back in stance, weight on your ${lead()} side, hands ahead of the ball.<br><br>
     <strong>The move:</strong> Shoulders rock like a putting stroke. No wrist flip — let the loft do the work.<br><br>
-    <strong>Drill:</strong> Place a towel 3 feet onto the green. Land 10 chips on it. Count your hits.</div>
+    <strong>Drill:</strong> Place a towel 3 feet onto the green. Land 10 chips on it. Count your hits.${faultTip('shortgame')}</div>
     <div class="cue">Think "putt with a lofted club"</div></div>`;
 
   // Putting
@@ -1151,7 +1199,7 @@ function renderShort() {
     <div class="pills-row"><span class="ptag">Putter</span><span class="ptag">Every session</span></div>
     <div class="cb"><strong>Gate drill:</strong> Two tees 1 inch wider than your putter. Roll 20 putts through the gate from 6 feet.<br><br>
     <strong>Lag drill:</strong> From 30 feet, stop 3 balls within 3 feet of the hole. Keep going until you nail 3 in a row.<br><br>
-    <strong>Rule:</strong> Never 3-putt from inside 6 feet. Lag everything outside 20.</div>
+    <strong>Rule:</strong> Never 3-putt from inside 6 feet. Lag everything outside 20.${faultTip('putting')}</div>
     <div class="cue">Eyes over ball, rock the shoulders, quiet hands</div></div>`;
 
   // Sand
@@ -1175,7 +1223,7 @@ function renderShort() {
   h += `<div class="card" ${hasCourse?'style="border-color:rgba(138,96,16,0.5);"':''}>
     ${hasCourse?'<span class="tag tg-gld">⭐ YOUR FOCUS</span>':''}
     <div class="ct">On-Course Strategy — ${gLabel[a.goal]||a.goal}</div>
-    <div class="cb">${tips.map(t=>`<div class="cr"><span>${t}</span></div>`).join('')}</div></div>`;
+    <div class="cb">${tips.map(t=>`<div class="cr"><span>${t}</span></div>`).join('')}${faultTip('course')}</div></div>`;
 
   if (hasMental || a.goal === 'break80' || a.goal === 'break90' || a.goal === 'break70') {
     h += `<div class="card" ${hasMental?'style="border-color:rgba(138,96,16,0.5);"':''}>
@@ -1185,7 +1233,7 @@ function renderShort() {
         <div class="cr"><span><i class="ti ti-focus-2" style="color:var(--gold);vertical-align:-1px;"></i> <strong>Pre-shot routine:</strong> Target → picture → go. Same three steps, same order, every single shot. Ten seconds.</span></div>
         <div class="cr"><span><i class="ti ti-refresh" style="color:var(--gold);vertical-align:-1px;"></i> <strong>Bad shot reset:</strong> Ten seconds of annoyance. One breath. Gone. Never walk to the next shot carrying the last one.</span></div>
         <div class="cr"><span><i class="ti ti-message" style="color:var(--gold);vertical-align:-1px;"></i> <strong>One swing thought all day.</strong> Pick it on the range before you tee off. If it stops working on hole 12, you still don't change it.</span></div>
-      </div>
+      </div>${faultTip('mental')}
       <div class="cue">Bad shots happen to everyone. What separates scores is what happens next.</div></div>`;
   }
 
@@ -1835,6 +1883,8 @@ async function initGuide() {
           goal:       u.goal || 'break90',
           location:   u.location || 'range',
           weaknesses: Array.isArray(u.weaknesses) ? u.weaknesses : [],
+          faults:     (u.personalization && u.personalization.faults) || {},
+          advanced:   (u.personalization && u.personalization.advanced) || null,
           freq:       u.freq || 'weekly',
           duration:   u.duration || 'long',
           equip:      u.equip || 'full',
