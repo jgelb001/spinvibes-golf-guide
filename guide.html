@@ -598,7 +598,7 @@ function renderHome(profile) {
     <div class="sect">
       ${bagSection()}
       ${renderYardageChart()}
-      <div class="sect-title" style="margin-top:4px;">Swing Thoughts, ${sLabel[a.skill]||a.skill}</div>
+      <div class="sect-title" style="margin-top:4px;">Swing Thoughts: ${sLabel[a.skill]||a.skill}</div>
       ${renderSwingThoughts()}
       <div class="sect-title" style="margin-top:4px;">Session Notes</div>
       <div class="card">
@@ -884,7 +884,7 @@ function renderRange() {
   </div>`;
 
   // Warmup
-  html += `<div class="card"><span class="tag tg-pur">Phase 0</span><div class="ct">Warmup, No ball yet</div>
+  html += `<div class="card"><span class="tag tg-pur">Phase 0</span><div class="ct">Warmup: No ball yet</div>
     <div class="pills-row"><span class="ptag">PW</span><span class="ptag">3 min</span><span class="ptag">Always first</span></div>
     <div class="cb">
       <strong>Pump Swings</strong> · 10 reps, no ball, feel the club like a pendulum<br><br>
@@ -894,7 +894,7 @@ function renderRange() {
     <div class="cue">Warmup is non-negotiable, cold muscles build bad habits</div></div>`;
 
   // Phase 1
-  html += phaseCard(1,'tg-gld','Short Irons, Contact Quality',['9-iron','PW','GW'],b1,
+  html += phaseCard(1,'tg-gld','Short Irons: Contact Quality',['9-iron','PW','GW'],b1,
     (hasIrn?'<strong>⭐ YOUR FOCUS AREA</strong>: short irons win and lose more strokes than any other club. Every ball here counts.<br><br>':'')
     +`<strong>Ball center.</strong> Weight 50/50 at address, shifts fully to your ${lead()} side by impact. Focus: divot starts past the ball, not behind it. Consistent finish every time.`
     +faultTip('irons'),
@@ -1151,10 +1151,10 @@ function renderSwing() {
   const steps = [
     {n:1,title:'Setup & Stance',body:`Feet shoulder-width. Ball center for short irons, progressing toward your ${lead()} instep by driver. Weight 50/50. Spine angle from the hips, not the waist.`,cue:'Chin up, spine angle set'},
     {n:2,title:'Grip Pressure',body:`Hold it like a tube of toothpaste, firm enough to control, loose enough not to squeeze any out. Tight hands block the swing before it starts. Find 5 out of 10.`,cue:'Light grip, free swing'},
-    {n:3,title:'Takeaway, One Piece',body:`Chest, arms, and club leave together for the first 12 inches. No early wrist roll. Club head stays outside your hands.`,cue:'Turn the triangle, chest, arms, club as one'},
+    {n:3,title:'Takeaway: One Piece',body:`Chest, arms, and club leave together for the first 12 inches. No early wrist roll. Club head stays outside your hands.`,cue:'Turn the triangle, chest, arms, club as one'},
     {n:4,title:'Top of Backswing',body:`${trail().charAt(0).toUpperCase() + trail().slice(1)} shoulder under your chin. Club parallel to the ground or slightly short, more backswing doesn't mean more distance. Feel the coil in your core.`,cue:'Coil, don\'t collapse'},
-    {n:5,title:'Transition, Hips Lead',body:`${lead().charAt(0).toUpperCase() + lead().slice(1)} hip bumps toward the target before your backswing finishes. Hips first, then arms, every time, no exceptions.`,cue:'Hip bumps first, sequence is everything'},
-    {n:6,title:'Impact, Hands Ahead',body:`Hands slightly ahead of the ball. Weight on your ${lead()} side (80–90%). Shaft leans toward the target. Hands behind the ball is a scoop, hands ahead is a strike.`,cue:'Ball first, ground second'},
+    {n:5,title:'Transition: Hips Lead',body:`${lead().charAt(0).toUpperCase() + lead().slice(1)} hip bumps toward the target before your backswing finishes. Hips first, then arms, every time, no exceptions.`,cue:'Hip bumps first, sequence is everything'},
+    {n:6,title:'Impact: Hands Ahead',body:`Hands slightly ahead of the ball. Weight on your ${lead()} side (80–90%). Shaft leans toward the target. Hands behind the ball is a scoop, hands ahead is a strike.`,cue:'Ball first, ground second'},
     {n:7,title:'Follow Through & Finish',body:`Belt buckle faces the target. ${trail()} foot on its toe. Club finishes high over your ${lead()} shoulder. If you can\'t hold the pose, you rushed the downswing.`,cue:'Hold the finish, no pose means no sequence'},
   ];
   return steps.map(s=>`<div class="sw-step"><div class="sw-num">${s.n}</div><div style="flex:1;"><div class="ct">${s.title}</div><div class="cb">${s.body}</div><div class="cue">${s.cue}</div></div></div>`).join('');
@@ -1185,7 +1185,7 @@ function renderShort() {
   // Chipping
   h += `<div class="card" ${isSG?'style="border-color:rgba(138,96,16,0.5);"':''}>
     ${isSG?'<span class="tag tg-gld">⭐ YOUR FOCUS</span>':''}
-    <div class="ct">Chipping, The 7-Iron Method</div>
+    <div class="ct">Chipping: The 7-Iron Method</div>
     <div class="pills-row"><span class="ptag">7-Iron</span><span class="ptag">PW</span><span class="ptag">SW</span></div>
     <div class="cb"><strong>Setup:</strong> Ball back in stance, weight on your ${lead()} side, hands ahead of the ball.<br><br>
     <strong>The move:</strong> Shoulders rock like a putting stroke. No wrist flip, let the loft do the work.<br><br>
@@ -1195,7 +1195,7 @@ function renderShort() {
   // Putting
   h += `<div class="card" ${isPutt?'style="border-color:rgba(138,96,16,0.5);"':''}>
     ${isPutt?'<span class="tag tg-gld">⭐ YOUR FOCUS</span>':''}
-    <div class="ct">Putting, Distance Control First</div>
+    <div class="ct">Putting: Distance Control First</div>
     <div class="pills-row"><span class="ptag">Putter</span><span class="ptag">Every session</span></div>
     <div class="cb"><strong>Gate drill:</strong> Two tees 1 inch wider than your putter. Roll 20 putts through the gate from 6 feet.<br><br>
     <strong>Lag drill:</strong> From 30 feet, stop 3 balls within 3 feet of the hole. Keep going until you nail 3 in a row.<br><br>
@@ -1639,7 +1639,7 @@ function renderAllPages() {
       <button class="loc-btn${defaultLoc==='backyard'||defaultLoc==='mix'?' active':''}" data-loc="backyard" onclick="switchLoc('backyard')"><i class="ti ti-home" style="vertical-align:-1px;"></i> Backyard / Home</button>
     </div>
     <div class="loc-panel${defaultLoc==='range'?' on':''}" data-loc="range">
-      <div class="sect"><div class="sect-title">Before You Hit a Ball, Warmup</div>${renderRangeWarmup()}</div>
+      <div class="sect"><div class="sect-title">Before You Hit a Ball: Warmup</div>${renderRangeWarmup()}</div>
       <div class="sect"><div class="sect-title">Session Plan</div>${renderRange()}</div>
     </div>
     <div class="loc-panel${defaultLoc==='sim'?' on':''}" data-loc="sim">

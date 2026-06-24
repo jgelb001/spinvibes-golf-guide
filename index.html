@@ -1761,7 +1761,7 @@ function bagSection(equip, bag, hand) {
       </div></div>`;
   }
   return `<div class="card">
-    <div class="card-title">My Bag, ${bagName} (${handLabel(hand)})</div>
+    <div class="card-title">My Bag: ${bagName} (${handLabel(hand)})</div>
     <div class="card-body">
       ${equip === 'starter' ? 'Starter set, focus on <strong>contact quality</strong> over distance. The clubs will do their job when you hit them flush.' : ''}
       ${equip === 'full'    ? 'Full set, you have everything you need. Focus on learning which club to use <strong>when</strong>, not just how far each one goes.' : ''}
@@ -1806,7 +1806,7 @@ function buildRangeSection(a) {
   // Warmup
   html += `<div class="card">
     <span class="tag tag-purple">Phase 0</span>
-    <div class="card-title">Warmup, No ball yet</div>
+    <div class="card-title">Warmup: No ball yet</div>
     <div class="pill-row"><span class="pill">${isLefty ? 'Pitching Wedge' : 'Pitching Wedge'}</span><span class="pill">3 min</span><span class="pill">Always first</span></div>
     <div class="card-body" style="display:flex;flex-direction:column;gap:12px;margin-top:8px;">
       <div><strong>Pump Swings</strong> <span style="color:var(--muted);font-size:0.82rem;">· 10 swings · no ball</span><br><span style="color:var(--muted);font-size:0.85rem;">Feel the club like a pendulum. No thoughts. Just rhythm.</span></div>
@@ -1818,7 +1818,7 @@ function buildRangeSection(a) {
   const shortIronFocus = hasIronWeakness
     ? '<strong>⭐ YOUR FOCUS AREA:</strong> This is where you recoup strokes. Every ball here is worth two on the course. Flush contact, divot after the ball, consistent finish.'
     : 'Ball center of stance. Flush contact, divot right of ball (toward target), consistent finish. Don\'t chase distance.';
-  html += rangePhaseHTML(1, 'Short Irons, Contact Quality',
+  html += rangePhaseHTML(1, 'Short Irons: Contact Quality',
     ['9-iron','PW','GW'], b1, shortIronFocus,
     'Ball first, then ground', hasIronWeakness);
 
@@ -1887,7 +1887,7 @@ function buildShortGameSection(a) {
   // Chipping
   html += `<div class="card" ${isSGFocus ? 'style="border-color:rgba(201,168,76,0.5);"' : ''}>
     ${isSGFocus ? '<span class="tag tag-gold">⭐ YOUR FOCUS</span>' : ''}
-    <div class="card-title">Chipping, The 7-Iron Method</div>
+    <div class="card-title">Chipping: The 7-Iron Method</div>
     <div class="pill-row"><span class="pill">7-Iron</span><span class="pill">PW</span><span class="pill">SW</span></div>
     <div class="card-body">
       <strong>Setup:</strong> Ball back in stance, weight forward (${isLefty ? 'right' : 'left'} side), hands ahead of ball.<br><br>
@@ -1900,7 +1900,7 @@ function buildShortGameSection(a) {
   // Putting
   html += `<div class="card" ${isPuttingFocus ? 'style="border-color:rgba(201,168,76,0.5);"' : ''}>
     ${isPuttingFocus ? '<span class="tag tag-gold">⭐ YOUR FOCUS</span>' : ''}
-    <div class="card-title">Putting, Distance Control First</div>
+    <div class="card-title">Putting: Distance Control First</div>
     <div class="pill-row"><span class="pill">Putter</span><span class="pill">Every session</span></div>
     <div class="card-body">
       <strong>Gate drill:</strong> Place two tees 1 inch wider than your putter head. Roll 20 putts through the gate from 6 feet.<br><br>
@@ -2014,16 +2014,16 @@ function buildStrikeSequence(a) {
     { n:'2', color:'tag-gold', title:'Grip Pressure',
       body:`Hold the club like you're holding a tube of toothpaste without squeezing any out. Too tight = tension. Too loose = club twists at impact. Find the "5 out of 10."`,
       cue:`Light grip = free swing. Tight grip = blocked shot` },
-    { n:'3', color:'tag-orange', title:'Takeaway, One Piece',
+    { n:'3', color:'tag-orange', title:'Takeaway: One Piece',
       body:`Start the backswing by moving your hands, arms, and shoulders together as one unit. The club head stays outside the hands for the first 12 inches. No wrist roll early.`,
       cue:`Turn the triangle, chest, arms, club move together` },
     { n:'4', color:'tag-blue', title:'Top of Backswing',
       body:`Your ${trail} shoulder moves under your chin. Club should be parallel to the ground or slightly short, overswinging kills consistency. Feel the stretch in your core.`,
       cue:`Coil, don't collapse, feel tension in your torso` },
-    { n:'5', color:'tag-green', title:'Transition, Hips Lead',
+    { n:'5', color:'tag-green', title:'Transition: Hips Lead',
       body:`Before your backswing finishes, your ${lead} hip starts bumping toward the target. This is the move that separates good ball-strikers from everyone else. Hips before hands, always.`,
       cue:`Bump the hip, then fire, sequence is everything` },
-    { n:'6', color:'tag-purple', title:'Impact, Hands Ahead',
+    { n:'6', color:'tag-purple', title:'Impact: Hands Ahead',
       body:`At impact, your hands should be slightly ahead of the ball. Weight shifted to ${lead} side (80–90%). The shaft leans toward the target. This is what creates compression and that crisp "click."`,
       cue:`Ball first, ground second, compress it` },
     { n:'7', color:'tag-gold', title:'Follow Through & Finish',
@@ -2066,7 +2066,7 @@ function buildStrategySection(a) {
   const tips = stratTips[goal] || stratTips['fun'];
   html += `<div class="card" ${hasCourse ? 'style="border-color:rgba(201,168,76,0.5);"' : ''}>
     ${hasCourse ? '<span class="tag tag-gold">⭐ YOUR FOCUS</span>' : ''}
-    <div class="card-title">On-Course Strategy, ${goalLabel(goal)}</div>
+    <div class="card-title">On-Course Strategy: ${goalLabel(goal)}</div>
     <div class="card-body">
       ${tips.map(t => `<div class="check-row"><span>${t}</span></div>`).join('')}
     </div></div>`;
