@@ -291,6 +291,7 @@
 <script>
 // ── CONFIG ──
 const CADDIE_URL    = 'https://spinvibes-caddie.spinvibes.workers.dev';
+const WORKER_SECRET = 'sv-golf-2026-xK9mPqR4nBzT';
 const SUPABASE_URL  = 'https://zairvjyiwhajsulefyoi.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InphaXJ2anlpd2hhanN1bGVmeW9pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxMDkxODAsImV4cCI6MjA5MTY4NTE4MH0.AAdJfqSGHMergPgL4tEoBMn0Wr5d8D1NuxhPMonp_60';
 
@@ -1367,7 +1368,7 @@ async function askCaddie(text) {
   try {
     const res = await fetch(CADDIE_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'X-SpinVibes-Token': WORKER_SECRET },
       body: JSON.stringify({ messages: [{ role: 'user', content: text }], systemPrompt: buildCaddieSystemPrompt(), max_tokens: 60 }),
     });
 

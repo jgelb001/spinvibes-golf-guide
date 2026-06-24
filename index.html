@@ -1213,6 +1213,7 @@ async function submitGuideSignIn() {
   }
 }
 const CADDIE_URL    = 'https://spinvibes-caddie.spinvibes.workers.dev';
+const WORKER_SECRET = 'sv-golf-2026-xK9mPqR4nBzT';
 const _distKeys     = ['driver','3w','hybrid','7i','9i','pw','sw'];
 
 // ── COACHING SYSTEM PROMPT ──
@@ -1359,7 +1360,7 @@ async function generateCoachingPlan(a) {
     const userMsg = `Generate the personalized coaching brief now for ${a.name || 'this golfer'}.`;
     const res = await fetch(CADDIE_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'X-SpinVibes-Token': WORKER_SECRET },
       body: JSON.stringify({
         systemPrompt,
         messages: [{ role: 'user', content: userMsg }],
